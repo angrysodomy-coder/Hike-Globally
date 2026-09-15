@@ -1,5 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowDown, ArrowRight, CalendarDays, Compass, MapPin, Search } from 'lucide-react'
+import Noise from './Noise'
+
+// Hero background video — Pexels "Majestic Himalayan Snow-Capped Peaks"
+// by Chandra Man Dongol (https://www.pexels.com/video/29633606/).
+// Sources are tried top to bottom; the middle rendition is the verified
+// CDN file, and the last one resolves through Pexels' own download
+// endpoint (the URL shared for this video), so a copy always plays.
+const HERO_VIDEO_SOURCES = [
+  'https://videos.pexels.com/video-files/29633606/12750687_1920_1080_25fps.mp4',
+  'https://videos.pexels.com/video-files/29633606/12750686_2560_1440_25fps.mp4',
+  'https://www.pexels.com/download/video/29633606/',
+]
 
 const months = [
   'October 2026', 'November 2026', 'December 2026', 'January 2027',
@@ -46,16 +58,37 @@ export default function Hero({ onFind }) {
   return (
     <section id="home" className="hero" aria-labelledby="hero-title">
       <div className="hero__media" ref={mediaRef}>
-        <picture>
-          <source media="(max-width: 767px)" srcSet="/images/hero-himalaya-mobile.webp" />
-          <img
-            src="/images/hero-himalaya.webp"
-            alt="Trekkers following a high trail toward a vast wall of Himalayan peaks"
-            fetchPriority="high"
-          />
-        </picture>
+        <img
+          className="hero__fallback"
+          src="/images/hero-himalaya.webp"
+          alt=""
+          aria-hidden="true"
+          fetchPriority="high"
+        />
+        <video
+          className="hero__video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster="/images/hero-himalaya.webp"
+          aria-hidden="true"
+        >
+          {HERO_VIDEO_SOURCES.map((src) => (
+            <source key={src} src={src} type="video/mp4" />
+          ))}
+        </video>
       </div>
       <div className="hero__wash" aria-hidden="true" />
+      <Noise
+        className="hero__noise"
+        patternSize={160}
+        patternScaleX={1.4}
+        patternScaleY={0.8}
+        patternRefreshInterval={2}
+        patternAlpha={15}
+      />
 
       <div className="hero__coordinate" aria-hidden="true">
         <span>27.9881° N</span>

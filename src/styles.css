@@ -569,23 +569,23 @@ dd {
   color: var(--white);
 }
 
-.hero__media,
-.hero__media picture,
-.hero__media img {
+.hero__media {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-}
-
-.hero__media {
   --hero-shift: 0px;
   --hero-scale: 1.035;
   overflow: hidden;
   animation: hero-reveal 1.45s var(--ease-out) both;
 }
 
-.hero__media img {
+.hero__media img,
+.hero__media video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: center 51%;
   transform: translate3d(0, var(--hero-shift), 0) scale(var(--hero-scale));
@@ -600,10 +600,22 @@ dd {
     linear-gradient(180deg, rgba(7, 18, 15, 0.3) 0%, transparent 37%, rgba(7, 18, 15, 0.58) 100%);
 }
 
-.hero__content {
-  position: relative;
+/* Grain sits above the video + wash; text content stays in front of it */
+.hero__noise {
+  position: absolute;
+  inset: 0;
   z-index: 2;
-  padding-top: clamp(182px, 21vh, 245px);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.hero__content {
+  position: absolute;
+  z-index: 3;
+  right: 0;
+  bottom: clamp(180px, 25vh, 250px);
+  left: 0;
 }
 
 .hero__eyebrow {
@@ -633,17 +645,17 @@ dd {
 
 .hero h1 {
   max-width: 1000px;
-  font-family: var(--serif);
-  font-size: clamp(69px, 7.4vw, 124px);
-  font-weight: 400;
-  letter-spacing: -0.045em;
-  line-height: 0.78;
+  font-family: 'Cal Sans', var(--sans);
+  font-size: clamp(66px, 7vw, 116px);
+  font-weight: 700;
+  letter-spacing: normal;
+  line-height: 1;
 }
 
 .hero__line {
   display: block;
   overflow: hidden;
-  padding: 0.08em 0 0.12em;
+  padding: 0.06em 0 0.16em;
 }
 
 .hero__line i {
@@ -658,7 +670,6 @@ dd {
 }
 
 .hero__line--italic i {
-  font-style: italic;
   animation-delay: 0.75s;
 }
 
@@ -683,7 +694,7 @@ dd {
 
 .hero__coordinate {
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   top: 46%;
   right: max(20px, calc((100vw - 1520px) / 2));
   display: flex;
@@ -2900,7 +2911,7 @@ dd {
   }
 
   .hero h1 {
-    font-size: clamp(70px, 9.7vw, 102px);
+    font-size: clamp(62px, 8.6vw, 92px);
   }
 
   .journey-finder {
@@ -2972,11 +2983,11 @@ dd {
   }
 
   .hero__content {
-    padding-top: 170px;
+    bottom: 192px;
   }
 
   .hero h1 {
-    font-size: clamp(61px, 10.8vw, 84px);
+    font-size: clamp(54px, 9.8vw, 74px);
   }
 
   .journey-finder {
@@ -3208,7 +3219,8 @@ dd {
     padding-bottom: 20px;
   }
 
-  .hero__media img {
+  .hero__media img,
+  .hero__media video {
     object-position: center 52%;
   }
 
@@ -3219,8 +3231,14 @@ dd {
   }
 
   .hero__content {
-    flex: 0 0 auto;
-    padding-top: 128px;
+    position: relative;
+    inset: auto;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-top: 118px;
+    padding-bottom: 24px;
   }
 
   .hero__eyebrow {
@@ -3236,8 +3254,8 @@ dd {
 
   .hero h1 {
     max-width: 520px;
-    font-size: clamp(51px, 15vw, 72px);
-    line-height: 0.83;
+    font-size: clamp(43px, 12.5vw, 58px);
+    line-height: 1.04;
   }
 
   .hero__line--italic {
@@ -3276,7 +3294,7 @@ dd {
     min-height: 0;
     grid-template-columns: 1fr;
     flex: 0 0 auto;
-    margin: auto auto 0;
+    margin: 0 auto;
     background: rgba(248, 245, 238, 0.97);
     transform: translateY(20px);
     animation-name: finder-mobile-arrive;
@@ -3800,7 +3818,7 @@ dd {
 
 @media (max-width: 380px) {
   .hero h1 {
-    font-size: 48px;
+    font-size: 40px;
   }
 
   .hero__ctas .button {
@@ -3838,7 +3856,8 @@ dd {
     transform: none;
   }
 
-  .hero__media img {
+  .hero__media img,
+  .hero__media video {
     transform: none;
   }
 }
