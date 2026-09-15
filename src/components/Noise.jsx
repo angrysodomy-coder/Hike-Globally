@@ -19,10 +19,8 @@ export default function Noise({
 
     let frame = 0
     let animationId
-    // Use patternSize as base resolution - smaller = chunkier grain, larger = finer
-    // Clamp to reasonable bounds
-    const baseSize = Math.max(64, Math.min(1024, patternSize))
-    const canvasSize = 1024 // keep internal resolution high, patternSize influences visual via scaling trick
+    // Keep the internal resolution high; patternSize influences the visual via the scaling trick
+    const canvasSize = 1024
     // Actually we use canvasSize for buffer, but patternSize affects pixel density via scaling
     const resize = () => {
       if (!canvas) return
