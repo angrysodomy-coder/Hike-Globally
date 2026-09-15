@@ -136,7 +136,6 @@ export default function Hero({ onFind }) {
 
       <form className="journey-finder shell" onSubmit={handleSubmit} aria-label="Find a trip">
         <div className="journey-finder__intro">
-          <span className="journey-finder__number">01</span>
           <span>Start your<br />journey</span>
         </div>
         <label className="finder-field">
