@@ -1345,7 +1345,7 @@ dd {
 }
 
 .trip-card--rail h3 {
-  font-size: clamp(15px, 1.25vw, 19px);
+  font-size: clamp(12.75px, 1.0625vw, 16.15px);
   line-height: 1.15;
   letter-spacing: -0.02em;
 }
@@ -3798,7 +3798,7 @@ dd {
   }
 
   .trip-card--rail h3 {
-    font-size: 15px;
+    font-size: 12.75px;
   }
 
   .trip-card__description {
