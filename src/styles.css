@@ -1892,7 +1892,7 @@ dd {
 
 .trek-story__content h3 {
   font-family: var(--display);
-  font-size: clamp(28px, 3vw, 44px);
+  font-size: clamp(23.8px, 2.55vw, 37.4px);
   font-weight: 400;
   letter-spacing: -0.03em;
   line-height: 0.96;
@@ -3894,7 +3894,7 @@ dd {
   }
 
   .trek-story__content h3 {
-    font-size: 32px;
+    font-size: 27.2px;
   }
 
   .trek-story__content > div > p {
