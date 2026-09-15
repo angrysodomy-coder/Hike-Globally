@@ -1,7 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
-import { ArrowRight, ArrowUpRight, Check, ChevronDown, Search, SlidersHorizontal, X } from 'lucide-react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronDown, Search, SlidersHorizontal, X } from 'lucide-react'
 import { trips } from '../data/content'
 import Reveal from './Reveal'
+
+const MOBILE_QUERY = '(max-width: 1023px)'
+const MOTION_QUERY = '(prefers-reduced-motion: reduce)'
+const PER_VIEW_DESKTOP = 4
 
 const defaultFilters = {
   query: '',
@@ -24,7 +28,7 @@ function monthToSeason(month = '') {
 
 function TripCard({ trip, index, onBook }) {
   return (
-    <Reveal as="article" className="trip-card" delay={(index % 2) * 90}>
+    <Reveal as="article" className="trip-card trip-card--rail" delay={(index % PER_VIEW_DESKTOP) * 80}>
       <div className="trip-card__image">
         <img
           src={trip.image}
@@ -68,11 +72,168 @@ function FilterSelect({ label, name, value, onChange, children }) {
   )
 }
 
+function TripsRail({ list, onBook }) {
+  const outerRef = useRef(null)
+  const viewportRef = useRef(null)
+  const trackRef = useRef(null)
+  const fillRef = useRef(null)
+  const frameRef = useRef(null)
+  const stateRef = useRef({ mode: 'rail', distance: 0, pages: 1 })
+
+  const [mode, setMode] = useState('rail')
+  const [pages, setPages] = useState(1)
+  const [activePage, setActivePage] = useState(0)
+
+  const update = useCallback(() => {
+    frameRef.current = null
+    const outer = outerRef.current
+    const viewport = viewportRef.current
+    const track = trackRef.current
+    if (!outer || !viewport || !track) return
+
+    const { mode: currentMode, distance, pages: pageTotal } = stateRef.current
+    let progress = 0
+
+    if (currentMode === 'pin') {
+      const total = outer.offsetHeight - window.innerHeight
+      const top = outer.getBoundingClientRect().top
+      progress = total > 0 ? Math.min(1, Math.max(0, -top / total)) : 0
+      track.style.transform = `translate3d(${(-progress * distance).toFixed(2)}px, 0, 0)`
+    } else {
+      const max = viewport.scrollWidth - viewport.clientWidth
+      progress = max > 0 ? Math.min(1, Math.max(0, viewport.scrollLeft / max)) : 0
+    }
+
+    if (fillRef.current) fillRef.current.style.transform = `scaleX(${progress})`
+
+    const centerX = window.innerWidth / 2
+    for (const card of track.children) {
+      const rect = card.getBoundingClientRect()
+      if (rect.right < -120 || rect.left > window.innerWidth + 120) continue
+      const t = Math.max(-1, Math.min(1, (rect.left + rect.width / 2 - centerX) / window.innerWidth))
+      card.style.setProperty('--img-x', `${(t * -24).toFixed(1)}px`)
+    }
+
+    const page = Math.round(progress * (pageTotal - 1))
+    setActivePage((previous) => (previous === page ? previous : page))
+  }, [])
+
+  const schedule = useCallback(() => {
+    if (!frameRef.current) frameRef.current = requestAnimationFrame(update)
+  }, [update])
+
+  const measure = useCallback(() => {
+    const outer = outerRef.current
+    const viewport = viewportRef.current
+    const track = trackRef.current
+    if (!outer || !viewport || !track) return
+
+    const isMobile = window.matchMedia(MOBILE_QUERY).matches
+    const reduced = window.matchMedia(MOTION_QUERY).matches
+    const distance = Math.max(0, track.scrollWidth - viewport.clientWidth)
+    const shouldPin = !isMobile && !reduced && distance > 8
+    const pageTotal = Math.max(1, Math.ceil(list.length / (isMobile ? 1 : PER_VIEW_DESKTOP)))
+
+    stateRef.current = { mode: shouldPin ? 'pin' : 'rail', distance, pages: pageTotal }
+    outer.classList.toggle('is-pin', shouldPin)
+    outer.classList.toggle('is-rail', !shouldPin)
+    outer.style.height = shouldPin ? `calc(100svh + ${Math.round(distance)}px)` : ''
+    if (!shouldPin) track.style.transform = ''
+    setMode(shouldPin ? 'pin' : 'rail')
+    setPages(pageTotal)
+    setActivePage((previous) => Math.min(previous, pageTotal - 1))
+    schedule()
+  }, [list.length, schedule])
+
+  useLayoutEffect(() => {
+    measure()
+    const track = trackRef.current
+    if (!track) return undefined
+    const observer = new ResizeObserver(() => measure())
+    observer.observe(track)
+    const mobileQuery = window.matchMedia(MOBILE_QUERY)
+    const motionQuery = window.matchMedia(MOTION_QUERY)
+    mobileQuery.addEventListener('change', measure)
+    motionQuery.addEventListener('change', measure)
+    window.addEventListener('resize', measure)
+    window.addEventListener('scroll', schedule, { passive: true })
+    return () => {
+      observer.disconnect()
+      mobileQuery.removeEventListener('change', measure)
+      motionQuery.removeEventListener('change', measure)
+      window.removeEventListener('resize', measure)
+      window.removeEventListener('scroll', schedule)
+      if (frameRef.current) cancelAnimationFrame(frameRef.current)
+    }
+  }, [measure, schedule])
+
+  const goToPage = (index) => {
+    const { mode: currentMode, pages: pageTotal } = stateRef.current
+    const clamped = Math.max(0, Math.min(pageTotal - 1, index))
+    const ratio = pageTotal > 1 ? clamped / (pageTotal - 1) : 0
+    if (currentMode === 'pin') {
+      const outer = outerRef.current
+      const total = outer.offsetHeight - window.innerHeight
+      const start = outer.getBoundingClientRect().top + window.scrollY
+      window.scrollTo({ top: start + ratio * total, behavior: 'smooth' })
+    } else {
+      const viewport = viewportRef.current
+      const max = viewport.scrollWidth - viewport.clientWidth
+      viewport.scrollTo({ left: ratio * max, behavior: 'smooth' })
+    }
+  }
+
+  return (
+    <div className="trips-scroll is-rail" ref={outerRef} data-mode={mode}>
+      <div className="trips-scroll__pin">
+        <div
+          className="trips-scroll__viewport"
+          ref={viewportRef}
+          onScroll={schedule}
+          tabIndex={0}
+          aria-label="Curated journeys, scrolls horizontally"
+        >
+          <div className="trips-scroll__track" ref={trackRef}>
+            {list.map((trip, index) => (
+              <TripCard key={trip.id} trip={trip} index={index} onBook={onBook} />
+            ))}
+          </div>
+        </div>
+
+        <div className="trips-scroll__bar shell">
+          <div className="trips-scroll__dots" role="group" aria-label="Journey sets">
+            {Array.from({ length: pages }, (_, index) => (
+              <button
+                key={index}
+                type="button"
+                className={index === activePage ? 'is-active' : ''}
+                onClick={() => goToPage(index)}
+                aria-label={`Go to journeys set ${index + 1} of ${pages}`}
+                aria-current={index === activePage}
+              />
+            ))}
+          </div>
+          <span className="trips-scroll__line" aria-hidden="true"><i ref={fillRef} /></span>
+          <p className="trips-scroll__hint">Scroll to explore</p>
+          <div className="trips-controls">
+            <span aria-live="polite"><strong>0{activePage + 1}</strong> / 0{pages}</span>
+            <button type="button" onClick={() => goToPage(activePage - 1)} disabled={activePage === 0} aria-label="Previous journeys">
+              <ArrowLeft size={19} />
+            </button>
+            <button type="button" onClick={() => goToPage(activePage + 1)} disabled={activePage === pages - 1} aria-label="Next journeys">
+              <ArrowRight size={19} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function TripsSection({ discovery, onBook }) {
   const [filters, setFilters] = useState(defaultFilters)
   const [sort, setSort] = useState('featured')
   const [advancedOpen, setAdvancedOpen] = useState(false)
-  const [showAll, setShowAll] = useState(false)
 
   useEffect(() => {
     if (!discovery?.key) return
@@ -82,7 +243,6 @@ export default function TripsSection({ discovery, onBook }) {
       type: ['Trek', 'Cultural'].includes(discovery.type) ? discovery.type : '',
       season: monthToSeason(discovery.when),
     })
-    setShowAll(true)
   }, [discovery])
 
   const filteredTrips = useMemo(() => {
@@ -112,18 +272,15 @@ export default function TripsSection({ discovery, onBook }) {
   }, [filters, sort])
 
   const hasFilters = Object.values(filters).some(Boolean)
-  const visibleTrips = showAll || hasFilters ? filteredTrips : filteredTrips.slice(0, 4)
 
   const updateFilter = (event) => {
     const { name, value } = event.target
     setFilters((current) => ({ ...current, [name]: value }))
-    setShowAll(true)
   }
 
   const clearFilters = () => {
     setFilters(defaultFilters)
     setSort('featured')
-    setShowAll(false)
   }
 
   return (
@@ -135,10 +292,7 @@ export default function TripsSection({ discovery, onBook }) {
             <h2 id="trips-title">Where will you<br /><em>go next?</em></h2>
           </Reveal>
           <Reveal className="section-intro__aside" delay={110}>
-            <p>From unforgettable mountain adventures to immersive cultural journeys, discover trips designed around the places worth experiencing.</p>
-            <button className="inline-link" type="button" onClick={() => setShowAll((value) => !value)}>
-              <span>{showAll ? 'Show selected journeys' : 'View all trips'}</span><ArrowUpRight size={17} aria-hidden="true" />
-            </button>
+            <p>From unforgettable mountain adventures to immersive cultural journeys, discover trips designed around the places worth experiencing. Scroll sideways through the collection.</p>
           </Reveal>
         </div>
 
@@ -235,30 +389,20 @@ export default function TripsSection({ discovery, onBook }) {
             <ChevronDown size={13} aria-hidden="true" />
           </label>
         </div>
+      </div>
 
-        {visibleTrips.length > 0 ? (
-          <div className="trip-grid">
-            {visibleTrips.map((trip, index) => (
-              <TripCard key={trip.id} trip={trip} index={index} onBook={onBook} />
-            ))}
-          </div>
-        ) : (
+      {filteredTrips.length > 0 ? (
+        <TripsRail list={filteredTrips} onBook={onBook} />
+      ) : (
+        <div className="shell">
           <div className="empty-trips">
             <p className="eyebrow">The trail continues</p>
             <h3>No exact match—yet.</h3>
             <p>Try widening your filters, or let our team craft the journey you have in mind.</p>
             <button className="button button--dark" type="button" onClick={clearFilters}>See all journeys <ArrowRight size={17} /></button>
           </div>
-        )}
-
-        {!showAll && !hasFilters && filteredTrips.length > 4 && (
-          <Reveal className="trips-section__more">
-            <button type="button" className="button button--outline" onClick={() => setShowAll(true)}>
-              Explore all {filteredTrips.length} journeys <ArrowRight size={17} aria-hidden="true" />
-            </button>
-          </Reveal>
-        )}
-      </div>
+        </div>
+      )}
     </section>
   )
 }
