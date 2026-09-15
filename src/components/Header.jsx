@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ArrowUpRight, Menu, X } from 'lucide-react'
 import { navigation } from '../data/content'
 import Logo from './Logo'
@@ -6,6 +6,8 @@ import Logo from './Logo'
 export default function Header({ onBook }) {
   const [scrolled, setScrolled] = useState(() => window.scrollY > 40)
   const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef(null)
+  const toggleRef = useRef(null)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -15,13 +17,43 @@ export default function Header({ onBook }) {
 
   useEffect(() => {
     document.body.classList.toggle('menu-is-open', menuOpen)
+    if (!menuOpen) return undefined
+
+    const previousFocus = document.activeElement
+    const focusFrame = requestAnimationFrame(() => {
+      menuRef.current?.querySelector('nav a')?.focus()
+    })
+
     const onKeyDown = (event) => {
-      if (event.key === 'Escape') setMenuOpen(false)
+      if (event.key === 'Escape') {
+        setMenuOpen(false)
+        return
+      }
+
+      if (event.key !== 'Tab') return
+      const panelItems = menuRef.current
+        ? [...menuRef.current.querySelectorAll('a[href], button:not([disabled])')]
+        : []
+      const focusable = [toggleRef.current, ...panelItems].filter(Boolean)
+      if (!focusable.length) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
     }
+
     window.addEventListener('keydown', onKeyDown)
     return () => {
+      cancelAnimationFrame(focusFrame)
       document.body.classList.remove('menu-is-open')
       window.removeEventListener('keydown', onKeyDown)
+      previousFocus?.focus?.()
     }
   }, [menuOpen])
 
@@ -49,6 +81,7 @@ export default function Header({ onBook }) {
             <ArrowUpRight size={16} aria-hidden="true" />
           </button>
           <button
+            ref={toggleRef}
             className="menu-toggle"
             type="button"
             aria-expanded={menuOpen}
@@ -61,7 +94,7 @@ export default function Header({ onBook }) {
         </div>
       </header>
 
-      <div id="mobile-navigation" className={`mobile-menu ${menuOpen ? 'mobile-menu--open' : ''}`} aria-hidden={!menuOpen}>
+      <div ref={menuRef} id="mobile-navigation" className={`mobile-menu ${menuOpen ? 'mobile-menu--open' : ''}`} aria-hidden={!menuOpen}>
         <div className="mobile-menu__visual" aria-hidden="true">
           <img src="/images/hero-himalaya-mobile.webp" alt="" />
           <p>Born in Nepal<br />Made for the world.</p>
