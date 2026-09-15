@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowDown, ArrowRight, CalendarDays, Compass, MapPin, Search } from 'lucide-react'
+import Noise from './Noise'
 
 const months = [
   'October 2026', 'November 2026', 'December 2026', 'January 2027',
@@ -8,10 +9,12 @@ const months = [
 
 export default function Hero({ onFind }) {
   const mediaRef = useRef(null)
+  const videoRef = useRef(null)
   const [finder, setFinder] = useState({ destination: '', when: '', type: '' })
 
   useEffect(() => {
     const media = mediaRef.current
+    const video = videoRef.current
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (!media || reducedMotion) return undefined
 
@@ -19,8 +22,12 @@ export default function Hero({ onFind }) {
     const update = () => {
       frame = null
       const y = Math.min(window.scrollY, window.innerHeight)
+      // Keep subtle parallax for video as well
       media.style.setProperty('--hero-shift', `${y * 0.12}px`)
       media.style.setProperty('--hero-scale', `${1.035 + y / 18000}`)
+      if (video) {
+        video.style.transform = `translate3d(0, ${y * 0.12}px, 0) scale(${1.035 + y / 18000})`
+      }
     }
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update)
@@ -30,6 +37,19 @@ export default function Hero({ onFind }) {
       window.removeEventListener('scroll', onScroll)
       if (frame) cancelAnimationFrame(frame)
     }
+  }, [])
+
+  // Ensure video plays (autoplay policies)
+  useEffect(() => {
+    const v = videoRef.current
+    if (!v) return
+    const tryPlay = () => {
+      v.play().catch(() => {})
+    }
+    tryPlay()
+    // retry on visibility
+    document.addEventListener('visibilitychange', tryPlay)
+    return () => document.removeEventListener('visibilitychange', tryPlay)
   }, [])
 
   const updateFinder = (event) => {
@@ -44,18 +64,51 @@ export default function Hero({ onFind }) {
   }
 
   return (
-    <section id="home" className="hero" aria-labelledby="hero-title">
+    <section id="home" className="hero hero--video hero--left-bottom" aria-labelledby="hero-title">
       <div className="hero__media" ref={mediaRef}>
-        <picture>
-          <source media="(max-width: 767px)" srcSet="/images/hero-himalaya-mobile.webp" />
-          <img
-            src="/images/hero-himalaya.webp"
-            alt="Trekkers following a high trail toward a vast wall of Himalayan peaks"
-            fetchPriority="high"
-          />
-        </picture>
+        {/* Video Background */}
+        <video
+          ref={videoRef}
+          className="hero__video"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          poster="/images/hero-himalaya.webp"
+          aria-hidden="true"
+          // Provide multiple sources for resilience
+        >
+          {/* Primary requested URL */}
+          <source src="https://www.pexels.com/download/video/29633606/" type="video/mp4" />
+          {/* Fallback CDN mirrors that commonly host pexels 29633606 - hiking aerial */}
+          <source src="https://videos.pexels.com/video-files/29633606/12727782_1920_1080_30fps.mp4" type="video/mp4" />
+          <source src="https://www.pexels.com/video/29633606/download/" type="video/mp4" />
+        </video>
+        {/* Fallback image if video fails */}
+        <img
+          className="hero__fallback"
+          src="/images/hero-himalaya.webp"
+          alt=""
+          aria-hidden="true"
+        />
       </div>
+
+      {/* Gradient wash for readability */}
       <div className="hero__wash" aria-hidden="true" />
+
+      {/* Noise Grain Effect - ReactBits style, placed behind content but above video/wash */}
+      <Noise
+        patternSize={160}
+        patternScaleX={1.4}
+        patternScaleY={0.8}
+        patternRefreshInterval={2}
+        patternAlpha={22}
+        style={{ zIndex: 2 }}
+      />
+
+      {/* Optional secondary vignette to help left-bottom legibility */}
+      <div className="hero__vignette" aria-hidden="true" />
 
       <div className="hero__coordinate" aria-hidden="true">
         <span>27.9881° N</span>
@@ -63,9 +116,10 @@ export default function Hero({ onFind }) {
         <span>86.9250° E</span>
       </div>
 
-      <div className="hero__content shell">
+      {/* Content aligned left bottom, front layer */}
+      <div className="hero__content shell hero__content--front">
         <p className="hero__eyebrow"><span /> EXPLORE <b>•</b> EXPERIENCE <b>•</b> DISCOVER</p>
-        <h1 id="hero-title">
+        <h1 id="hero-title" className="hero__heading hero__heading--cal">
           <span className="hero__line"><i>The world is waiting.</i></span>
           <span className="hero__line hero__line--italic"><i>Go find your story.</i></span>
         </h1>
