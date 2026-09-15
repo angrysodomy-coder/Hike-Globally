@@ -968,6 +968,10 @@ dd {
   margin-bottom: clamp(65px, 7vw, 105px);
 }
 
+.section-intro.section-intro--trips {
+  margin-bottom: clamp(28px, 3vw, 44px);
+}
+
 .section-intro h2,
 .treks-section h2,
 .reviews-summary h2 {
@@ -1238,7 +1242,7 @@ dd {
 /* ---------- Trips rail (horizontal scroll) ---------- */
 .trips-scroll {
   position: relative;
-  margin-top: clamp(18px, 2vw, 32px);
+  margin-top: clamp(6px, 1vw, 14px);
 }
 
 .trips-scroll__pin {
