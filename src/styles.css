@@ -1341,7 +1341,7 @@ dd {
 }
 
 .trip-card--rail h3 {
-  font-size: clamp(24px, 2vw, 31px);
+  font-size: clamp(19px, 1.55vw, 24px);
 }
 
 .trip-card--rail .trip-card__description {
@@ -1349,7 +1349,8 @@ dd {
   max-width: none;
   margin-top: 9px;
   overflow: hidden;
-  font-size: 12px;
+  color: #000;
+  font-size: 13px;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
