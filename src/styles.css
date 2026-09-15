@@ -1350,7 +1350,7 @@ dd {
    later generic rule used to win and the popular trek card titles rendered at
    34-47px, which is why earlier size tweaks had no visible effect. */
 .trip-card.trip-card--rail h3 {
-  font-size: clamp(28.9px, 2.55vw, 39.95px);
+  font-size: clamp(24.565px, 2.1675vw, 33.9575px);
 }
 
 .trip-card--rail .trip-card__description {
@@ -3801,7 +3801,7 @@ dd {
   }
 
   .trip-card.trip-card--rail h3 {
-    font-size: 12.75px;
+    font-size: 10.8375px;
   }
 
   .trip-card__description {

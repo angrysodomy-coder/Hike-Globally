@@ -4,7 +4,8 @@
  * specificity, and the generic rule sits later in styles.css, so it used to win and
  * the rail card titles rendered at 34-47px no matter what the rail rule said.
  * This check fails if the rail heading rule stops winning, or if its rendered size
- * is not 85% (-15%) of the generic trip-card heading at each viewport.
+ * is not 72.25% (two 15% reductions, i.e. -27.75%) of the generic trip-card
+ * heading at each viewport.
  */
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -111,8 +112,9 @@ const check = (label, actual, expected) => {
   console.log(`${ok ? 'PASS' : 'FAIL'} ${label}${ok ? '' : ` (got ${JSON.stringify(actual)})`}`)
 }
 
-/* Phones (<=620px) already had a compact rail heading before this change, so the
- * 15% reduction only has to hold on the breakpoints where the generic rule used to win. */
+/* Phones (<=620px) use a separate compact rail heading (10.8375px after two 15%
+ * reductions), so the size ratio only has to hold on the breakpoints where the
+ * generic rule used to win. */
 for (const width of [1920, 1440, 1024, 900, 700]) {
   const heading = winner(width)
   const railValue = heading?.decls.find((decl) => decl.prop === 'font-size')?.value
@@ -122,7 +124,7 @@ for (const width of [1920, 1440, 1024, 900, 700]) {
 
   const label = `@${width}px`
   check(`${label} rail heading rule wins over .trip-card h3`, heading?.part ?? '(none)', (part) => /\.trip-card--rail/.test(String(part)))
-  check(`${label} rail heading is 15% smaller than before`, Number((genericPx - railPx).toFixed(3)), Number((genericPx * 0.15).toFixed(3)))
+  check(`${label} rail heading is 27.75% smaller than before`, Number(railPx.toFixed(3)), Number((genericPx * 0.7225).toFixed(3)))
 }
 
 const mobile = winner(500)
