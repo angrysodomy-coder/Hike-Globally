@@ -1344,10 +1344,13 @@ dd {
   padding: 17px 22px 24px;
 }
 
-.trip-card--rail h3 {
-  font-size: clamp(12.75px, 1.0625vw, 16.15px);
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+/* Popular Treks rail cards.
+   This selector must stay more specific than the generic `.trip-card h3` rule
+   further down the file: both match this heading with equal specificity, so the
+   later generic rule used to win and the popular trek card titles rendered at
+   34-47px, which is why earlier size tweaks had no visible effect. */
+.trip-card.trip-card--rail h3 {
+  font-size: clamp(28.9px, 2.55vw, 39.95px);
 }
 
 .trip-card--rail .trip-card__description {
@@ -3797,7 +3800,7 @@ dd {
     font-size: 28px;
   }
 
-  .trip-card--rail h3 {
+  .trip-card.trip-card--rail h3 {
     font-size: 12.75px;
   }
 
