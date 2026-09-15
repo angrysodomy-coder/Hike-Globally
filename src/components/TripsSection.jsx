@@ -5,7 +5,9 @@ import Reveal from './Reveal'
 
 const MOBILE_QUERY = '(max-width: 1023px)'
 const MOTION_QUERY = '(prefers-reduced-motion: reduce)'
-const PER_VIEW_DESKTOP = 4
+/* Cards visible side by side on desktop. Must match the `--rail-card-w`
+   formula in src/styles.css: (shell - (PER_VIEW_DESKTOP - 1) * gap) / PER_VIEW_DESKTOP. */
+export const PER_VIEW_DESKTOP = 3
 
 function TripCard({ trip, index, onBook }) {
   return (

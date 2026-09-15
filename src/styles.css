@@ -6,7 +6,10 @@
   --white: #ffffff;
   --card-surface: #f6f8f5;
   --rail-gap: clamp(18px, 2.2vw, 30px);
-  --rail-card-w: calc((var(--shell) - 3 * var(--rail-gap)) / 4);
+  /* Three Popular Treks cards fill the shell exactly (3 cards + 2 gaps).
+     Keep the divisor and the gap count in sync with PER_VIEW_DESKTOP in
+     src/components/TripsSection.jsx — scripts/smoke-trips.mjs guards this. */
+  --rail-card-w: calc((var(--shell) - 2 * var(--rail-gap)) / 3);
   --ink: #1d3557;
   --ink-soft: #457b9d;
   --forest: #1d3557;
