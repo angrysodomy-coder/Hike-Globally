@@ -22,6 +22,11 @@
   --line-light: rgba(241, 250, 238, 0.28);
   --display: 'Cal Sans', 'DM Sans', Arial, sans-serif;
   --sans: 'DM Sans', Arial, sans-serif;
+  /* Editorial serif used for the italic second line of the hero title */
+  --serif: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+  /* Hero title sizing is authored at its original clamp values and scaled
+     here so the whole title (both lines, all breakpoints) stays in sync. */
+  --hero-title-scale: 0.85;
   --header-height: 88px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --shell: min(1440px, calc(100vw - 96px));
@@ -726,7 +731,7 @@ dd {
 .hero h1 {
   max-width: 1000px;
   font-family: var(--display);
-  font-size: clamp(69px, 7.4vw, 124px);
+  font-size: calc(clamp(69px, 7.4vw, 124px) * var(--hero-title-scale));
   font-weight: 400;
   letter-spacing: -0.045em;
   line-height: 0.78;
@@ -759,8 +764,13 @@ dd {
   font-style: normal !important;
 }
 
+/* Second line of the hero title: Instrument Serif italic, 15% smaller than
+   before (the --hero-title-scale on the heading covers the shrink for both
+   lines). `!important` is needed because .hero__heading--cal .hero__line i
+   above forces the display sans + normal style on every line. */
 .hero__heading--cal .hero__line--italic i {
-  font-style: normal !important;
+  font-family: var(--serif) !important;
+  font-style: italic !important;
   font-weight: 400 !important;
   letter-spacing: 0 !important;
 }
@@ -854,25 +864,11 @@ dd {
   font-family: var(--sans);
   display: flex;
   align-items: center;
-  gap: 12px;
   padding: 20px;
   border-right: 1px solid var(--line);
   color: var(--forest);
   font-size: 16px;
   line-height: 1.02;
-}
-
-.journey-finder__number {
-  display: grid;
-  width: 30px;
-  height: 30px;
-  flex: none;
-  place-items: center;
-  border: 1px solid var(--forest);
-  border-radius: 50%;
-  font-family: var(--sans);
-  font-size: 9px;
-  font-style: normal;
 }
 
 .finder-field {
@@ -3264,7 +3260,7 @@ dd {
   }
 
   .hero h1 {
-    font-size: clamp(70px, 9.7vw, 102px);
+    font-size: calc(clamp(70px, 9.7vw, 102px) * var(--hero-title-scale));
   }
 
   .journey-finder {
@@ -3340,7 +3336,7 @@ dd {
   }
 
   .hero h1 {
-    font-size: clamp(61px, 10.8vw, 84px);
+    font-size: calc(clamp(61px, 10.8vw, 84px) * var(--hero-title-scale));
   }
 
   .journey-finder {
@@ -3600,7 +3596,7 @@ dd {
 
   .hero h1 {
     max-width: 520px;
-    font-size: clamp(51px, 15vw, 72px);
+    font-size: calc(clamp(51px, 15vw, 72px) * var(--hero-title-scale));
     line-height: 0.83;
   }
 
@@ -4202,7 +4198,7 @@ dd {
   }
 
   .hero__heading--cal {
-    font-size: clamp(46px, 13vw, 62px) !important;
+    font-size: calc(clamp(46px, 13vw, 62px) * var(--hero-title-scale)) !important;
     line-height: 0.92 !important;
     letter-spacing: 0 !important;
   }
@@ -4220,11 +4216,11 @@ dd {
 
 @media (max-width: 380px) {
   .hero h1 {
-    font-size: 48px;
+    font-size: calc(48px * var(--hero-title-scale));
   }
 
   .hero__heading--cal {
-    font-size: 42px !important;
+    font-size: calc(42px * var(--hero-title-scale)) !important;
   }
 
   .hero__ctas .button {
