@@ -1,0 +1,139 @@
+import { useEffect, useRef, useState } from 'react'
+import { ArrowDown, ArrowRight, CalendarDays, Compass, MapPin, Search } from 'lucide-react'
+
+const months = [
+  'October 2026', 'November 2026', 'December 2026', 'January 2027',
+  'February 2027', 'March 2027', 'April 2027', 'May 2027', 'September 2027', 'October 2027',
+]
+
+export default function Hero({ onFind }) {
+  const mediaRef = useRef(null)
+  const [finder, setFinder] = useState({ destination: '', when: '', type: '' })
+
+  useEffect(() => {
+    const media = mediaRef.current
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (!media || reducedMotion) return undefined
+
+    let frame = null
+    const update = () => {
+      frame = null
+      const y = Math.min(window.scrollY, window.innerHeight)
+      media.style.setProperty('--hero-shift', `${y * 0.12}px`)
+      media.style.setProperty('--hero-scale', `${1.035 + y / 18000}`)
+    }
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      if (frame) cancelAnimationFrame(frame)
+    }
+  }, [])
+
+  const updateFinder = (event) => {
+    const { name, value } = event.target
+    setFinder((current) => ({ ...current, [name]: value }))
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    onFind(finder)
+    document.querySelector('#trips')?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  return (
+    <section id="home" className="hero" aria-labelledby="hero-title">
+      <div className="hero__media" ref={mediaRef}>
+        <picture>
+          <source media="(max-width: 767px)" srcSet="/images/hero-himalaya-mobile.webp" />
+          <img
+            src="/images/hero-himalaya.webp"
+            alt="Trekkers following a high trail toward a vast wall of Himalayan peaks"
+            fetchPriority="high"
+          />
+        </picture>
+      </div>
+      <div className="hero__wash" aria-hidden="true" />
+
+      <div className="hero__coordinate" aria-hidden="true">
+        <span>27.9881° N</span>
+        <i />
+        <span>86.9250° E</span>
+      </div>
+
+      <div className="hero__content shell">
+        <p className="hero__eyebrow"><span /> EXPLORE <b>•</b> EXPERIENCE <b>•</b> DISCOVER</p>
+        <h1 id="hero-title">
+          <span className="hero__line"><i>The world is waiting.</i></span>
+          <span className="hero__line hero__line--italic"><i>Go find your story.</i></span>
+        </h1>
+        <p className="hero__copy">Thoughtfully crafted journeys, unforgettable landscapes, and local stories for travellers who choose to go beyond.</p>
+        <div className="hero__ctas">
+          <a className="button button--light" href="#trips">
+            <span>Explore trips</span><ArrowRight size={17} aria-hidden="true" />
+          </a>
+          <a className="button button--ghost" href="#treks">
+            <span>Discover destinations</span><ArrowRight size={17} aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+
+      <form className="journey-finder shell" onSubmit={handleSubmit} aria-label="Find a trip">
+        <div className="journey-finder__intro">
+          <span className="journey-finder__number">01</span>
+          <span>Start your<br />journey</span>
+        </div>
+        <label className="finder-field">
+          <MapPin size={18} aria-hidden="true" />
+          <span>
+            <small>Where do you want to go?</small>
+            <select name="destination" value={finder.destination} onChange={updateFinder} aria-label="Destination">
+              <option value="">Anywhere in the Himalayas</option>
+              <option value="Everest">Everest region</option>
+              <option value="Annapurna">Annapurna region</option>
+              <option value="Manaslu">Manaslu region</option>
+              <option value="Mustang">Upper Mustang</option>
+              <option value="Langtang">Langtang Valley</option>
+              <option value="Kathmandu">Kathmandu Valley</option>
+            </select>
+          </span>
+        </label>
+        <label className="finder-field">
+          <CalendarDays size={18} aria-hidden="true" />
+          <span>
+            <small>When?</small>
+            <select name="when" value={finder.when} onChange={updateFinder} aria-label="Travel month">
+              <option value="">Choose your month</option>
+              {months.map((month) => <option key={month} value={month}>{month}</option>)}
+            </select>
+          </span>
+        </label>
+        <label className="finder-field">
+          <Compass size={18} aria-hidden="true" />
+          <span>
+            <small>What are you looking for?</small>
+            <select name="type" value={finder.type} onChange={updateFinder} aria-label="Experience type">
+              <option value="">Any kind of adventure</option>
+              <option value="Trek">Trekking</option>
+              <option value="Cultural">Culture & discovery</option>
+              <option value="Adventure">Active adventure</option>
+              <option value="Expedition">Expedition</option>
+            </select>
+          </span>
+        </label>
+        <button className="finder-submit" type="submit">
+          <Search size={18} aria-hidden="true" />
+          <span>Find your trip</span>
+          <ArrowRight size={18} aria-hidden="true" />
+        </button>
+      </form>
+
+      <a className="hero__scroll" href="#trips" aria-label="Scroll to curated journeys">
+        <span>Scroll to explore</span>
+        <ArrowDown size={15} aria-hidden="true" />
+      </a>
+    </section>
+  )
+}
