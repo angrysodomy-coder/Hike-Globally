@@ -725,6 +725,17 @@ dd {
   letter-spacing: 0 !important;
   line-height: 0.92 !important;
   max-width: 1100px;
+  text-align: left !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+.hero__heading--cal .hero__line,
+.hero__heading--cal .hero__line--italic {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+  text-align: left !important;
+  text-indent: 0 !important;
 }
 
 .hero__heading--cal .hero__line i {
@@ -754,7 +765,10 @@ dd {
 }
 
 .hero__line--italic {
-  padding-left: clamp(28px, 6vw, 95px);
+  padding-left: 0;
+  margin-left: 0;
+  text-align: left;
+  text-indent: 0;
 }
 
 .hero__line--italic i {
