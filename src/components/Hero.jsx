@@ -44,7 +44,8 @@ export default function Hero({ onFind }) {
     const v = videoRef.current
     if (!v) return
     const tryPlay = () => {
-      v.play().catch(() => {})
+      const attempt = v.play()
+      if (attempt && typeof attempt.catch === 'function') attempt.catch(() => {})
     }
     tryPlay()
     // retry on visibility

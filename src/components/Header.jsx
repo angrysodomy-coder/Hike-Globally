@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { ArrowUpRight, Menu, X } from 'lucide-react'
 import { navigation } from '../data/content'
 import Logo from './Logo'
+import { Link, useRouter } from '../lib/router'
 
 export default function Header({ onBook }) {
+  const { path } = useRouter()
   const [scrolled, setScrolled] = useState(() => window.scrollY > 40)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef(null)
@@ -65,13 +67,20 @@ export default function Header({ onBook }) {
   return (
     <>
       <header className={`site-header ${scrolled || menuOpen ? 'site-header--solid' : ''} ${menuOpen ? 'site-header--menu-open' : ''}`}>
-        <a className="site-header__logo" href="#home" aria-label="Hike Globally home" onClick={() => setMenuOpen(false)}>
+        <Link className="site-header__logo" href="/" aria-label="Hike Globally home" onClick={() => setMenuOpen(false)}>
           <Logo light={!scrolled && !menuOpen} />
-        </a>
+        </Link>
 
         <nav className="desktop-nav" aria-label="Primary navigation">
           {navigation.map((item) => (
-            <a key={item.label} href={item.href}>{item.label}</a>
+            <Link
+              key={item.label}
+              href={item.href}
+              className={item.href === path ? 'is-active' : ''}
+              aria-current={item.href === path ? 'page' : undefined}
+            >
+              {item.label}
+            </Link>
           ))}
         </nav>
 
@@ -103,7 +112,7 @@ export default function Header({ onBook }) {
           <span className="mobile-menu__eyebrow">Explore Hike Globally</span>
           <nav aria-label="Mobile navigation">
             {navigation.map((item, index) => (
-              <a
+              <Link
                 key={item.label}
                 href={item.href}
                 tabIndex={menuOpen ? 0 : -1}
@@ -113,7 +122,7 @@ export default function Header({ onBook }) {
                 <span>0{index + 1}</span>
                 {item.label}
                 <ArrowUpRight size={21} aria-hidden="true" />
-              </a>
+              </Link>
             ))}
           </nav>
           <div className="mobile-menu__foot">

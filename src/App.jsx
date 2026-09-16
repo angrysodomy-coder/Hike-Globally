@@ -1,18 +1,18 @@
-import { useCallback, useEffect, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import Header from './components/Header'
-import Hero from './components/Hero'
-import DestinationsSection from './components/DestinationsSection'
-import TripsSection from './components/TripsSection'
-import TreksSection from './components/TreksSection'
-import JournalSection from './components/JournalSection'
-import ReviewsSection from './components/ReviewsSection'
 import Footer from './components/Footer'
 import BookingDrawer from './components/BookingDrawer'
 import StoryDrawer from './components/StoryDrawer'
 import SummerFamilyTreksBlog from './components/SummerFamilyTreksBlog'
+import HomePage from './pages/HomePage'
+import { useRouter } from './lib/router'
+
+/* The destinations page pulls in framer-motion + GSAP; load it only when visited. */
+const DestinationsPage = lazy(() => import('./pages/DestinationsPage'))
 
 export default function App() {
+  const { path } = useRouter()
   const [discovery, setDiscovery] = useState(null)
   const [bookingTrip, setBookingTrip] = useState(null)
   const [bookingOpen, setBookingOpen] = useState(false)
@@ -66,14 +66,15 @@ export default function App() {
   return (
     <div className="site-wrap">
       <Header onBook={openBooking} />
-      <main id="main-content">
-        <Hero onFind={findTrips} />
-        <DestinationsSection />
-        <TripsSection discovery={discovery} onBook={openBooking} />
-        <TreksSection onBook={openBooking} />
-        <JournalSection onRead={handleRead} />
-        <ReviewsSection />
-      </main>
+
+      {path === '/destinations'
+        ? (
+          <Suspense fallback={null}>
+            <DestinationsPage onBook={openBooking} />
+          </Suspense>
+        )
+        : <HomePage discovery={discovery} onFind={findTrips} onRead={handleRead} onBook={openBooking} />}
+
       <Footer onBook={openBooking} />
 
       <button
