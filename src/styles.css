@@ -98,6 +98,7 @@ img {
 :where(h1, h2, h3) {
   font-family: var(--display);
   font-weight: 400;
+  letter-spacing: 0;
 }
 
 :where(h1, h2, h3) em {
@@ -733,7 +734,7 @@ dd {
   font-family: var(--display);
   font-size: calc(clamp(69px, 7.4vw, 124px) * var(--hero-title-scale));
   font-weight: 400;
-  letter-spacing: -0.045em;
+  letter-spacing: 0;
   line-height: 0.78;
 }
 
@@ -977,7 +978,7 @@ dd {
   font-family: var(--display);
   font-size: clamp(62px, 6.6vw, 105px);
   font-weight: 400;
-  letter-spacing: -0.045em;
+  letter-spacing: 0;
   line-height: 0.82;
 }
 
@@ -1006,7 +1007,7 @@ dd {
 /* ---------- Destinations (bento grid) ---------- */
 .destinations-section {
   position: relative;
-  background: var(--ivory);
+  background: #FFFFFF;
 }
 
 .section-intro--destinations {
@@ -1193,7 +1194,7 @@ dd {
   font-family: var(--display);
   font-size: clamp(18px, 1.32vw, 22px);
   font-weight: 400;
-  letter-spacing: -0.015em;
+  letter-spacing: 0;
   line-height: 1.08;
 }
 
@@ -1207,7 +1208,7 @@ dd {
   font-size: 1.06em;
   font-style: italic;
   font-weight: 400;
-  letter-spacing: 0.005em;
+  letter-spacing: 0;
 }
 
 .destination-card__text {
@@ -1917,7 +1918,7 @@ dd {
   font-family: var(--display);
   font-size: clamp(34px, 3vw, 47px);
   font-weight: 500;
-  letter-spacing: -0.035em;
+  letter-spacing: 0;
   line-height: 0.98;
 }
 
@@ -2192,7 +2193,7 @@ dd {
   font-family: var(--display);
   font-size: clamp(23.8px, 2.55vw, 37.4px);
   font-weight: 400;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   line-height: 0.96;
 }
 
@@ -2403,7 +2404,7 @@ dd {
   font-family: var(--display);
   font-size: clamp(47px, 4.9vw, 76px);
   font-weight: 400;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
   line-height: 0.92;
 }
 
@@ -2522,7 +2523,7 @@ dd {
   font-family: var(--display);
   font-size: clamp(31px, 2.7vw, 42px);
   font-weight: 500;
-  letter-spacing: -0.035em;
+  letter-spacing: 0;
   line-height: 1;
 }
 
@@ -2842,7 +2843,7 @@ dd {
   font-family: var(--display);
   font-size: clamp(45px, 4.6vw, 67px);
   font-weight: 400;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
   line-height: 0.9;
 }
 
@@ -3122,7 +3123,7 @@ dd {
   font-family: var(--display);
   font-size: clamp(47px, 6vw, 65px);
   font-weight: 400;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
   line-height: 0.95;
 }
 
@@ -3384,7 +3385,7 @@ dd {
   font-family: var(--display);
   font-size: clamp(49px, 7vw, 77px);
   font-weight: 400;
-  letter-spacing: -0.045em;
+  letter-spacing: 0;
   line-height: 0.92;
 }
 
