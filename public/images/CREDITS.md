@@ -15,3 +15,8 @@ Photography in this demonstration is sourced from Unsplash. Original source page
 - [Kathmandu prayer flags — FC4peE9e7i0](https://unsplash.com/photos/colorful-prayer-flags-strung-around-a-stupa-FC4peE9e7i0)
 - [Buddhist monk — _djrBJcwqck](https://unsplash.com/photos/buddhist-monk-standing-behind-brown-wooden-cabinet-_djrBJcwqck)
 - [Mustang cliff temples — SOOQC6gdNv8](https://unsplash.com/photos/ancient-temples-built-into-a-steep-mountainside-SOOQC6gdNv8)
+
+Region images used by the “Choose Your Destination” bento section (`region-far-west.webp`,
+`region-mid-west.webp`, `region-western.webp`, `region-central.webp`, `region-eastern.webp`)
+are AI-generated placeholders created for this demonstration; they are not photographs and
+carry no third-party attribution.
