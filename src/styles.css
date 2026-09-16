@@ -1308,17 +1308,8 @@ dd {
 /* ---------- Trips ---------- */
 .trips-section {
   position: relative;
-  background: var(--paper);
-}
-
-.trips-section::before {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 1px;
-  height: 52px;
-  background: var(--line);
-  content: '';
+  background: var(--ivory);
+  padding-top: clamp(64px, 6vw, 104px);
 }
 
 .trip-filters {
@@ -1613,7 +1604,7 @@ dd {
   border: 1px solid rgba(29, 53, 87, 0.1);
   border-radius: 3px;
   overflow: hidden;
-  background: var(--card-surface);
+  background: var(--white);
   box-shadow: 0 14px 30px rgba(29, 53, 87, 0.045);
   scroll-snap-align: start;
 }
@@ -1686,7 +1677,6 @@ dd {
   grid-row: auto;
   justify-self: start;
   margin-top: auto;
-  padding-top: 15px;
 }
 
 .trips-scroll__bar {
@@ -1982,14 +1972,21 @@ dd {
   align-self: end;
   align-items: center;
   gap: 13px;
-  padding: 7px 0;
-  border-bottom: 1px solid var(--ink);
+  padding: 12px 18px;
+  border: 1px solid var(--ink);
+  border-radius: 3px;
   background: transparent;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.08em;
   white-space: nowrap;
   text-transform: uppercase;
+  transition: background 0.35s var(--ease-out), color 0.35s var(--ease-out);
+}
+
+.trip-card__link:hover {
+  background: var(--ink);
+  color: var(--white);
 }
 
 .empty-trips {
