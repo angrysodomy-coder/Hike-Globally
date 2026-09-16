@@ -989,6 +989,17 @@ dd {
   font-weight: 400;
 }
 
+/* “Destination” / “taking.” — editorial Instrument Serif italic accents.
+   Scoped by id so the other section titles keep the display sans. */
+#destinations-title em,
+#treks-title em {
+  font-family: var(--serif);
+  font-size: 1.05em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
 .section-intro__aside {
   display: grid;
   justify-items: start;
@@ -2041,7 +2052,7 @@ dd {
   grid-template-columns: minmax(0, 1fr) 430px;
   align-items: end;
   gap: 80px;
-  margin-bottom: 70px;
+  margin-bottom: 52px;
 }
 
 .treks-section h2 em {
@@ -2112,10 +2123,27 @@ dd {
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .trek-rail::-webkit-scrollbar {
   display: none;
+}
+
+/* While mouse-dragging: neutral grab cursor, no snap fighting the pointer,
+   and instant (non-smooth) scrolling that tracks the cursor 1:1. */
+.trek-rail.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+  scroll-snap-type: none;
+}
+
+.trek-rail img {
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .trek-rail__spacer {
@@ -2125,9 +2153,10 @@ dd {
 
 .trek-story {
   position: relative;
-  width: min(76vw, 1080px);
-  height: clamp(550px, 51vw, 690px);
-  min-height: 550px;
+  /* Compact cards: the section heading, arrows and rail fit one viewport. */
+  width: min(58vw, 800px);
+  height: clamp(420px, 36vw, 530px);
+  min-height: 420px;
   flex: 0 0 auto;
   overflow: hidden;
   background: var(--forest);
@@ -2161,7 +2190,7 @@ dd {
   right: 22px;
   color: rgba(255, 255, 255, 0.2);
   font-family: var(--display);
-  font-size: clamp(90px, 12vw, 170px);
+  font-size: clamp(80px, 9vw, 138px);
   font-weight: 400;
   line-height: 1;
 }
@@ -2182,13 +2211,13 @@ dd {
 
 .trek-story__content {
   position: absolute;
-  right: 34px;
-  bottom: 32px;
-  left: 34px;
+  right: 30px;
+  bottom: 28px;
+  left: 30px;
   display: grid;
-  grid-template-columns: minmax(300px, 1.4fr) minmax(290px, 1fr) auto;
+  grid-template-columns: minmax(260px, 1.4fr) minmax(240px, 1fr) auto;
   align-items: end;
-  gap: 34px;
+  gap: 28px;
 }
 
 .trek-story__content h3 {
@@ -2261,10 +2290,10 @@ dd {
 
 .trek-rail__end {
   display: grid;
-  width: min(440px, 70vw);
+  width: min(360px, 70vw);
   flex: 0 0 auto;
   place-content: center;
-  padding: 40px 60px 40px 38px;
+  padding: 40px 48px 40px 34px;
   background: var(--ivory);
   color: var(--ink);
   scroll-snap-align: end;
@@ -2272,7 +2301,7 @@ dd {
 
 .trek-rail__end > span {
   font-family: var(--display);
-  font-size: 40px;
+  font-size: 34px;
   line-height: 1;
 }
 
@@ -2294,7 +2323,7 @@ dd {
   display: flex;
   align-items: center;
   gap: 25px;
-  margin-top: 31px;
+  margin-top: 24px;
 }
 
 .trek-progress > span {
@@ -3603,8 +3632,8 @@ dd {
   }
 
   .trek-story {
-    width: 84vw;
-    height: 620px;
+    width: 76vw;
+    height: 520px;
   }
 
   .trek-story__content {
@@ -4149,7 +4178,7 @@ dd {
   }
 
   .treks-section__top {
-    margin-bottom: 50px;
+    margin-bottom: 36px;
   }
 
   .treks-section__aside {
@@ -4178,8 +4207,8 @@ dd {
 
   .trek-story {
     width: calc(100vw - 44px);
-    height: 640px;
-    min-height: 640px;
+    height: 560px;
+    min-height: 560px;
   }
 
   .trek-story__number {
@@ -4538,8 +4567,8 @@ dd {
   }
 
   .trek-story {
-    height: 615px;
-    min-height: 615px;
+    height: 540px;
+    min-height: 540px;
   }
 
   /* Keep the watermark wordmark inside very narrow phones. */

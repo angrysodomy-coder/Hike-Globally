@@ -6,7 +6,9 @@ import Reveal from './Reveal'
 export default function TreksSection({ onBook }) {
   const railRef = useRef(null)
   const frameRef = useRef(null)
+  const dragRef = useRef({ active: false, captured: false, pointerId: null, startX: 0, startScroll: 0, distance: 0 })
   const [active, setActive] = useState(0)
+  const [dragging, setDragging] = useState(false)
 
   const updateActive = () => {
     frameRef.current = null
@@ -38,6 +40,79 @@ export default function TreksSection({ onBook }) {
     setActive(next)
   }
 
+  /* Mouse drag-to-scroll for the rail. Touch keeps its native behaviour.
+     Pointer capture engages only past the movement threshold so plain clicks
+     on the card CTAs are never retargeted to the rail. */
+  const handlePointerDown = (event) => {
+    if (event.pointerType !== 'mouse' || event.button !== 0) return
+    const rail = railRef.current
+    if (!rail) return
+    dragRef.current = {
+      active: true,
+      captured: false,
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startScroll: rail.scrollLeft,
+      distance: 0,
+    }
+  }
+
+  const handlePointerMove = (event) => {
+    const drag = dragRef.current
+    if (!drag.active) return
+    const rail = railRef.current
+    if (!rail) return
+    const dx = event.clientX - drag.startX
+    drag.distance = Math.max(drag.distance, Math.abs(dx))
+    if (drag.distance > 6) {
+      if (!drag.captured) {
+        drag.captured = true
+        setDragging(true)
+        try {
+          rail.setPointerCapture(drag.pointerId)
+        } catch {
+          /* Pointer capture is best-effort; dragging still works without it. */
+        }
+      }
+      rail.scrollLeft = drag.startScroll - dx
+    }
+  }
+
+  const endPointerDrag = () => {
+    const drag = dragRef.current
+    if (!drag.active) return
+    drag.active = false
+    if (drag.captured) {
+      drag.captured = false
+      setDragging(false)
+      const rail = railRef.current
+      if (rail && drag.pointerId !== null) {
+        try {
+          if (rail.hasPointerCapture?.(drag.pointerId)) rail.releasePointerCapture(drag.pointerId)
+        } catch {
+          /* Nothing to release — safe to ignore. */
+        }
+      }
+    }
+    /* Keep the travelled distance briefly so the follow-up click (if any) can
+       be suppressed; a real click resets it synchronously below. */
+    if (drag.distance <= 6) {
+      drag.distance = 0
+    } else {
+      window.setTimeout(() => {
+        dragRef.current.distance = 0
+      }, 150)
+    }
+  }
+
+  const handleClickCapture = (event) => {
+    if (dragRef.current.distance > 6) {
+      event.preventDefault()
+      event.stopPropagation()
+      dragRef.current.distance = 0
+    }
+  }
+
   return (
     <section id="treks" className="treks-section section-pad" aria-labelledby="treks-title">
       <div className="treks-section__top shell">
@@ -56,9 +131,16 @@ export default function TreksSection({ onBook }) {
       </div>
 
       <div
-        className="trek-rail"
+        className={`trek-rail${dragging ? ' is-dragging' : ''}`}
         ref={railRef}
         onScroll={handleScroll}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={endPointerDrag}
+        onPointerCancel={endPointerDrag}
+        onPointerLeave={endPointerDrag}
+        onClickCapture={handleClickCapture}
+        onDragStart={(event) => event.preventDefault()}
         aria-label="Popular trek stories"
         tabIndex="0"
       >
@@ -70,6 +152,7 @@ export default function TreksSection({ onBook }) {
               alt={trek.alt}
               loading="lazy"
               decoding="async"
+              draggable={false}
               style={{ objectPosition: trek.imagePosition }}
             />
             <div className="trek-story__shade" aria-hidden="true" />
