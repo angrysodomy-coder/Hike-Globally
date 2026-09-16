@@ -5931,6 +5931,7 @@ video {
 
 /* ---------- Article typography (markdown output) ---------- */
 .blog-article {
+  --blog-heading-gap: clamp(30px, 3.5vw, 36px);
   max-width: 760px;
 }
 
@@ -5940,6 +5941,7 @@ video {
 
 .blog-article h2 {
   margin-top: 62px;
+  margin-bottom: var(--blog-heading-gap);
   padding-top: 26px;
   border-top: 1px solid var(--line);
   font-family: var(--display);
@@ -5961,7 +5963,8 @@ video {
 }
 
 .blog-article h3 {
-  margin-top: 40px;
+  margin-top: clamp(44px, 5vw, 52px);
+  margin-bottom: var(--blog-heading-gap);
   font-family: var(--sans);
   font-size: 19px;
   font-weight: 700;
@@ -5971,6 +5974,12 @@ video {
 
 .blog-article h3 strong {
   font-weight: 700;
+}
+
+/* Uniform gap between any heading and the content (or subheading) directly following it */
+.blog-article > h2 + *,
+.blog-article > h3 + * {
+  margin-top: var(--blog-heading-gap);
 }
 
 .blog-article p {
