@@ -6,3 +6,4 @@ scripts/.smoke-bundle.cjs
 .env
 .env.*
 !.env.example
+scripts/.blog-content-bundle.cjs
