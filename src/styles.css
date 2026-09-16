@@ -989,10 +989,11 @@ dd {
   font-weight: 400;
 }
 
-/* “Destination” / “taking.” — editorial Instrument Serif italic accents.
+/* “Destination” / “taking.” / “road.” — editorial Instrument Serif italic accents.
    Scoped by id so the other section titles keep the display sans. */
 #destinations-title em,
-#treks-title em {
+#treks-title em,
+#journal-title em {
   font-family: var(--serif);
   font-size: 1.05em;
   font-style: italic;
@@ -2356,6 +2357,11 @@ dd {
 
 .section-intro--journal h2 em {
   color: var(--clay);
+  font-family: var(--serif);
+  font-size: 1.05em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
 }
 
 .featured-story {
@@ -2433,7 +2439,7 @@ dd {
 .featured-story h3 {
   margin-top: auto;
   font-family: var(--display);
-  font-size: clamp(47px, 4.9vw, 76px);
+  font-size: clamp(37.6px, 3.92vw, 60.8px);
   font-weight: 400;
   letter-spacing: 0;
   line-height: 0.92;
@@ -2488,6 +2494,7 @@ dd {
   display: flex;
   min-width: 0;
   flex-direction: column;
+  height: 100%;
 }
 
 .story-card__image {
@@ -2497,10 +2504,6 @@ dd {
   overflow: hidden;
   padding: 0;
   background: var(--sand);
-}
-
-.story-card:nth-child(2) .story-card__image {
-  aspect-ratio: 1.05;
 }
 
 .story-card__image::after {
@@ -2552,7 +2555,7 @@ dd {
 .story-card h3 {
   margin-top: 13px;
   font-family: var(--display);
-  font-size: clamp(31px, 2.7vw, 42px);
+  font-size: clamp(26.35px, 2.295vw, 35.7px);
   font-weight: 500;
   letter-spacing: 0;
   line-height: 1;
@@ -4278,7 +4281,7 @@ dd {
   }
 
   .featured-story h3 {
-    font-size: 47px;
+    font-size: 37.6px;
   }
 
   .featured-story__foot {
@@ -4310,7 +4313,7 @@ dd {
   }
 
   .story-card h3 {
-    font-size: 36px;
+    font-size: 30.6px;
   }
 
   .reviews-summary {

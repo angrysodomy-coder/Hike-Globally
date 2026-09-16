@@ -11,7 +11,7 @@ export default function JournalSection({ onRead }) {
         <div className="section-intro section-intro--journal">
           <Reveal>
             <p className="eyebrow"><span>03</span> The journal</p>
-            <h2 id="journal-title">Stories from<br /><em>the road.</em></h2>
+            <h2 id="journal-title">Stories from<br />the <em>road.</em></h2>
           </Reveal>
           <Reveal className="section-intro__aside" delay={100}>
             <p>Field notes, practical guides and honest stories to help you travel more deeply.</p>
