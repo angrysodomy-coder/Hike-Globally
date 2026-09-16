@@ -80,10 +80,10 @@ export default function Hero({ onFind }) {
           // Provide multiple sources for resilience
         >
           {/* Primary requested URL */}
-          <source src="https://www.pexels.com/download/video/29633606/" type="video/mp4" />
+          <source src="https://www.pexels.com/download/video/29633606/" type="video/mp4" media="(min-width: 621px) and (prefers-reduced-motion: no-preference)" />
           {/* Fallback CDN mirrors that commonly host pexels 29633606 - hiking aerial */}
-          <source src="https://videos.pexels.com/video-files/29633606/12727782_1920_1080_30fps.mp4" type="video/mp4" />
-          <source src="https://www.pexels.com/video/29633606/download/" type="video/mp4" />
+          <source src="https://videos.pexels.com/video-files/29633606/12727782_1920_1080_30fps.mp4" type="video/mp4" media="(min-width: 621px) and (prefers-reduced-motion: no-preference)" />
+          <source src="https://www.pexels.com/video/29633606/download/" type="video/mp4" media="(min-width: 621px) and (prefers-reduced-motion: no-preference)" />
         </video>
         {/* Fallback image if video fails */}
         <img
