@@ -13,6 +13,13 @@ export function useReveal(options = {}) {
       return undefined
     }
 
+    /* Never leave content hidden: if IntersectionObserver is unavailable the
+       element must simply render visible instead of staying at opacity 0. */
+    if (typeof window.IntersectionObserver !== 'function') {
+      node.classList.add('is-visible')
+      return undefined
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
