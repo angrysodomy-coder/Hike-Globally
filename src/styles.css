@@ -1671,6 +1671,14 @@ dd {
 
 .trip-card--rail .trip-card__meta {
   margin-top: 15px;
+  /* Guaranteed clearance under the meta row, so the "View this trip" CTA can
+     never sit flush against it. The CTA is bottom-anchored with
+     `margin-top: auto` (below), and an auto margin only absorbs *free* space —
+     on the tallest card in the rail there is none, so the button used to butt
+     straight up against the Duration/Difficulty/From row. Flex margins do not
+     collapse, so this bottom margin is the floor and the auto margin adds any
+     leftover space on top of it. scripts/check-rail-cta-gap.mjs guards it. */
+  margin-bottom: clamp(18px, 2.2vw, 26px);
 }
 
 .trip-card--rail .trip-card__meta > span {
@@ -1688,6 +1696,9 @@ dd {
   grid-column: 1;
   grid-row: auto;
   justify-self: start;
+  /* Bottom-anchors the CTA inside the card body. On its own this collapses to
+     0px when the body is full, which is why the meta row above carries a
+     `margin-bottom` floor — keep the two together. */
   margin-top: auto;
 }
 

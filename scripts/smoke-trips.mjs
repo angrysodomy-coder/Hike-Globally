@@ -183,6 +183,27 @@ dots()[desktopPages - 1].click()
 await sleep(40)
 check('dot navigation scrolls to end', scrollCalls[0]?.top, DISTANCE)
 
+/* The rail CTA is bottom-anchored with `margin-top: auto`, which collapses to
+ * 0px whenever the card body is full — that used to leave the button flush
+ * against the Duration/Difficulty/From row. The meta row now carries a
+ * `margin-bottom` floor instead. Checked here against the real stylesheet
+ * applied to the real card markup; scripts/check-rail-cta-gap.mjs guards the
+ * same floor at every breakpoint. */
+{
+  const style = document.createElement('style')
+  style.textContent = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '../src/styles.css'), 'utf8')
+  document.head.append(style)
+
+  const cta = cards[0].querySelector('.trip-card__link')
+  const meta = cta?.previousElementSibling
+  const clearance = Number.parseFloat(window.getComputedStyle(meta).marginBottom)
+
+  check('rail card renders a CTA', Boolean(cta), true)
+  check('rail CTA sits directly after the meta row', meta?.classList.contains('trip-card__meta'), true)
+  check('rail CTA stays bottom-anchored', window.getComputedStyle(cta).marginTop, 'auto')
+  check(`rail meta row computes ${clearance}px of clearance under the meta text`, Number.isFinite(clearance) && clearance >= 16, true)
+}
+
 /* ---- Phase 1b: CSS rail width keeps `PER_VIEW_DESKTOP` cards on screen ---- */
 {
   const css = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '../src/styles.css'), 'utf8')
