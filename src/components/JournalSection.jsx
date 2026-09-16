@@ -25,7 +25,7 @@ export default function JournalSection({ onRead }) {
           <button type="button" className="featured-story__image" onClick={() => onRead(featured)} aria-label={`Read ${featured.title}`}>
             <img src={featured.image} alt={featured.alt} loading="lazy" decoding="async" />
             <span>{featured.premium ? 'Premium Guide · Featured' : 'Field notes · 001'}</span>
-            {featured.premium && <span className="premium-badge"><Star size={12} /> Premium Interactive Guide</span>}
+            {featured.premium && <span className="premium-badge"><Star size={12} /> Premium Guide</span>}
           </button>
           <div className="featured-story__content">
             <div className="story-kicker">
@@ -34,12 +34,13 @@ export default function JournalSection({ onRead }) {
             </div>
             <h3>{featured.title}</h3>
             <p>{featured.excerpt}</p>
+            {/* Chips name real sections of the article — nothing it doesn't have. */}
             {featured.premium && (
               <div className="premium-features">
-                <span>✓ Interactive comparison</span>
-                <span>✓ Budget calculator</span>
-                <span>✓ Packing checklist</span>
-                <span>✓ 6 custom visuals</span>
+                <span>✓ Quick comparison table</span>
+                <span>✓ Budget breakdown</span>
+                <span>✓ Essential packing list</span>
+                <span>✓ FAQ</span>
               </div>
             )}
             <div className="featured-story__foot">

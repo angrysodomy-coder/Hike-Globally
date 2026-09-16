@@ -296,13 +296,16 @@ export const articles = [
     id: 'best-summer-treks-family-nepal-beginners',
     category: 'Family Guides',
     title: 'Best Summer Treks For Family in Nepal For Beginners',
-    excerpt: 'Five beginner-friendly summer routes tested for families with kids aged 6 to 16 — from 2-day Dhampus strolls to 9-day Langtang adventures. Interactive guide with budget calculator, packing checklist & altitude visualizer.',
+    /* Teaser copy is quoted from “Best Summer Treks For Family in Nepal For
+       Beginners.md” — the article opens with these exact paragraphs. */
+    excerpt: 'Nepal will offer several beginner-friendly summer treks that families can complete safely with proper pacing and preparation. The best options will combine lower altitude, reliable accommodation, manageable walking hours, and strong cultural experiences.',
     body: [
       'Nepal will offer several beginner-friendly summer treks that families can complete safely with proper pacing and preparation. The best options will combine lower altitude, reliable accommodation, manageable walking hours, and strong cultural experiences.',
-      'This premium interactive guide helps beginner families choose realistic routes based on altitude, comfort, safety, budget, and children’s fitness levels — with custom visuals, interactive tools, and local expert insights.',
+      'Families traveling during summer (June to August) will need to prepare for monsoon rain, slippery trails, leeches in forest sections, and occasional flight delays. However, summer will also bring greener landscapes, fewer crowds, cleaner mountain air after rainfall, and quieter trails.',
+      'This guide will help beginner families choose realistic trekking routes based on altitude, comfort, safety, budget, and children’s fitness levels.',
     ],
     date: 'September 16, 2026',
-    readTime: '18 min read',
+    readTime: '10 min read',
     image: '/images/blog-family-summer-hero.jpg',
     alt: 'Happy family trekking in Nepal during summer monsoon season with lush green Himalayan backdrop',
     featured: true,
