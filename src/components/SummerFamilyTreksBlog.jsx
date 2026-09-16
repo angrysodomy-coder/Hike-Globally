@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import {
   X, ArrowRight, Clock, Mountain, Users, Calendar, Shield,
-  MapPin, Thermometer, Droplets, Sun, AlertTriangle, Check,
-  Heart, Backpack, Utensils, Footprints, ChevronDown, Star,
-  Eye, Wind, Camera, Home, ArrowUpRight, Play, Info, Plus, Minus,
-  Navigation, Compass, Award, Layers, CloudRain, Trees, Tent
+  MapPin, Check,
+  Star, ArrowUpRight, Info, Plus, Minus,
 } from 'lucide-react'
 import Reveal from './Reveal'
 
@@ -15,7 +13,6 @@ const treksData = [
     title: 'Ghorepani Poon Hill Trek',
     subtitle: 'Best Overall Beginner Family Trek',
     badge: 'Most Popular for Families',
-    badgeColor: '#E63946',
     maxAltitude: 3210,
     duration: '4–6 days',
     difficulty: 'Easy',
@@ -32,8 +29,6 @@ const treksData = [
     },
     challenges: 'Ulleri staircase — thousands of steep stone steps, slippery in monsoon. Use trekking poles, start early, carry rain covers.',
     summerMagic: 'Lush green hills and dramatic cloud movement around Annapurna and Dhaulagiri after rainfall.',
-    color: '#1D3557',
-    accent: '#E63946'
   },
   {
     id: 'langtang',
@@ -41,7 +36,6 @@ const treksData = [
     title: 'Langtang Valley Trek',
     subtitle: 'Best for Longer Family Adventure',
     badge: 'Immersive Himalayan Experience',
-    badgeColor: '#457B9D',
     maxAltitude: 3870,
     duration: '7–9 days',
     difficulty: 'Moderate',
@@ -58,8 +52,6 @@ const treksData = [
     },
     challenges: 'Rough road to Syabrubesi (motion sickness). Cold nights at Kyanjin Gompa even in summer — pack thermal layers.',
     summerMagic: 'Forests intensely green, waterfalls full, fewer crowds than autumn.',
-    color: '#2A4A3A',
-    accent: '#457B9D'
   },
   {
     id: 'mardi',
@@ -67,7 +59,6 @@ const treksData = [
     title: 'Mardi Himal Trek',
     subtitle: 'Best Scenic Ridge Trek',
     badge: 'Photographer\'s Dream',
-    badgeColor: '#A8DADC',
     maxAltitude: 3580,
     duration: '5–7 days',
     difficulty: 'Easy-Moderate',
@@ -84,8 +75,6 @@ const treksData = [
     },
     challenges: 'Simpler accommodation — shared toilets, limited hot water. Leeches in lower forest during monsoon — wear long socks.',
     summerMagic: 'Dramatic mountain views between rain showers, moss-covered trails mystical.',
-    color: '#1D3557',
-    accent: '#E63946'
   },
   {
     id: 'australian',
@@ -93,7 +82,6 @@ const treksData = [
     title: 'Australian Camp & Dhampus',
     subtitle: 'Best Short Trek for Young Children',
     badge: 'Perfect for Ages 6+',
-    badgeColor: '#F1FAEE',
     maxAltitude: 2100,
     duration: '2–3 days',
     difficulty: 'Very Easy',
@@ -110,8 +98,6 @@ const treksData = [
     },
     challenges: 'Still need rain protection — summer storms arrive suddenly. Guesthouses simple despite popularity.',
     summerMagic: 'Quick escape with maximum mountain views, minimal commitment.',
-    color: '#457B9D',
-    accent: '#1D3557'
   },
   {
     id: 'helambu',
@@ -119,7 +105,6 @@ const treksData = [
     title: 'Helambu Trek',
     subtitle: 'Best Quiet Cultural Trek Near Kathmandu',
     badge: 'Off the Beaten Path',
-    badgeColor: '#E63946',
     maxAltitude: 3650,
     duration: '5–8 days',
     difficulty: 'Easy-Moderate',
@@ -136,8 +121,6 @@ const treksData = [
     },
     challenges: 'Monsoon can damage trails/roads near Kathmandu — keep flexible schedule. Varying accommodation quality.',
     summerMagic: 'Misty forests and greener hillsides, quieter than Annapurna.',
-    color: '#1D3557',
-    accent: '#A8DADC'
   }
 ]
 
@@ -260,15 +243,14 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
         </div>
       </header>
 
-      {/* HERO */}
+      {/* HERO - FIXED: standard centered layout */}
       <section className="blog-hero">
         <div className="blog-hero__media">
           <img src="/images/blog-family-summer-hero.jpg" alt="Family trekking in Nepal summer" />
           <div className="blog-hero__wash" />
-          <div className="blog-hero__vignette" />
         </div>
         
-        <div className="blog-hero__content shell">
+        <div className="blog-hero__content">
           <Reveal>
             <div className="blog-hero__breadcrumb">
               <span>Journal</span><i /><span>Family Guides</span><i /><span>Summer 2026</span>
@@ -296,22 +278,17 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
             <div className="blog-hero__author">
               <img src="/images/journal-porters.webp" alt="" />
               <div>
-                <strong>Written by Nima Sherpa & Emma Collins</strong>
+                <strong>Written by Kishor & Reecha</strong>
                 <span>Local guide + Family travel specialist · 12 years leading family treks</span>
               </div>
               <div className="blog-hero__author-badge"><Star size={12} /> Expert Verified</div>
             </div>
           </Reveal>
         </div>
-
-        <div className="blog-hero__scroll">
-          <span>Scroll to explore</span>
-          <i />
-        </div>
       </section>
 
       {/* LAYOUT */}
-      <div className="blog-layout shell">
+      <div className="blog-layout">
         {/* TOC */}
         <aside className="blog-toc">
           <div className="blog-toc__inner">
@@ -346,16 +323,14 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
             <p className="lead">Nepal in summer will surprise you. Yes, there will be rain. But there will also be emerald hills, dramatic cloud theatre around Annapurna, quieter teahouses, and a sense of having the Himalaya almost to yourself.</p>
             
             <div className="blog-highlight">
-              <div className="blog-highlight__icon"><CloudRain size={20} /></div>
               <div>
                 <h4>Monsoon Reality Check for Families</h4>
-                <p>Summer brings slippery trails, leeches in forest sections, and occasional flight delays. But with proper pacing, waterproof gear, and flexible planning — it becomes your advantage. Trails will be 60% less crowded than October.</p>
+                <p>Summer brings slippery trails, leeches in forest sections, and occasional flight delays. But with proper pacing, waterproof gear, and flexible planning — it becomes your advantage. Trails will be 60% less crowded than October. Nepal will offer several beginner-friendly summer treks that families can complete safely with proper pacing and preparation.</p>
               </div>
             </div>
 
             <div className="blog-grid-2">
-              <div className="blog-card blog-card--dark">
-                <Trees size={22} />
+              <div className="blog-card">
                 <h4>Why Summer Wins for Families</h4>
                 <ul>
                   <li><Check size={14} /> Lush green landscapes after rainfall</li>
@@ -365,8 +340,7 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
                   <li><Check size={14} /> Waterfalls at full power</li>
                 </ul>
               </div>
-              <div className="blog-card blog-card--light">
-                <AlertTriangle size={22} />
+              <div className="blog-card">
                 <h4>What to Prepare For</h4>
                 <ul>
                   <li>Rain covers & quick-dry clothing essential</li>
@@ -387,15 +361,14 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
 
             <div className="blog-icon-grid">
               {[
-                { icon: Home, title: 'Teahouses Everywhere', desc: 'No camping needed. Warm lodges with meals every few hours.' },
-                { icon: Users, title: 'Guides & Porters', desc: 'Licensed, experienced, child-friendly. Handle logistics.' },
-                { icon: Clock, title: 'Flexible Durations', desc: 'From 2-day Dhampus to 9-day Langtang. Pick your pace.' },
-                { icon: Heart, title: 'Culture Without Climbing', desc: 'Villages, monasteries, farm life — no ropes needed.' },
-                { icon: Shield, title: 'Lower Costs', desc: 'Family of 4 can trek for less than 1 week in Alps.' },
-                { icon: Eye, title: 'Safety Net', desc: 'Trails busy enough you never feel isolated.' }
+                { title: 'Teahouses Everywhere', desc: 'No camping needed. Warm lodges with meals every few hours.' },
+                { title: 'Guides & Porters', desc: 'Licensed, experienced, child-friendly. Handle logistics.' },
+                { title: 'Flexible Durations', desc: 'From 2-day Dhampus to 9-day Langtang. Pick your pace.' },
+                { title: 'Culture Without Climbing', desc: 'Villages, monasteries, farm life — no ropes needed.' },
+                { title: 'Lower Costs', desc: 'Family of 4 can trek for less than 1 week in Alps.' },
+                { title: 'Safety Net', desc: 'Trails busy enough you never feel isolated.' }
               ].map((item, i) => (
                 <div key={i} className="blog-icon-card">
-                  <item.icon size={20} />
                   <h4>{item.title}</h4>
                   <p>{item.desc}</p>
                 </div>
@@ -404,18 +377,19 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
 
             <div className="blog-concern">
               <h4>Biggest Concerns for Beginner Families — Solved</h4>
+              <p style={{marginBottom:'12px', fontSize:'16px'}}>For beginners with children, the biggest concerns will usually include altitude sickness, toilet hygiene, food safety, trail difficulty, weather unpredictability, fear of isolation and medical access during emergencies. The treks below will minimize those risks compared to high-altitude routes like Everest Base Camp or Annapurna Circuit.</p>
               <div className="blog-concern__grid">
                 {[
                   'Altitude sickness', 'Toilet hygiene', 'Food safety', 'Trail difficulty', 'Weather unpredictability', 'Fear of isolation', 'Medical access'
                 ].map(c => (
-                  <span key={c}><Check size={12} /> {c} — minimized on routes below</span>
+                  <span key={c}>{c} — minimized on routes below</span>
                 ))}
               </div>
             </div>
           </Reveal>
 
           {/* COMPARISON TABLE */}
-          <Reveal as="section" id="comparison" className="blog-section blog-section--wide">
+          <Reveal as="section" id="comparison" className="blog-section">
             <p className="eyebrow"><span>02</span> Quick comparison</p>
             <div className="blog-section__head">
               <h2>Find your perfect <em>family match.</em></h2>
@@ -448,11 +422,11 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
                     <tr key={t.id} className={selectedTrek === t.id ? 'is-selected' : ''} onClick={() => setSelectedTrek(t.id)}>
                       <td>
                         <strong>{t.title}</strong>
-                        <span style={{ background: t.badgeColor }}>{t.badge}</span>
+                        <span className="trek-badge">{t.badge}</span>
                       </td>
                       <td><span className="alt-badge">{t.maxAltitude} m</span></td>
                       <td>{t.duration}</td>
-                      <td><span className={`diff diff--${t.difficulty.toLowerCase().replace(/[^a-z]/g, '')}`}>{t.difficulty}</span></td>
+                      <td><span className="diff">{t.difficulty}</span></td>
                       <td>{t.bestFor}</td>
                       <td>{t.accommodation}</td>
                     </tr>
@@ -462,12 +436,12 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
             </div>
 
             <div className="blog-altitude-viz">
-              <h4><Mountain size={16} /> Altitude Safety Visualizer</h4>
+              <h4>Altitude Safety Visualizer</h4>
               <p>Stay below 3,500m for young children, below 4,000m for teens. All 5 treks are in the safe zone.</p>
               <div className="alt-bar">
                 {treksData.map(t => (
                   <div key={t.id} className="alt-bar__item" style={{ left: `${(t.maxAltitude / 4000) * 100}%` }}>
-                    <div className="alt-bar__dot" style={{ background: t.accent }} />
+                    <div className="alt-bar__dot" />
                     <span>{t.title.split(' ')[0]} {t.maxAltitude}m</span>
                   </div>
                 ))}
@@ -490,16 +464,16 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
               <div className="blog-choose-card">
                 <div className="blog-choose-card__num">01</div>
                 <h4>Choose Lower Altitudes First</h4>
-                <p>Altitude sickness affects beginners unpredictably. Ideal first-trek altitudes:</p>
+                <p>Altitude sickness will affect beginners unpredictably. Families should ideally stay below 4,000 meters during their first Nepal trek.</p>
                 <div className="blog-choose-card__stats">
-                  <span><strong>Under 3,500m</strong> for young children</span>
-                  <span><strong>Under 4,000m</strong> for healthy teens & adults</span>
+                  <span><strong>Under 3,500 m</strong> for young children</span>
+                  <span><strong>Under 4,000 m</strong> for healthy teenagers and adults</span>
                 </div>
               </div>
               <div className="blog-choose-card">
                 <div className="blog-choose-card__num">02</div>
                 <h4>Prioritize Short Walking Days</h4>
-                <p>Steep stone staircases exhaust beginners faster than expected.</p>
+                <p>Many families overestimate children’s endurance. In Nepal, steep stone staircases will exhaust beginners faster than expected.</p>
                 <div className="blog-choose-card__stats">
                   <span><strong>3–5 hours</strong> for children under 12</span>
                   <span><strong>5–6 hours</strong> for teenagers</span>
@@ -508,12 +482,12 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
               <div className="blog-choose-card">
                 <div className="blog-choose-card__num">03</div>
                 <h4>Avoid Overpacked Itineraries</h4>
-                <p>Most common mistake: trying to see everything too quickly. Fatigue reduces enjoyment and increases injury risk. Build in rest.</p>
+                <p>The most common mistake beginners make will involve trying to “see everything” too quickly. Fatigue will reduce enjoyment and increase injury risk.</p>
               </div>
               <div className="blog-choose-card blog-choose-card--accent">
                 <div className="blog-choose-card__num">04</div>
                 <h4>Hire a Licensed Guide</h4>
-                <p>A guide will help navigate monsoon trail changes, monitor altitude, arrange safer food & accommodation, handle transport disruptions.</p>
+                <p>A guide will help families navigate trail changes during monsoon, monitor altitude symptoms, arrange safer food and accommodation, handle transport disruptions.</p>
                 <button onClick={onBook}>Find family guide <ArrowRight size={14} /></button>
               </div>
             </div>
@@ -524,12 +498,12 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
             <p className="eyebrow"><span>04</span> The 5 Best Summer Family Treks</p>
             <h2>From 2-day strolls to <em>9-day adventures.</em></h2>
             
-            {treksData.map((trek, idx) => (
+            {treksData.map((trek) => (
               <Reveal key={trek.id} className="trek-detail" id={`trek-${trek.id}`}>
                 <div className="trek-detail__header">
                   <div className="trek-detail__number">{trek.number}</div>
                   <div>
-                    <span className="trek-detail__badge" style={{ background: trek.badgeColor, color: trek.badgeColor === '#F1FAEE' ? '#1D3557' : '#fff' }}>{trek.badge}</span>
+                    <span className="trek-detail__badge">{trek.badge}</span>
                     <h3>{trek.title}</h3>
                     <p>{trek.subtitle}</p>
                   </div>
@@ -546,15 +520,14 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
 
                 <div className="trek-detail__overview">
                   {[
-                    { label: 'Duration', value: trek.duration, icon: Calendar },
-                    { label: 'Max Altitude', value: `${trek.maxAltitude} m`, icon: Mountain },
-                    { label: 'Daily Walk', value: trek.dailyWalk, icon: Footprints },
-                    { label: 'Difficulty', value: trek.difficulty, icon: Layers },
-                    { label: 'Best For', value: trek.bestFor, icon: Users },
-                    { label: 'Stay', value: trek.accommodation, icon: Tent }
+                    { label: 'Duration', value: trek.duration },
+                    { label: 'Max Altitude', value: `${trek.maxAltitude} m` },
+                    { label: 'Daily Walk', value: trek.dailyWalk },
+                    { label: 'Difficulty', value: trek.difficulty },
+                    { label: 'Best For', value: trek.bestFor },
+                    { label: 'Stay', value: trek.accommodation }
                   ].map(stat => (
                     <div key={stat.label} className="trek-stat">
-                      <stat.icon size={14} />
                       <small>{stat.label}</small>
                       <strong>{stat.value}</strong>
                     </div>
@@ -563,20 +536,19 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
 
                 <div className="trek-detail__body">
                   <div className="trek-detail__col">
-                    <h4><Star size={16} /> What Families Will Experience</h4>
+                    <h4>What Families Will Experience</h4>
                     <div className="trek-exp">
                       <div>
                         <strong>Children will love:</strong>
-                        <ul>{trek.experiences.kids.map(i => <li key={i}><Check size={12} />{i}</li>)}</ul>
+                        <ul>{trek.experiences.kids.map(i => <li key={i}>{i}</li>)}</ul>
                       </div>
                       <div>
                         <strong>Adults will value:</strong>
-                        <ul>{trek.experiences.adults.map(i => <li key={i}><Check size={12} />{i}</li>)}</ul>
+                        <ul>{trek.experiences.adults.map(i => <li key={i}>{i}</li>)}</ul>
                       </div>
                     </div>
                     
                     <div className="trek-magic">
-                      <Sun size={16} />
                       <div>
                         <strong>Summer Magic</strong>
                         <p>{trek.summerMagic}</p>
@@ -586,7 +558,6 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
 
                   <div className="trek-detail__col">
                     <div className="trek-challenge">
-                      <AlertTriangle size={18} />
                       <div>
                         <strong>Important Reality</strong>
                         <p>{trek.challenges}</p>
@@ -597,7 +568,7 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
                       <h5>Trail Highlights</h5>
                       <div className="trek-highlights__grid">
                         {trek.highlights.map(h => (
-                          <span key={h}><Camera size={12} />{h}</span>
+                          <span key={h}>{h}</span>
                         ))}
                       </div>
                     </div>
@@ -617,34 +588,31 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
             <h2>Eat like a local, <em>stay healthy.</em></h2>
             
             <div className="blog-grid-2">
-              <div className="blog-card blog-card--success">
-                <Utensils size={20} />
+              <div className="blog-card">
                 <h4>Safest Foods to Eat</h4>
                 <ul>
                   {['Dal bhat (lentils & rice)', 'Fried rice & vegetable noodles', 'Boiled potatoes & omelets', 'Freshly cooked soups', 'Garlic soup (altitude help)'].map(f => (
-                    <li key={f}><Check size={14} />{f}</li>
+                    <li key={f}>{f}</li>
                   ))}
                 </ul>
               </div>
-              <div className="blog-card blog-card--danger">
-                <AlertTriangle size={20} />
+              <div className="blog-card">
                 <h4>Foods to Avoid</h4>
                 <ul>
                   {['Raw salads & unpeeled fruit', 'Undercooked meat', 'Unfiltered tap water', 'Ice in drinks', 'Street food in cities'].map(f => (
-                    <li key={f}><X size={12} />{f}</li>
+                    <li key={f}>{f}</li>
                   ))}
                 </ul>
               </div>
             </div>
 
             <div className="blog-water">
-              <Droplets size={24} />
               <div>
                 <h4>Water Safety — Non-Negotiable</h4>
-                <p>Never drink untreated tap water. Best options: water purification tablets, UV purifiers like SteriPEN, filter bottles (LifeStraw), or boiled water from lodges. Carry 2 bottles per person.</p>
+                <p>Families should never drink untreated tap water. Best options: water purification tablets, UV purifiers like SteriPEN, filter bottles (LifeStraw), or boiled water from lodges. Carry 2 bottles per person. This guide will help beginner families choose realistic trekking routes based on altitude, comfort, safety, budget, and children’s fitness levels.</p>
                 <div className="blog-water__options">
                   {['Purification tablets', 'UV purifier', 'Filter bottle', 'Boiled water'].map(o => (
-                    <span key={o}><Check size={12} />{o}</span>
+                    <span key={o}>{o}</span>
                   ))}
                 </div>
               </div>
@@ -658,8 +626,8 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
             
             <div className="blog-altitude-grid">
               <div className="blog-alt-card">
-                <Thermometer size={20} />
                 <h4>Early Symptoms — Watch Closely</h4>
+                <p>Watch for headache, nausea, loss of appetite, dizziness, unusual fatigue. Altitude sickness will affect beginners unpredictably.</p>
                 <ul>
                   {['Headache that won\'t go away', 'Nausea & loss of appetite', 'Dizziness & unusual fatigue', 'Poor sleep & irritability', 'Reduced walking pace'].map(s => (
                     <li key={s}>{s}</li>
@@ -667,12 +635,11 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
                 </ul>
               </div>
               <div className="blog-alt-card blog-alt-card--alert">
-                <Heart size={20} />
                 <h4>Important Family Rule</h4>
                 <p><strong>Children may hide symptoms because they fear ending the trek early.</strong></p>
                 <p>Parents should monitor mood changes, reduced energy, appetite loss, walking pace. If symptoms worsen — descend immediately. No summit is worth risk.</p>
                 <div className="blog-alt-card__action">
-                  <Shield size={14} /> Descend 300-500m at first serious symptom
+                  Descend 300-500m at first serious symptom
                 </div>
               </div>
             </div>
@@ -703,7 +670,7 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
             </div>
 
             <div className="blog-calc">
-              <h4><Award size={18} /> Family Budget Calculator</h4>
+              <h4>Family Budget Calculator</h4>
               <p>For {budgetPeople} people × {budgetDays} days — estimated total (excluding flights):</p>
               <div className="blog-calc__grid">
                 <div><small>Guide</small><strong>${totalBudget.guide.toFixed(0)}</strong></div>
@@ -725,7 +692,7 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
             <div className="blog-packing-intro">
               <img src="/images/blog-family-gear.jpg" alt="Family trekking gear flat lay" />
               <div>
-                <p>Summer family trekking needs less than you think — but the right items matter. Quick-dry, waterproof, layers. Everything else you can buy in Pokhara or Kathmandu.</p>
+                <p>Summer family trekking needs less than you think — but the right items matter. Quick-dry, waterproof, layers. Everything else you can buy in Pokhara or Kathmandu. Essential packing list includes waterproof jacket, fleece layer, quick-dry shirts, trekking pants, warm hat, hiking socks, personal medications, oral rehydration salts, water purification tablets, sunscreen, insect repellent, trekking poles, headlamp, rain cover, reusable water bottles and small backpack.</p>
                 <div className="blog-packing-progress">
                   <span>{Object.values(checkedItems).filter(Boolean).length} / {packingItems.flatMap(c => c.items).length} packed</span>
                   <div className="bar"><i style={{ width: `${(Object.values(checkedItems).filter(Boolean).length / packingItems.flatMap(c => c.items).length) * 100}%` }} /></div>
@@ -736,7 +703,7 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
             <div className="blog-packing-grid">
               {packingItems.map((cat, catIdx) => (
                 <div key={cat.category} className="blog-pack-cat">
-                  <h4><Backpack size={16} /> {cat.category}</h4>
+                  <h4>{cat.category}</h4>
                   <ul>
                     {cat.items.map((item, itemIdx) => {
                       const key = `${catIdx}-${itemIdx}`
@@ -763,39 +730,36 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
             <div className="blog-time-grid">
               <div className="blog-time-card">
                 <div className="blog-time-card__head">
-                  <Calendar size={20} />
                   <div><strong>Early June</strong><span>Pre-monsoon window</span></div>
                 </div>
                 <ul>
-                  <li><Check size={12} /> Fewer crowds</li>
-                  <li><Check size={12} /> Greener landscapes</li>
-                  <li><Check size={12} /> Better mountain visibility before heavier monsoon</li>
+                  <li>Fewer crowds</li>
+                  <li>Greener landscapes</li>
+                  <li>Better mountain visibility before heavier monsoon</li>
                 </ul>
                 <div className="blog-time-card__badge">Recommended for families</div>
               </div>
               <div className="blog-time-card">
                 <div className="blog-time-card__head">
-                  <Sun size={20} />
                   <div><strong>Late August</strong><span>Post-monsoon clearing</span></div>
                 </div>
                 <ul>
-                  <li><Check size={12} /> Cleaner air after rainfall</li>
-                  <li><Check size={12} /> Fresh vegetation</li>
-                  <li><Check size={12} /> Less dust, vibrant photos</li>
+                  <li>Cleaner air after rainfall</li>
+                  <li>Fresh vegetation</li>
+                  <li>Less dust, vibrant photos</li>
                 </ul>
-                <div className="blog-time-card__badge blog-time-card__badge--alt">Also great</div>
+                <div className="blog-time-card__badge">Also great</div>
               </div>
               <div className="blog-time-card blog-time-card--warn">
                 <div className="blog-time-card__head">
-                  <CloudRain size={20} />
                   <div><strong>Mid-July</strong><span>Peak monsoon</span></div>
                 </div>
                 <ul>
-                  <li><X size={12} /> Heaviest rainfall</li>
-                  <li><X size={12} /> Most leeches & slippery trails</li>
-                  <li><X size={12} /> Avoid with very young children</li>
+                  <li>Heaviest rainfall</li>
+                  <li>Most leeches & slippery trails</li>
+                  <li>Avoid with very young children</li>
                 </ul>
-                <div className="blog-time-card__badge blog-time-card__badge--warn">Avoid if possible</div>
+                <div className="blog-time-card__badge">Avoid if possible</div>
               </div>
             </div>
           </Reveal>
@@ -837,10 +801,10 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
               </div>
 
               <div className="blog-conclusion__trust">
-                <span><Shield size={14} /> Licensed guides</span>
-                <span><Award size={14} /> 4.9/5 from 200+ families</span>
-                <span><Heart size={14} /> Child-friendly pacing</span>
-                <span><Navigation size={14} /> 24/7 support</span>
+                <span>Licensed guides</span>
+                <span>4.9/5 from 200+ families</span>
+                <span>Child-friendly pacing</span>
+                <span>24/7 support</span>
               </div>
             </div>
           </Reveal>
@@ -857,13 +821,14 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
       </div>
 
       <style>{`
+        /* MINIMAL BLOG SYSTEM */
         .blog-page {
           position: fixed;
           inset: 0;
           z-index: 3000;
           overflow-y: auto;
           background: #fff;
-          color: #1D3557;
+          color: #111;
           font-family: var(--sans);
           overscroll-behavior: contain;
           -webkit-overflow-scrolling: touch;
@@ -873,8 +838,8 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
           top: 0;
           left: 0;
           right: 0;
-          height: 3px;
-          background: #E63946;
+          height: 2px;
+          background: #111;
           transform-origin: left;
           z-index: 4000;
           transition: transform 0.1s linear;
@@ -883,12 +848,12 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
           position: sticky;
           top: 0;
           z-index: 100;
-          backdrop-filter: blur(18px);
-          background: rgba(255,255,255,0.92);
-          border-bottom: 1px solid rgba(29,53,87,0.12);
+          backdrop-filter: blur(12px);
+          background: rgba(255,255,255,0.9);
+          border-bottom: 1px solid #e5e5e5;
         }
         .blog-header__inner {
-          width: min(1440px, calc(100vw - 48px));
+          width: min(1280px, calc(100vw - 48px));
           margin: 0 auto;
           height: 64px;
           display: flex;
@@ -900,9 +865,9 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          height: 40px;
+          height: 36px;
           padding: 0 14px;
-          border: 1px solid rgba(29,53,87,0.15);
+          border: 1px solid #111;
           background: #fff;
           font-size: 11px;
           font-weight: 600;
@@ -910,416 +875,390 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
           text-transform: uppercase;
           transition: all 0.2s;
         }
-        .blog-back:hover { background: #1D3557; color: #fff; }
+        .blog-back:hover { background: #111; color: #fff; }
         .blog-header__meta {
           display: flex;
           align-items: center;
           gap: 10px;
-          font-size: 11px;
-          color: #457B9D;
-          letter-spacing: 0.04em;
+          font-size: 12px;
+          color: #666;
+          letter-spacing: 0.02em;
         }
-        .blog-header__meta .dot { width: 4px; height: 4px; border-radius: 50%; background: #A8DADC; }
+        .blog-header__meta .dot { width: 4px; height: 4px; border-radius: 50%; background: #111; }
         .blog-book {
           display: inline-flex;
           align-items: center;
-          gap: 10px;
-          height: 40px;
-          padding: 0 18px;
-          background: #1D3557;
+          gap: 8px;
+          height: 36px;
+          padding: 0 16px;
+          background: #111;
           color: #fff;
           font-size: 11px;
           font-weight: 600;
-          letter-spacing: 0.08em;
+          letter-spacing: 0.06em;
           text-transform: uppercase;
         }
-        .blog-book:hover { background: #E63946; }
+        .blog-book:hover { background: #333; }
 
+        /* HERO - FIXED STANDARD LAYOUT */
         .blog-hero {
           position: relative;
-          min-height: 88vh;
+          min-height: 68vh;
           display: flex;
           align-items: flex-end;
-          overflow: hidden;
-          background: #1D3557;
+          background: #111;
           color: #fff;
-          padding-bottom: 80px;
+          overflow: hidden;
         }
-        .blog-hero__media, .blog-hero__media img {
+        .blog-hero__media {
           position: absolute;
           inset: 0;
+        }
+        .blog-hero__media img {
           width: 100%;
           height: 100%;
+          object-fit: cover;
+          object-position: center 45%;
         }
-        .blog-hero__media img { object-fit: cover; object-position: center 45%; }
         .blog-hero__wash {
           position: absolute; inset: 0;
-          background: linear-gradient(90deg, rgba(29,53,87,0.88) 0%, rgba(29,53,87,0.55) 45%, rgba(29,53,87,0.15) 80%), linear-gradient(180deg, rgba(29,53,87,0.25) 0%, transparent 30%, rgba(29,53,87,0.75) 100%);
-        }
-        .blog-hero__vignette {
-          position: absolute; inset: 0;
-          background: radial-gradient(80% 70% at 20% 80%, rgba(29,53,87,0.5) 0%, transparent 70%);
+          background: linear-gradient(0deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0.15) 100%);
         }
         .blog-hero__content {
           position: relative;
           z-index: 2;
-          width: 100%;
+          width: min(1280px, calc(100vw - 48px));
+          margin: 0 auto;
+          padding: 120px 0 56px;
+          display: grid;
+          gap: 20px;
         }
         .blog-hero__breadcrumb {
           display: flex;
           align-items: center;
           gap: 10px;
-          margin-bottom: 24px;
-          font-size: 10px;
-          letter-spacing: 0.15em;
+          font-size: 11px;
+          letter-spacing: 0.12em;
           text-transform: uppercase;
           color: rgba(255,255,255,0.7);
         }
-        .blog-hero__breadcrumb i { width: 12px; height: 1px; background: rgba(255,255,255,0.3); }
+        .blog-hero__breadcrumb i { width: 16px; height: 1px; background: rgba(255,255,255,0.35); }
         .blog-hero h1 {
           font-family: var(--display);
-          font-size: clamp(48px, 6vw, 88px);
-          line-height: 0.9;
+          font-size: clamp(32px, 4.6vw, 56px);
+          line-height: 1.05;
           font-weight: 400;
           letter-spacing: -0.02em;
-          max-width: 900px;
+          max-width: 760px;
         }
         .blog-hero h1 em {
           font-family: var(--serif);
           font-style: italic;
-          color: #A8DADC;
           font-weight: 400;
+          color: #fff;
         }
         .blog-hero__sub {
           display: grid;
-          grid-template-columns: 1.2fr 0.8fr;
-          gap: 40px;
-          margin-top: 28px;
-          max-width: 1100px;
-          align-items: end;
+          gap: 24px;
+          max-width: 760px;
+          margin-top: 8px;
         }
         .blog-hero__sub > p {
-          font-size: clamp(15px, 1.2vw, 18px);
-          line-height: 1.6;
-          font-weight: 300;
+          font-size: 19px;
+          line-height: 1.65;
+          font-weight: 400;
           color: rgba(255,255,255,0.85);
         }
         .blog-hero__stats {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 12px;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
         }
         .blog-hero__stats div {
-          display: flex;
+          display: inline-flex;
           align-items: center;
           gap: 8px;
-          padding: 10px 12px;
+          padding: 8px 12px;
           background: rgba(255,255,255,0.08);
-          border: 1px solid rgba(255,255,255,0.12);
+          border: 1px solid rgba(255,255,255,0.15);
           backdrop-filter: blur(6px);
-          font-size: 11px;
+          font-size: 12px;
+          color: rgba(255,255,255,0.85);
         }
-        .blog-hero__stats strong { font-size: 16px; color: #fff; }
-        .blog-hero__stats span { color: rgba(255,255,255,0.6); margin-left: 2px; }
+        .blog-hero__stats strong { font-size: 14px; color: #fff; }
         .blog-hero__author {
           display: flex;
           align-items: center;
           gap: 14px;
-          margin-top: 36px;
+          margin-top: 12px;
           padding-top: 20px;
-          border-top: 1px solid rgba(255,255,255,0.15);
-          max-width: 700px;
+          border-top: 1px solid rgba(255,255,255,0.18);
+          max-width: 760px;
         }
-        .blog-hero__author img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+        .blog-hero__author img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; filter: grayscale(1); }
         .blog-hero__author div { display: grid; gap: 2px; }
-        .blog-hero__author strong { font-size: 13px; }
-        .blog-hero__author span { font-size: 11px; color: rgba(255,255,255,0.6); }
+        .blog-hero__author strong { font-size: 14px; font-weight: 600; }
+        .blog-hero__author span { font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.4; }
         .blog-hero__author-badge {
           margin-left: auto;
           display: inline-flex;
           align-items: center;
           gap: 6px;
           padding: 6px 10px;
-          background: #E63946;
+          background: #fff;
+          color: #111;
           font-size: 10px;
           font-weight: 600;
           letter-spacing: 0.06em;
           text-transform: uppercase;
         }
-        .blog-hero__scroll {
-          position: absolute;
-          bottom: 28px;
-          right: max(24px, calc((100vw - 1440px)/2));
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          color: rgba(255,255,255,0.5);
-          font-size: 9px;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          transform: rotate(90deg);
-          transform-origin: right center;
-        }
-        .blog-hero__scroll i { width: 30px; height: 1px; background: currentColor; }
 
         .blog-layout {
+          width: min(1280px, calc(100vw - 48px));
+          margin: 0 auto;
           display: grid;
-          grid-template-columns: 260px minmax(0, 1fr);
-          gap: clamp(40px, 5vw, 80px);
-          padding-top: 80px;
+          grid-template-columns: 220px minmax(0, 1fr);
+          gap: clamp(40px, 4.5vw, 72px);
+          padding-top: 64px;
           padding-bottom: 100px;
         }
-        .blog-toc {
-          position: relative;
-        }
+        .blog-toc { position: relative; }
         .blog-toc__inner {
           position: sticky;
-          top: 100px;
+          top: 96px;
           display: grid;
-          gap: 28px;
+          gap: 20px;
         }
-        .blog-toc .eyebrow { margin: 0; }
-        .blog-toc nav {
-          display: grid;
-          border-top: 1px solid rgba(29,53,87,0.12);
-        }
+        .blog-toc .eyebrow { margin: 0; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #111; display:flex; align-items:center; gap:10px; }
+        .blog-toc .eyebrow span { display:grid; width:22px; height:22px; place-items:center; border:1px solid #111; border-radius:50%; font-size:9px; }
+        .blog-toc nav { display: grid; border-top: 1px solid #e5e5e5; }
         .blog-toc nav button {
           display: grid;
           grid-template-columns: 28px 1fr;
           align-items: center;
           text-align: left;
-          padding: 12px 0;
-          border-bottom: 1px solid rgba(29,53,87,0.08);
-          font-family: var(--display);
-          font-size: 15px;
+          padding: 11px 0;
+          border-bottom: 1px solid #f0f0f0;
+          font-family: var(--sans);
+          font-size: 13px;
           background: transparent;
-          color: #457B9D;
-          transition: all 0.2s;
+          color: #666;
+          transition: all 0.15s;
         }
-        .blog-toc nav button span { font-family: var(--sans); font-size: 10px; }
-        .blog-toc nav button.is-active { color: #1D3557; padding-left: 8px; border-left: 2px solid #E63946; }
-        .blog-toc nav button:hover { color: #1D3557; }
+        .blog-toc nav button span { font-size: 10px; color: #999; }
+        .blog-toc nav button.is-active { color: #111; font-weight:600; }
+        .blog-toc nav button:hover { color: #111; }
         .blog-toc__cta {
-          padding: 18px;
-          background: #F1FAEE;
-          border: 1px solid rgba(29,53,87,0.08);
+          padding: 16px;
+          background: #f8f8f8;
+          border: 1px solid #e5e5e5;
         }
         .blog-toc__cta p { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
         .blog-toc__cta button {
           display: inline-flex;
           align-items: center;
-          gap: 8px;
+          gap: 6px;
           font-size: 11px;
           font-weight: 600;
           letter-spacing: 0.06em;
           text-transform: uppercase;
-          padding-bottom: 4px;
-          border-bottom: 1px solid #1D3557;
+          padding-bottom: 3px;
+          border-bottom: 1px solid #111;
           background: transparent;
         }
 
         .blog-content { min-width: 0; }
-        .blog-section { padding-bottom: 100px; border-bottom: 1px solid rgba(29,53,87,0.08); margin-bottom: 80px; }
+        .blog-section { padding-bottom: 72px; border-bottom: 1px solid #eee; margin-bottom: 64px; }
         .blog-section:last-of-type { border: 0; margin: 0; }
-        .blog-section--wide { margin-left: -20px; margin-right: -20px; padding-left: 20px; padding-right: 20px; }
-        .blog-kicker { display: flex; justify-content: space-between; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #457B9D; margin-bottom: 18px; border-bottom: 1px solid rgba(29,53,87,0.1); padding-bottom: 12px; }
-        .blog-section h2 { font-family: var(--display); font-size: clamp(36px, 4vw, 56px); line-height: 0.95; font-weight: 400; margin-bottom: 18px; }
-        .blog-section h2 em { font-family: var(--serif); font-style: italic; color: #E63946; font-weight: 400; }
-        .blog-section p { font-size: 16px; line-height: 1.7; color: #1D3557; }
-        .blog-section p.lead { font-size: 20px; line-height: 1.5; color: #1D3557; font-weight: 400; margin-bottom: 24px; }
-        .blog-highlight { display: grid; grid-template-columns: 48px 1fr; gap: 16px; padding: 20px; background: #1D3557; color: #fff; margin: 28px 0; }
-        .blog-highlight__icon { width: 48px; height: 48px; display: grid; place-items: center; background: #E63946; border-radius: 50%; }
-        .blog-highlight h4 { font-size: 14px; margin-bottom: 6px; }
-        .blog-highlight p { color: rgba(255,255,255,0.75); font-size: 13px; line-height: 1.6; }
+        .blog-kicker { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #666; margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .blog-section h2 { font-family: var(--display); font-size: clamp(28px, 3.2vw, 40px); line-height: 1.1; font-weight: 400; margin-bottom: 16px; letter-spacing:-0.02em; }
+        .blog-section h2 em { font-family: var(--serif); font-style: italic; font-weight: 400; }
+        .blog-section p { font-size: 19px; line-height: 1.85; color: #222; }
+        .blog-section p.lead { font-size: 22px; line-height: 1.6; color: #111; font-weight: 400; margin-bottom: 24px; }
+        .blog-highlight { padding: 20px; background: #f8f8f8; border: 1px solid #e5e5e5; margin: 28px 0; }
+        .blog-highlight h4 { font-size: 15px; margin-bottom: 8px; font-weight:600; }
+        .blog-highlight p { color: #333; font-size: 17px; line-height: 1.7; }
         .blog-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
-        .blog-card { padding: 22px; border: 1px solid rgba(29,53,87,0.1); }
-        .blog-card--dark { background: #1D3557; color: #fff; }
-        .blog-card--dark h4 { color: #fff; }
-        .blog-card--dark ul { color: rgba(255,255,255,0.8); }
-        .blog-card--light { background: #fff; }
-        .blog-card h4 { font-size: 14px; font-weight: 600; margin: 12px 0 10px; display: flex; align-items: center; gap: 8px; }
-        .blog-card ul { display: grid; gap: 8px; font-size: 13px; line-height: 1.5; }
+        .blog-card { padding: 20px; border: 1px solid #e5e5e5; background:#fff; }
+        .blog-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+        .blog-card ul { display: grid; gap: 8px; font-size: 16px; line-height: 1.6; color:#333; }
         .blog-card li { display: flex; gap: 8px; align-items: flex-start; }
-        .blog-card--success { background: #F1FAEE; border-color: #A8DADC; }
-        .blog-card--danger { background: #FFF5F5; border-color: #E63946; }
-        .blog-icon-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px; }
-        .blog-icon-card { padding: 18px; border: 1px solid rgba(29,53,87,0.08); background: #fff; transition: transform 0.2s; }
-        .blog-icon-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(29,53,87,0.08); }
-        .blog-icon-card h4 { font-size: 13px; margin: 10px 0 6px; }
-        .blog-icon-card p { font-size: 12px; color: #457B9D; line-height: 1.5; }
-        .blog-concern { margin-top: 28px; padding: 18px; background: #F6F8F5; border: 1px solid rgba(29,53,87,0.08); }
-        .blog-concern h4 { font-size: 13px; margin-bottom: 12px; }
+        .blog-icon-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 24px; }
+        .blog-icon-card { padding: 18px; border: 1px solid #e5e5e5; background: #fff; }
+        .blog-icon-card h4 { font-size: 14px; margin-bottom: 6px; font-weight:600; }
+        .blog-icon-card p { font-size: 15px; color: #555; line-height: 1.6; }
+        .blog-concern { margin-top: 24px; padding: 18px; background: #fafafa; border: 1px solid #e5e5e5; }
+        .blog-concern h4 { font-size: 13px; margin-bottom: 12px; font-weight:600; letter-spacing:0.02em; }
         .blog-concern__grid { display: flex; flex-wrap: wrap; gap: 8px; }
-        .blog-concern__grid span { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; background: #fff; border: 1px solid rgba(29,53,87,0.1); font-size: 11px; }
+        .blog-concern__grid span { display: inline-flex; align-items: center; padding: 6px 10px; background: #fff; border: 1px solid #e5e5e5; font-size: 12px; color:#444; }
 
         .blog-section__head { display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
-        .blog-sort { display: flex; align-items: center; gap: 10px; font-size: 11px; }
-        .blog-sort select { padding: 8px 12px; border: 1px solid rgba(29,53,87,0.15); background: #fff; font-size: 12px; }
-        .blog-table-wrap { overflow-x: auto; border: 1px solid rgba(29,53,87,0.12); margin-top: 16px; }
-        .blog-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 700px; }
-        .blog-table th { text-align: left; padding: 12px 14px; background: #1D3557; color: #fff; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; }
-        .blog-table td { padding: 14px; border-bottom: 1px solid rgba(29,53,87,0.08); vertical-align: top; }
+        .blog-sort { display: flex; align-items: center; gap: 10px; font-size: 12px; color:#666; }
+        .blog-sort select { padding: 8px 12px; border: 1px solid #ddd; background: #fff; font-size: 13px; }
+        .blog-table-wrap { overflow-x: auto; border: 1px solid #e5e5e5; margin-top: 16px; }
+        .blog-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 700px; }
+        .blog-table th { text-align: left; padding: 12px 14px; background: #111; color: #fff; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; }
+        .blog-table td { padding: 14px; border-bottom: 1px solid #f0f0f0; vertical-align: top; font-size:14px; }
         .blog-table tr { transition: background 0.15s; cursor: pointer; }
-        .blog-table tr:hover { background: #F1FAEE; }
-        .blog-table tr.is-selected { background: #F1FAEE; }
-        .blog-table td strong { display: block; font-size: 13px; margin-bottom: 4px; }
-        .blog-table td span { display: inline-block; padding: 2px 6px; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; }
-        .alt-badge { background: #1D3557; color: #fff; padding: 3px 8px !important; border-radius: 2px; font-size: 11px !important; }
-        .diff { padding: 3px 8px; border-radius: 10px; font-size: 10px; }
-        .diff--veryeasy { background: #F1FAEE; color: #2A4A3A; }
-        .diff--easy { background: #A8DADC; color: #1D3557; }
-        .diff--easymoderate { background: #FFE8A3; color: #7A5A00; }
-        .diff--moderate { background: #FFD6D6; color: #8B0000; }
+        .blog-table tr:hover { background: #fafafa; }
+        .blog-table tr.is-selected { background: #f5f5f5; }
+        .blog-table td strong { display: block; font-size: 14px; margin-bottom: 4px; font-weight:600; }
+        .trek-badge { display: inline-block; padding: 3px 8px; font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; border: 1px solid #ddd; background:#fff; color:#666; margin-top:4px; }
+        .alt-badge { background: #111; color: #fff; padding: 3px 8px !important; font-size: 12px !important; }
+        .diff { padding: 4px 8px; border: 1px solid #e5e5e5; background:#fff; font-size: 11px; color:#333; }
 
-        .blog-altitude-viz { margin-top: 32px; padding: 22px; background: #F6F8F5; border: 1px solid rgba(29,53,87,0.08); }
-        .blog-altitude-viz h4 { display: flex; align-items: center; gap: 8px; font-size: 14px; margin-bottom: 6px; }
-        .blog-altitude-viz p { font-size: 12px; color: #457B9D; margin-bottom: 18px; }
-        .alt-bar { position: relative; height: 80px; margin-top: 10px; }
-        .alt-bar__track { position: absolute; left: 0; right: 0; top: 30px; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
-        .alt-bar__safe { position: absolute; top: 0; left: 0; height: 100%; background: #A8DADC; display: flex; align-items: center; justify-content: center; }
-        .alt-bar__safe span { font-size: 9px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
-        .alt-bar__moderate { position: absolute; top: 0; height: 100%; background: #FFE8A3; display: flex; align-items: center; justify-content: center; }
-        .alt-bar__moderate span { font-size: 8px; font-weight: 600; }
-        .alt-bar__line { position: absolute; top: -6px; width: 2px; height: 20px; background: #1D3557; }
+        .blog-altitude-viz { margin-top: 28px; padding: 20px; background: #fafafa; border: 1px solid #e5e5e5; }
+        .blog-altitude-viz h4 { display: flex; align-items: center; gap: 8px; font-size: 14px; margin-bottom: 6px; font-weight:600; }
+        .blog-altitude-viz p { font-size: 15px; color: #666; margin-bottom: 18px; }
+        .alt-bar { position: relative; height: 72px; margin-top: 10px; }
+        .alt-bar__track { position: absolute; left: 0; right: 0; top: 30px; height: 6px; background: #e5e5e5; }
+        .alt-bar__safe { position: absolute; top: 0; left: 0; height: 100%; background: #111; display: flex; align-items: center; justify-content: center; color:#fff; }
+        .alt-bar__safe span { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+        .alt-bar__moderate { position: absolute; top: 0; height: 100%; background: #999; display: flex; align-items: center; justify-content: center; color:#fff; }
+        .alt-bar__moderate span { font-size: 9px; font-weight: 600; }
+        .alt-bar__line { position: absolute; top: -6px; width: 1px; height: 18px; background: #111; }
         .alt-bar__item { position: absolute; top: 0; transform: translateX(-50%); display: grid; justify-items: center; gap: 4px; }
-        .alt-bar__dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
-        .alt-bar__item span { font-size: 9px; font-weight: 600; white-space: nowrap; background: #fff; padding: 2px 6px; border: 1px solid rgba(29,53,87,0.1); }
+        .alt-bar__dot { width: 8px; height: 8px; border-radius: 50%; background:#111; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+        .alt-bar__item span { font-size: 10px; font-weight: 600; white-space: nowrap; background: #fff; padding: 2px 6px; border: 1px solid #e5e5e5; }
 
-        .blog-choose-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
-        .blog-choose-card { padding: 20px; border: 1px solid rgba(29,53,87,0.1); background: #fff; position: relative; }
-        .blog-choose-card__num { position: absolute; top: 14px; right: 14px; font-family: var(--display); font-size: 32px; color: rgba(29,53,87,0.08); line-height: 1; }
-        .blog-choose-card h4 { font-size: 14px; margin-bottom: 8px; padding-right: 40px; }
-        .blog-choose-card p { font-size: 13px; color: #457B9D; line-height: 1.6; }
+        .blog-choose-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+        .blog-choose-card { padding: 20px; border: 1px solid #e5e5e5; background: #fff; position: relative; }
+        .blog-choose-card__num { position: absolute; top: 14px; right: 14px; font-family: var(--display); font-size: 28px; color: #eee; line-height: 1; }
+        .blog-choose-card h4 { font-size: 15px; margin-bottom: 8px; padding-right: 40px; font-weight:600; }
+        .blog-choose-card p { font-size: 16px; color: #555; line-height: 1.65; }
         .blog-choose-card__stats { display: grid; gap: 6px; margin-top: 12px; }
-        .blog-choose-card__stats span { font-size: 12px; padding: 6px 10px; background: #F6F8F5; border-left: 2px solid #E63946; }
-        .blog-choose-card--accent { background: #1D3557; color: #fff; }
+        .blog-choose-card__stats span { font-size: 13px; padding: 8px 10px; background: #fafafa; border-left: 2px solid #111; }
+        .blog-choose-card--accent { background: #111; color: #fff; }
         .blog-choose-card--accent h4 { color: #fff; }
         .blog-choose-card--accent p { color: rgba(255,255,255,0.7); }
-        .blog-choose-card--accent button { margin-top: 14px; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: #E63946; color: #fff; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+        .blog-choose-card--accent button { margin-top: 14px; display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; background: #fff; color: #111; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
 
-        .trek-detail { padding: 36px 0 60px; border-bottom: 1px solid rgba(29,53,87,0.08); }
+        .trek-detail { padding: 32px 0 48px; border-bottom: 1px solid #eee; }
         .trek-detail:last-child { border: 0; }
-        .trek-detail__header { display: flex; gap: 18px; align-items: flex-start; margin-bottom: 18px; }
-        .trek-detail__number { font-family: var(--display); font-size: 56px; line-height: 0.9; color: rgba(29,53,87,0.12); }
-        .trek-detail__badge { display: inline-block; padding: 4px 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
-        .trek-detail__header h3 { font-family: var(--display); font-size: clamp(26px, 3vw, 36px); line-height: 0.95; font-weight: 400; }
-        .trek-detail__header p { font-size: 13px; color: #457B9D; margin-top: 4px; }
-        .trek-detail__media { position: relative; aspect-ratio: 16/9; overflow: hidden; background: #F6F8F5; margin-bottom: 16px; }
-        .trek-detail__media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s; }
-        .trek-detail__media:hover img { transform: scale(1.03); }
-        .trek-detail__media-meta { position: absolute; bottom: 12px; left: 12px; right: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
-        .trek-detail__media-meta span { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; background: rgba(255,255,255,0.92); backdrop-filter: blur(6px); font-size: 11px; font-weight: 500; }
-        .trek-detail__overview { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: rgba(29,53,87,0.08); border: 1px solid rgba(29,53,87,0.08); margin-bottom: 18px; }
+        .trek-detail__header { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
+        .trek-detail__number { font-family: var(--display); font-size: 48px; line-height: 0.9; color: #e5e5e5; }
+        .trek-detail__badge { display: inline-block; padding: 4px 10px; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; border:1px solid #e5e5e5; background:#fff; color:#666; }
+        .trek-detail__header h3 { font-family: var(--display); font-size: clamp(24px, 2.8vw, 32px); line-height: 1.05; font-weight: 400; letter-spacing:-0.01em; }
+        .trek-detail__header p { font-size: 14px; color: #666; margin-top: 4px; }
+        .trek-detail__media { position: relative; aspect-ratio: 16/9; overflow: hidden; background: #f5f5f5; margin-bottom: 16px; border:1px solid #eee; }
+        .trek-detail__media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; filter: grayscale(0.1); }
+        .trek-detail__media:hover img { transform: scale(1.02); }
+        .trek-detail__media-meta { position: absolute; bottom: 10px; left: 10px; right: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+        .trek-detail__media-meta span { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; background: rgba(255,255,255,0.95); backdrop-filter: blur(6px); font-size: 11px; font-weight: 500; border:1px solid rgba(0,0,0,0.06); }
+        .trek-detail__overview { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: #eee; border: 1px solid #eee; margin-bottom: 16px; }
         .trek-stat { background: #fff; padding: 12px; display: grid; gap: 4px; text-align: center; }
-        .trek-stat small { font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: #457B9D; }
-        .trek-stat strong { font-size: 12px; }
+        .trek-stat small { font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: #888; }
+        .trek-stat strong { font-size: 13px; font-weight:600; }
         .trek-detail__body { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 24px; }
         .trek-detail__col { display: grid; gap: 16px; align-content: start; }
-        .trek-detail__col h4 { font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .trek-detail__col h4 { font-size: 14px; font-weight:600; }
         .trek-exp { display: grid; gap: 16px; }
-        .trek-exp strong { font-size: 12px; display: block; margin-bottom: 6px; }
+        .trek-exp strong { font-size: 12px; display: block; margin-bottom: 6px; letter-spacing:0.02em; }
         .trek-exp ul { display: grid; gap: 6px; }
-        .trek-exp li { display: flex; gap: 8px; font-size: 13px; align-items: center; }
-        .trek-magic { display: grid; grid-template-columns: 32px 1fr; gap: 10px; padding: 14px; background: #F1FAEE; border-left: 3px solid #A8DADC; }
-        .trek-magic strong { font-size: 12px; display: block; margin-bottom: 4px; }
-        .trek-magic p { font-size: 12px; color: #2A4A3A; line-height: 1.5; }
-        .trek-challenge { display: grid; grid-template-columns: 36px 1fr; gap: 10px; padding: 14px; background: #FFF5F5; border: 1px solid #FFD6D6; }
-        .trek-challenge strong { font-size: 12px; color: #8B0000; display: block; margin-bottom: 4px; }
-        .trek-challenge p { font-size: 12px; line-height: 1.5; }
-        .trek-highlights { padding: 14px; border: 1px solid rgba(29,53,87,0.08); background: #fff; }
-        .trek-highlights h5 { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+        .trek-exp li { font-size: 15px; color:#333; line-height:1.5; }
+        .trek-magic { padding: 14px; background: #fafafa; border-left: 2px solid #111; }
+        .trek-magic strong { font-size: 12px; display: block; margin-bottom: 4px; font-weight:600; }
+        .trek-magic p { font-size: 15px; color: #444; line-height: 1.6; }
+        .trek-challenge { padding: 14px; background: #fff; border: 1px solid #e5e5e5; }
+        .trek-challenge strong { font-size: 12px; display: block; margin-bottom: 4px; font-weight:600; }
+        .trek-challenge p { font-size: 15px; line-height: 1.6; color:#444; }
+        .trek-highlights { padding: 14px; border: 1px solid #e5e5e5; background: #fff; }
+        .trek-highlights h5 { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; color:#666; }
         .trek-highlights__grid { display: flex; flex-wrap: wrap; gap: 6px; }
-        .trek-highlights__grid span { display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px; background: #F6F8F5; font-size: 11px; }
-        .trek-cta { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 18px; background: #1D3557; color: #fff; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 4px; }
-        .trek-cta:hover { background: #E63946; }
+        .trek-highlights__grid span { display: inline-flex; align-items: center; padding: 5px 8px; background: #fafafa; border:1px solid #eee; font-size: 12px; color:#333; }
+        .trek-cta { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 18px; background: #111; color: #fff; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 4px; }
+        .trek-cta:hover { background: #333; }
 
-        .blog-water { display: grid; grid-template-columns: 48px 1fr; gap: 16px; padding: 20px; background: #F1FAEE; border: 1px solid #A8DADC; margin-top: 20px; }
-        .blog-water h4 { font-size: 14px; margin-bottom: 8px; }
-        .blog-water p { font-size: 13px; line-height: 1.6; color: #2A4A3A; }
+        .blog-water { padding: 20px; background: #fafafa; border: 1px solid #e5e5e5; margin-top: 20px; }
+        .blog-water h4 { font-size: 14px; margin-bottom: 8px; font-weight:600; }
+        .blog-water p { font-size: 17px; line-height: 1.7; color: #333; }
         .blog-water__options { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-        .blog-water__options span { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; background: #fff; border: 1px solid rgba(29,53,87,0.1); font-size: 11px; }
+        .blog-water__options span { display: inline-flex; align-items: center; padding: 6px 10px; background: #fff; border: 1px solid #e5e5e5; font-size: 12px; }
 
-        .blog-altitude-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
-        .blog-alt-card { padding: 20px; border: 1px solid rgba(29,53,87,0.1); background: #fff; }
-        .blog-alt-card h4 { font-size: 14px; margin: 10px 0; }
+        .blog-altitude-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+        .blog-alt-card { padding: 20px; border: 1px solid #e5e5e5; background: #fff; }
+        .blog-alt-card h4 { font-size: 14px; margin-bottom:10px; font-weight:600; }
         .blog-alt-card ul { display: grid; gap: 8px; margin-top: 10px; }
-        .blog-alt-card li { font-size: 13px; padding-left: 14px; position: relative; }
-        .blog-alt-card li::before { content: ''; position: absolute; left: 0; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: #A8DADC; }
-        .blog-alt-card p { font-size: 13px; line-height: 1.6; color: #457B9D; }
-        .blog-alt-card--alert { background: #FFF5F5; border-color: #FFD6D6; }
-        .blog-alt-card__action { margin-top: 12px; display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; background: #1D3557; color: #fff; font-size: 11px; font-weight: 600; }
+        .blog-alt-card li { font-size: 15px; color:#333; padding-left: 14px; position: relative; line-height:1.5; }
+        .blog-alt-card li::before { content: ''; position: absolute; left: 0; top: 9px; width: 5px; height: 5px; border-radius: 50%; background: #111; }
+        .blog-alt-card p { font-size: 16px; line-height: 1.65; color: #444; }
+        .blog-alt-card--alert { background: #111; color:#fff; border-color:#111; }
+        .blog-alt-card--alert h4 { color:#fff; }
+        .blog-alt-card--alert p { color: rgba(255,255,255,0.75); }
+        .blog-alt-card--alert li { color: rgba(255,255,255,0.8); }
+        .blog-alt-card--alert li::before { background:#fff; }
+        .blog-alt-card__action { margin-top: 12px; display: inline-flex; align-items: center; padding: 8px 12px; background: #fff; color: #111; font-size: 11px; font-weight: 600; letter-spacing:0.02em; }
 
-        .blog-budget-controls { display: flex; gap: 12px; }
-        .blog-budget-controls label { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid rgba(29,53,87,0.15); background: #fff; font-size: 12px; }
-        .blog-budget-controls input { width: 50px; border: 0; border-bottom: 1px solid #1D3557; text-align: center; font-weight: 600; }
+        .blog-budget-controls { display: flex; gap: 10px; }
+        .blog-budget-controls label { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid #e5e5e5; background: #fff; font-size: 12px; }
+        .blog-budget-controls input { width: 48px; border: 0; border-bottom: 1px solid #111; text-align: center; font-weight: 600; background:transparent; }
         .blog-table--budget { min-width: 500px; }
-        .blog-calc { margin-top: 24px; padding: 22px; background: #1D3557; color: #fff; }
-        .blog-calc h4 { display: flex; align-items: center; gap: 10px; font-size: 14px; margin-bottom: 8px; }
-        .blog-calc p { color: rgba(255,255,255,0.7); font-size: 13px; }
+        .blog-calc { margin-top: 24px; padding: 22px; background: #111; color: #fff; }
+        .blog-calc h4 { font-size: 14px; margin-bottom: 8px; font-weight:600; }
+        .blog-calc p { color: rgba(255,255,255,0.7); font-size: 14px; }
         .blog-calc__grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: rgba(255,255,255,0.12); margin: 16px 0; }
         .blog-calc__grid div { background: rgba(255,255,255,0.06); padding: 14px; text-align: center; display: grid; gap: 4px; }
-        .blog-calc__grid small { font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
-        .blog-calc__grid strong { font-size: 18px; }
-        .blog-calc__grid div.total { background: #E63946; }
-        .blog-calc__grid div.total span { font-size: 10px; color: rgba(255,255,255,0.8); }
-        .blog-calc__note { display: flex; align-items: center; gap: 8px; font-size: 11px !important; }
+        .blog-calc__grid small { font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+        .blog-calc__grid strong { font-size: 16px; }
+        .blog-calc__grid div.total { background: #fff; color:#111; }
+        .blog-calc__grid div.total span { font-size: 10px; color: #666; }
+        .blog-calc__note { display: flex; align-items: center; gap: 8px; font-size: 12px !important; }
 
-        .blog-packing-intro { display: grid; grid-template-columns: 200px 1fr; gap: 20px; padding: 18px; background: #F6F8F5; border: 1px solid rgba(29,53,87,0.08); margin-bottom: 20px; }
-        .blog-packing-intro img { width: 100%; aspect-ratio: 1; object-fit: cover; }
-        .blog-packing-intro p { font-size: 14px; line-height: 1.6; }
+        .blog-packing-intro { display: grid; grid-template-columns: 200px 1fr; gap: 20px; padding: 18px; background: #fafafa; border: 1px solid #e5e5e5; margin-bottom: 20px; }
+        .blog-packing-intro img { width: 100%; aspect-ratio: 1; object-fit: cover; filter: grayscale(0.2); }
+        .blog-packing-intro p { font-size: 16px; line-height: 1.65; }
         .blog-packing-progress { margin-top: 16px; }
-        .blog-packing-progress span { font-size: 11px; font-weight: 600; }
-        .blog-packing-progress .bar { height: 6px; background: #e5e7eb; margin-top: 6px; border-radius: 3px; overflow: hidden; }
-        .blog-packing-progress .bar i { display: block; height: 100%; background: #E63946; transition: width 0.3s; }
-        .blog-packing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-        .blog-pack-cat { border: 1px solid rgba(29,53,87,0.08); background: #fff; padding: 16px; }
-        .blog-pack-cat h4 { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid rgba(29,53,87,0.08); }
+        .blog-packing-progress span { font-size: 12px; font-weight: 600; }
+        .blog-packing-progress .bar { height: 4px; background: #e5e5e5; margin-top: 6px; overflow: hidden; }
+        .blog-packing-progress .bar i { display: block; height: 100%; background: #111; transition: width 0.3s; }
+        .blog-packing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .blog-pack-cat { border: 1px solid #e5e5e5; background: #fff; padding: 16px; }
+        .blog-pack-cat h4 { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #f0f0f0; font-weight:600; }
         .blog-pack-cat ul { display: grid; gap: 8px; }
-        .blog-pack-cat li { font-size: 13px; }
-        .blog-pack-cat li button { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: transparent; padding: 4px 0; }
-        .blog-pack-cat li.is-checked button { color: #457B9D; text-decoration: line-through; }
-        .blog-pack-cat .check { width: 18px; height: 18px; border: 1px solid rgba(29,53,87,0.2); display: grid; place-items: center; flex: none; background: #fff; }
-        .blog-pack-cat li.is-checked .check { background: #1D3557; color: #fff; border-color: #1D3557; }
+        .blog-pack-cat li { font-size: 14px; }
+        .blog-pack-cat li button { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: transparent; padding: 4px 0; font-size:14px; }
+        .blog-pack-cat li.is-checked button { color: #999; text-decoration: line-through; }
+        .blog-pack-cat .check { width: 18px; height: 18px; border: 1px solid #ddd; display: grid; place-items: center; flex: none; background: #fff; }
+        .blog-pack-cat li.is-checked .check { background: #111; color: #fff; border-color: #111; }
 
-        .blog-time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
-        .blog-time-card { padding: 18px; border: 1px solid rgba(29,53,87,0.1); background: #fff; display: grid; gap: 12px; }
+        .blog-time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
+        .blog-time-card { padding: 18px; border: 1px solid #e5e5e5; background: #fff; display: grid; gap: 12px; }
         .blog-time-card__head { display: flex; gap: 12px; align-items: center; }
-        .blog-time-card__head strong { display: block; font-size: 14px; }
-        .blog-time-card__head span { font-size: 11px; color: #457B9D; }
+        .blog-time-card__head strong { display: block; font-size: 14px; font-weight:600; }
+        .blog-time-card__head span { font-size: 11px; color: #666; }
         .blog-time-card ul { display: grid; gap: 6px; }
-        .blog-time-card li { display: flex; gap: 8px; font-size: 12px; align-items: center; }
-        .blog-time-card__badge { display: inline-block; padding: 4px 8px; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; background: #F1FAEE; color: #2A4A3A; width: max-content; }
-        .blog-time-card__badge--alt { background: #A8DADC; color: #1D3557; }
-        .blog-time-card--warn { background: #FFF5F5; border-color: #FFD6D6; }
-        .blog-time-card__badge--warn { background: #FFD6D6; color: #8B0000; }
+        .blog-time-card li { font-size: 14px; color:#333; }
+        .blog-time-card__badge { display: inline-block; padding: 4px 8px; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; background: #111; color: #fff; width: max-content; }
 
-        .blog-faq { display: grid; gap: 1px; background: rgba(29,53,87,0.08); border: 1px solid rgba(29,53,87,0.08); margin-top: 20px; }
+        .blog-faq { display: grid; gap: 1px; background: #e5e5e5; border: 1px solid #e5e5e5; margin-top: 20px; }
         .blog-faq__item { background: #fff; }
-        .blog-faq__item button { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 18px; text-align: left; background: transparent; font-size: 15px; font-weight: 500; }
-        .blog-faq__item button i { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid rgba(29,53,87,0.12); border-radius: 50%; flex: none; transition: all 0.2s; }
-        .blog-faq__item.is-open button i { background: #1D3557; color: #fff; }
-        .blog-faq__answer { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.35s ease; }
+        .blog-faq__item button { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 18px; text-align: left; background: transparent; font-size: 16px; font-weight: 500; }
+        .blog-faq__item button i { width: 28px; height: 28px; display: grid; place-items: center; border: 1px solid #e5e5e5; border-radius: 50%; flex: none; transition: all 0.2s; }
+        .blog-faq__item.is-open button i { background: #111; color: #fff; border-color:#111; }
+        .blog-faq__answer { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease; }
         .blog-faq__item.is-open .blog-faq__answer { grid-template-rows: 1fr; }
-        .blog-faq__answer p { overflow: hidden; padding: 0 18px 18px; font-size: 14px; line-height: 1.7; color: #457B9D; }
+        .blog-faq__answer p { overflow: hidden; padding: 0 18px 18px; font-size: 16px; line-height: 1.7; color: #444; }
 
-        .blog-conclusion { background: #F6F8F5; padding: 40px; margin-top: 20px; border: 1px solid rgba(29,53,87,0.08); }
+        .blog-conclusion { background: #fafafa; padding: 32px; margin-top: 20px; border: 1px solid #e5e5e5; }
         .blog-conclusion__inner h2 { margin-bottom: 16px; }
-        .blog-conclusion__cta { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 20px; background: #1D3557; color: #fff; margin-top: 24px; }
-        .blog-conclusion__cta h4 { font-size: 16px; margin-bottom: 6px; }
-        .blog-conclusion__cta p { font-size: 13px; color: rgba(255,255,255,0.7); }
-        .blog-conclusion__cta button { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; background: #E63946; color: #fff; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
-        .blog-conclusion__trust { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
-        .blog-conclusion__trust span { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; padding: 6px 10px; background: #fff; border: 1px solid rgba(29,53,87,0.08); }
+        .blog-conclusion__cta { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 20px; background: #111; color: #fff; margin-top: 24px; }
+        .blog-conclusion__cta h4 { font-size: 16px; margin-bottom: 6px; font-weight:600; }
+        .blog-conclusion__cta p { font-size: 14px; color: rgba(255,255,255,0.7); }
+        .blog-conclusion__cta button { display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; background: #fff; color: #111; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+        .blog-conclusion__trust { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+        .blog-conclusion__trust span { display: inline-flex; align-items: center; font-size: 11px; padding: 6px 10px; background: #fff; border: 1px solid #e5e5e5; color:#555; }
 
-        .blog-share { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding-top: 20px; margin-top: 30px; border-top: 1px solid rgba(29,53,87,0.08); flex-wrap: wrap; }
-        .blog-share span { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #457B9D; }
+        .blog-share { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding-top: 20px; margin-top: 30px; border-top: 1px solid #eee; flex-wrap: wrap; }
+        .blog-share span { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: #666; }
         .blog-share div { display: flex; gap: 8px; }
-        .blog-share button { padding: 8px 14px; border: 1px solid rgba(29,53,87,0.15); background: #fff; font-size: 11px; font-weight: 600; }
+        .blog-share button { padding: 8px 14px; border: 1px solid #e5e5e5; background: #fff; font-size: 11px; font-weight: 600; }
+
+        .eyebrow { display:flex; align-items:center; gap:10px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#111; }
+        .eyebrow span { display:grid; width:22px; height:22px; place-items:center; border:1px solid #111; border-radius:50%; font-size:9px; }
 
         @media (max-width: 1024px) {
           .blog-layout { grid-template-columns: 1fr; }
           .blog-toc { display: none; }
-          .blog-hero__sub { grid-template-columns: 1fr; }
           .blog-grid-2, .blog-icon-grid, .blog-choose-grid, .blog-altitude-grid, .blog-packing-grid, .blog-time-grid { grid-template-columns: 1fr; }
           .blog-icon-grid { grid-template-columns: 1fr 1fr; }
           .trek-detail__body { grid-template-columns: 1fr; }
@@ -1331,15 +1270,17 @@ export default function SummerFamilyTreksBlog({ onClose, onBook }) {
         @media (max-width: 620px) {
           .blog-header__inner { width: calc(100vw - 24px); height: 56px; }
           .blog-header__meta { display: none; }
-          .blog-hero { min-height: 82vh; padding-bottom: 40px; }
-          .blog-hero__stats { grid-template-columns: 1fr 1fr; }
+          .blog-hero { min-height: 72vh; }
+          .blog-hero__content { width: calc(100vw - 24px); padding: 100px 0 36px; }
+          .blog-hero h1 { font-size: 34px; }
+          .blog-hero__sub > p { font-size: 17px; }
           .blog-hero__author { flex-wrap: wrap; }
           .blog-hero__author-badge { margin-left: 0; }
-          .blog-hero h1 { font-size: 42px; }
           .blog-layout { padding-top: 40px; gap: 0; width: calc(100vw - 24px); }
-          .blog-section { padding-bottom: 60px; margin-bottom: 50px; }
-          .blog-section h2 { font-size: 30px; }
-          .blog-section--wide { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; }
+          .blog-section { padding-bottom: 48px; margin-bottom: 40px; }
+          .blog-section h2 { font-size: 26px; }
+          .blog-section p { font-size: 17px; line-height:1.75; }
+          .blog-section p.lead { font-size: 19px; }
           .blog-table { min-width: 600px; }
           .blog-icon-grid { grid-template-columns: 1fr; }
           .trek-detail__overview { grid-template-columns: 1fr 1fr; }
