@@ -1,13 +1,21 @@
 import { useState } from 'react'
 import { ArrowRight, ArrowUpRight, Facebook, Instagram, Mail, Youtube } from 'lucide-react'
 import Logo from './Logo'
+import { Link } from '../lib/router'
 
 const exploreLinks = [
-  ['Destinations', '#trips'], ['Trips', '#trips'], ['Popular treks', '#treks'], ['Journal', '#journal'],
+  ['Destinations', '/destinations'], ['Trips', '#trips'], ['Popular treks', '#treks'], ['Journal', '#journal'],
 ]
 const companyLinks = [
   ['About us', '#footer'], ['Contact', 'mailto:hello@hikeglobally.com'], ['FAQs', '#footer'], ['Terms', '#footer'], ['Privacy', '#footer'],
 ]
+
+function SmartLink({ href, children }) {
+  if (href.startsWith('mailto:') || href.startsWith('http')) {
+    return <a href={href}>{children}</a>
+  }
+  return <Link href={href}>{children}</Link>
+}
 
 export default function Footer({ onBook }) {
   const [email, setEmail] = useState('')
@@ -25,7 +33,7 @@ export default function Footer({ onBook }) {
       <div className="shell">
         <div className="footer-lead">
           <div className="footer-brand">
-            <a href="#home" aria-label="Hike Globally home"><Logo light /></a>
+            <Link href="/" aria-label="Hike Globally home"><Logo light /></Link>
             <p>Small-group journeys into the world’s wild places, thoughtfully crafted and locally led from Kathmandu.</p>
             <button type="button" onClick={onBook}>Plan a journey <ArrowUpRight size={17} /></button>
           </div>
@@ -60,11 +68,11 @@ export default function Footer({ onBook }) {
         <div className="footer-links">
           <div>
             <h3>Explore</h3>
-            {exploreLinks.map(([label, href]) => <a key={label} href={href}>{label}</a>)}
+            {exploreLinks.map(([label, href]) => <SmartLink key={label} href={href}>{label}</SmartLink>)}
           </div>
           <div>
             <h3>Company</h3>
-            {companyLinks.map(([label, href]) => <a key={label} href={href}>{label}</a>)}
+            {companyLinks.map(([label, href]) => <SmartLink key={label} href={href}>{label}</SmartLink>)}
           </div>
           <div className="footer-contact">
             <h3>Come say hello</h3>
@@ -89,7 +97,7 @@ export default function Footer({ onBook }) {
         <div className="footer-bottom">
           <span>© 2026 Hike Globally. All rights reserved.</span>
           <span>Travel slowly. Tread lightly. Stay curious.</span>
-          <a href="#home">Back to top ↑</a>
+          <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Back to top ↑</button>
         </div>
       </div>
     </footer>

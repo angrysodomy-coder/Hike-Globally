@@ -20,3 +20,8 @@ Region images used by the “Choose Your Destination” bento section (`region-f
 `region-mid-west.webp`, `region-western.webp`, `region-central.webp`, `region-eastern.webp`)
 are AI-generated placeholders created for this demonstration; they are not photographs and
 carry no third-party attribution.
+
+The destinations landing page (`/destinations`) art-direction imagery
+(`dest-hero-ridge.webp`, `dest-hero-mobile.webp`, `dest-craft-guide.webp`,
+`dest-lodge.webp`, `dest-valley.webp`) is likewise AI-generated for this demonstration and
+carries no third-party attribution.

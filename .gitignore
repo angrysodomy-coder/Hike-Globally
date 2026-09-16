@@ -1,6 +1,7 @@
 node_modules/
 dist/
 scripts/.smoke-bundle.cjs
+scripts/.smoke-dest-bundle.cjs
 .DS_Store
 *.log
 .env

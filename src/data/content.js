@@ -1,5 +1,5 @@
 export const navigation = [
-  { label: 'Destinations', href: '#destinations' },
+  { label: 'Destinations', href: '/destinations' },
   { label: 'Trips', href: '#trips' },
   { label: 'Treks', href: '#treks' },
   { label: 'Journal', href: '#journal' },
@@ -392,5 +392,191 @@ export const reviews = [
     location: 'Melbourne, Australia',
     trip: 'Upper Mustang · May 2026',
     quote: 'It felt genuinely personal. We came home with a deeper understanding of the place—and already planning where to go next.',
+  },
+]
+
+/* ------------------------------------------------------------------
+   Destinations landing page (`/destinations`)
+   ------------------------------------------------------------------ */
+
+export const destinationMarquee = [
+  'Khumbu', 'Annapurna', 'Manaslu', 'Upper Mustang', 'Langtang', 'Dolpo',
+  'Rara', 'Kanchenjunga', 'Api Himal', 'Ganesh Himal', 'Ilam', 'Machhapuchhre',
+]
+
+export const destinationStats = [
+  { value: 5, suffix: '', label: 'Distinct regions', note: 'From rain-shadow desert to alpine rainforest' },
+  { value: 8, suffix: '', label: '8,000-metre giants', note: 'More than anywhere else on Earth' },
+  { value: 320, suffix: '+', label: 'Trail days guided', note: 'By the same local leaders, season after season' },
+  { value: 98, suffix: '%', label: 'Travellers who return', note: 'Or send someone they love' },
+]
+
+export const destinationRegions = [
+  {
+    id: 'eastern',
+    index: '01',
+    title: 'Eastern',
+    range: 'Khumbu · Kanchenjunga · Ilam',
+    mood: 'The Sherpa high road',
+    coordinates: '27.98° N — 86.92° E',
+    elevation: 'Up to 5,364 m',
+    permit: 'Sagarmatha permit',
+    days: '8–18 days',
+    best: 'Spring · Autumn',
+    image: '/images/region-eastern.webp',
+    alt: 'A Sherpa village with carved mani stones beneath the snow walls of Everest in the Khumbu',
+    imagePosition: 'center 46%',
+    description:
+      'The storied trails of the Khumbu climb past carved mani walls and butter-lamp monasteries to the foot of the highest mountain on Earth. East, Kanchenjunga holds a quieter, glacial grandeur.',
+    highlights: ['Everest & Gokyo viewpoints', 'Sherpa villages and monasteries', 'Glacial turquoise lakes'],
+    trails: ['Everest Base Camp', 'Gokyo Lakes & Cho La'],
+    trips: ['everest-base-camp', 'gokyo-lakes-cho-la'],
+  },
+  {
+    id: 'western',
+    index: '02',
+    title: 'Western',
+    range: 'Annapurna · Dhaulagiri · Mustang',
+    mood: 'Beyond the rain line',
+    coordinates: '28.59° N — 83.82° E',
+    elevation: 'Up to 5,416 m',
+    permit: 'ACAP + Mustang permit',
+    days: '8–16 days',
+    best: 'Spring · Autumn · Summer',
+    image: '/images/region-western.webp',
+    alt: 'The Annapurna range reflected in the still water of Fewa lake at sunrise near Pokhara',
+    imagePosition: 'center 45%',
+    description:
+      'Above Pokhara’s lakes the great ranges rise in a single luminous wall. Cross the rain line and the green folds away into the ochre, wind-carved kingdom of Upper Mustang.',
+    highlights: ['Machhapuchhre sunrise ridges', 'Rain-shadow desert of Mustang', 'Thorong La crossing'],
+    trails: ['Annapurna Sanctuary', 'Mardi Himal Ridge', 'Upper Mustang'],
+    trips: ['annapurna-sanctuary', 'mardi-himal-ridge', 'upper-mustang-passage'],
+  },
+  {
+    id: 'central',
+    index: '03',
+    title: 'Central',
+    range: 'Kathmandu · Langtang · Manaslu',
+    mood: 'Temples & high pastures',
+    coordinates: '28.20° N — 85.55° E',
+    elevation: 'Up to 5,160 m',
+    permit: 'Langtang + Manaslu RAP',
+    days: '9–17 days',
+    best: 'Spring · Autumn · Winter',
+    image: '/images/region-central.webp',
+    alt: 'A whitewashed stupa strung with prayer flags on a ridge above the terraced foothills of the Kathmandu Valley',
+    imagePosition: '42% 55%',
+    description:
+      'Temple courtyards give way to Langtang’s green pastures and the suspended bridges of the Manaslu circuit—a quieter line rich in Tibetan culture and generous hospitality.',
+    highlights: ['Living valley culture', 'Langtang’s hidden valley', 'The quiet Manaslu circuit'],
+    trails: ['Langtang Valley', 'Manaslu Circuit', 'Kathmandu Foothills'],
+    trips: ['langtang-valley', 'manaslu-circuit', 'kathmandu-himalayan-foothills'],
+  },
+  {
+    id: 'mid-west',
+    index: '04',
+    title: 'Mid-West',
+    range: 'Rara · Phoksundo · Dolpo',
+    mood: 'Lakes of the high desert',
+    coordinates: '29.41° N — 82.50° E',
+    elevation: 'Up to 5,090 m',
+    permit: 'Shey Phoksundo permit',
+    days: '10–21 days',
+    best: 'Spring · Summer · Autumn',
+    image: '/images/region-mid-west.webp',
+    alt: 'Prayer flags on weathered wooden posts above the turquoise water of Phoksundo lake in Dolpo',
+    imagePosition: 'center 48%',
+    description:
+      'Turquoise Phoksundo and mirror-still Rara rest in the high desert valleys of Dolpo and Mugu—places the monsoon forgets and the crowds have never found.',
+    highlights: ['Phoksundo’s impossible blue', 'Rara’s mirror mornings', 'Bon and Buddhist villages'],
+    trails: ['Phoksundo Lake', 'Rara & Khaptad'],
+    trips: [],
+  },
+  {
+    id: 'far-west',
+    index: '05',
+    title: 'Far West',
+    range: 'Api Himal · Khaptad · Mahakali',
+    mood: 'The untrampled edge',
+    coordinates: '29.80° N — 81.20° E',
+    elevation: 'Up to 7,132 m',
+    permit: 'Expedition on request',
+    days: '12–24 days',
+    best: 'Spring · Autumn',
+    image: '/images/region-far-west.webp',
+    alt: 'Snow-crowned peaks of the Api Himal above forested ridges and a mist-filled valley in Far-Western Nepal',
+    imagePosition: 'center 42%',
+    description:
+      'Nepal’s wildest edge—sacred peaks along the Mahakali and oak ridges above Khaptad, where villages still set their week by the market drum. Solitude the trails have never sold.',
+    highlights: ['Api & Saipal base camps', 'Khaptad’s grassy plateaus', 'Thar desert culture'],
+    trails: ['Api Himal Base Camp', 'Khaptad Plateau'],
+    trips: [],
+  },
+]
+
+export const craftSteps = [
+  {
+    number: '01',
+    title: 'Scouted, then walked, then led',
+    body: 'Every route is first scouted on foot by the leaders who will guide it. We time acclimatisation days, water stops and the exact ridge where the light turns gold at four o’clock.',
+  },
+  {
+    number: '02',
+    title: 'Paced for wonder, not for summits',
+    body: 'Shorter walking days and honest rest build a journey you finish strong. The mountain rewards patience—and so do the teahouse kitchens.',
+  },
+  {
+    number: '03',
+    title: 'Local to the last detail',
+    body: 'Family-run lodges, local cooks and the same guides season after season. Your spend stays in the valleys you walk through.',
+  },
+  {
+    number: '04',
+    title: 'Small groups, wide margins',
+    body: 'Never more than eight travellers, two leaders, and contingency days built into every itinerary. Safety is a design choice, not an add-on.',
+  },
+]
+
+export const seasonGuide = [
+  { season: 'Spring', months: 'Mar – May', score: 96, note: 'Rhododendron bloom, clear high mornings, classic pass conditions.' },
+  { season: 'Summer', months: 'Jun – Aug', score: 58, note: 'Monsoon in the east and centre; the rain-shadow of Mustang and Dolpo stays bright.' },
+  { season: 'Autumn', months: 'Sep – Nov', score: 98, note: 'Post-monsoon clarity, harvest gold in the valleys, the busiest skies of the year.' },
+  { season: 'Winter', months: 'Dec – Feb', score: 72, note: 'Crisp, quiet and cold; lower valleys and culture routes shine above the inversion.' },
+]
+
+export const destinationVoices = [
+  {
+    quote: 'They didn’t sell us a mountain. They handed us a region, a rhythm and a team, and let the Himalaya do the rest.',
+    name: 'Sarah M.',
+    detail: 'Everest Base Camp · October 2025',
+  },
+  {
+    quote: 'Upper Mustang in summer was a revelation—sunlit cliffs while the rest of Nepal rained. The pacing made it feel effortless.',
+    name: 'Alicia R.',
+    detail: 'Upper Mustang · May 2026',
+  },
+  {
+    quote: 'Langtang was the soul of the trip. We were guests, not tourists, from the first teahouse to the last.',
+    name: 'Daniel K.',
+    detail: 'Langtang Valley · November 2025',
+  },
+]
+
+export const destinationFaqs = [
+  {
+    q: 'Which region is right for a first Himalayan journey?',
+    a: 'The Central and Western regions are our most forgiving introductions—Langtang, the Kathmandu foothills and Mardi Himal combine modest altitude with reliable lodges and rich culture. We’ll always match a route to your fitness and your appetite for altitude.',
+  },
+  {
+    q: 'Do I need permits, and are they arranged for me?',
+    a: 'Yes to both. Every region carries its own permits—ACAP and TIMS in the west, restricted-area permits for Mustang, Manaslu and Dolpo. We handle all paperwork before you land, so your first morning is spent walking, not queueing.',
+  },
+  {
+    q: 'What fitness level do these journeys ask for?',
+    a: 'Most journeys ask for the ability to walk 4–7 hours over uneven ground, several days in a row. If you can enjoy a long hill day at home, you can enjoy the Himalaya—we build the acclimatisation and rest days in.',
+  },
+  {
+    q: 'Can you build a private journey for a family or small group?',
+    a: 'That is our favourite work. Private departures run on your dates, at your pace, with the same local leaders. The Far and Mid-West regions are especially rewarding for small groups seeking real solitude.',
   },
 ]
