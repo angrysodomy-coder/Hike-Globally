@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import Header from './components/Header'
 import Hero from './components/Hero'
+import DestinationsSection from './components/DestinationsSection'
 import TripsSection from './components/TripsSection'
 import TreksSection from './components/TreksSection'
 import JournalSection from './components/JournalSection'
@@ -42,6 +43,7 @@ export default function App() {
       <Header onBook={openBooking} />
       <main id="main-content">
         <Hero onFind={findTrips} />
+        <DestinationsSection />
         <TripsSection discovery={discovery} onBook={openBooking} />
         <TreksSection onBook={openBooking} />
         <JournalSection onRead={setStory} />

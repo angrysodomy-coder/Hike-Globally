@@ -1,10 +1,81 @@
 export const navigation = [
-  { label: 'Destinations', href: '#trips' },
+  { label: 'Destinations', href: '#destinations' },
   { label: 'Trips', href: '#trips' },
   { label: 'Treks', href: '#treks' },
   { label: 'Journal', href: '#journal' },
   { label: 'About', href: '#footer' },
   { label: 'Contact', href: '#footer' },
+]
+
+/* Five Himalayan regions, rendered as a bento grid above the Popular Treks
+   rail. `tile` names the grid area each card occupies (see `.destination-*`
+   rules in src/styles.css); `size` drives the feature-vs-standard type scale. */
+export const destinations = [
+  {
+    id: 'far-west',
+    number: '01',
+    tile: 'far',
+    size: 'feature',
+    title: 'Far West',
+    kicker: 'Kanjakali · Api Himal · Khaptad',
+    description:
+      'Nepal’s wildest edge — sacred peaks along the Mahakali, oak and rhododendron ridges above Khaptad, and villages that still set their week by the market drum. Come for a solitude the trails have never sold.',
+    image: '/images/region-far-west.webp',
+    alt: 'Snow-crowned peaks of the Api Himal above forested ridges and a mist-filled valley in Far-Western Nepal',
+    imagePosition: 'center 42%',
+  },
+  {
+    id: 'mid-west',
+    number: '02',
+    tile: 'mid',
+    size: 'standard',
+    title: 'Mid-West',
+    kicker: 'Rara · Phoksundo · Kanjiroba',
+    description:
+      'Turquoise Phoksundo and mirror-still Rara, held in the high desert valleys of Dolpo and Mugu.',
+    image: '/images/region-mid-west.webp',
+    alt: 'Prayer flags on weathered wooden posts above the turquoise water of Phoksundo lake in Dolpo',
+    imagePosition: 'center 48%',
+  },
+  {
+    id: 'western',
+    number: '03',
+    tile: 'west',
+    size: 'standard',
+    title: 'Western',
+    kicker: 'Annapurna · Dhaulagiri · Mustang',
+    description:
+      'The great ranges rise above Pokhara’s lake; beyond the rain line, wind-carved Mustang waits.',
+    image: '/images/region-western.webp',
+    alt: 'The Annapurna range reflected in the still water of Fewa lake at sunrise near Pokhara',
+    imagePosition: 'center 45%',
+  },
+  {
+    id: 'central',
+    number: '04',
+    tile: 'cent',
+    size: 'standard',
+    title: 'Central',
+    kicker: 'Kathmandu · Langtang · Ganesh Himal',
+    description:
+      'Temple courtyards, Langtang’s green pastures and the foothills rolling south to the Terai.',
+    image: '/images/region-central.webp',
+    alt: 'A whitewashed stupa strung with prayer flags on a ridge above the terraced foothills of the Kathmandu Valley',
+    imagePosition: '42% 55%',
+  },
+  {
+    id: 'eastern',
+    number: '05',
+    tile: 'east',
+    size: 'standard',
+    title: 'Eastern',
+    kicker: 'Khumbu · Kanchenjunga · Ilam',
+    description:
+      'The Sherpa high road to Everest, Kanchenjunga’s glacial silence, and first light on the tea gardens of Ilam.',
+    image: '/images/region-eastern.webp',
+    alt: 'A Sherpa village with carved mani stones beneath the snow walls of Everest in the Khumbu',
+    imagePosition: 'center 46%',
+  },
 ]
 
 export const trips = [
