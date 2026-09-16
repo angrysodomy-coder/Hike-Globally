@@ -88,7 +88,10 @@ const winner = (width) =>
   railHeadingRules(width).sort((a, b) => compareSpecificity(specificity(a.part), specificity(b.part)) || a.order - b.order).at(-1)
 
 const genericSize = (width) => {
-  const generic = railHeadingRules(width).find((rule) => rule.part === '.trip-card h3')
+  /* The LAST `.trip-card h3` rule that applies wins the cascade (later media
+   * overrides beat the base clamp), so the ratio is computed against the size
+   * that actually renders at this width. */
+  const generic = railHeadingRules(width).filter((rule) => rule.part === '.trip-card h3').at(-1)
   return generic?.decls.find((decl) => decl.prop === 'font-size')?.value
 }
 
@@ -112,10 +115,10 @@ const check = (label, actual, expected) => {
   console.log(`${ok ? 'PASS' : 'FAIL'} ${label}${ok ? '' : ` (got ${JSON.stringify(actual)})`}`)
 }
 
-/* Phones (<=620px) use a separate compact rail heading (10.8375px after two 15%
- * reductions), so the size ratio only has to hold on the breakpoints where the
- * generic rule used to win. */
-for (const width of [1920, 1440, 1024, 900, 700]) {
+/* The rail heading keeps the same 72.25% (two 15% reductions) ratio to the
+ * generic card heading on every breakpoint, including the <=620px phone
+ * override (0.7225 x 28px = 20.23px — the old 10.8375px was unreadable). */
+for (const width of [1920, 1440, 1024, 900, 700, 500, 380]) {
   const heading = winner(width)
   const railValue = heading?.decls.find((decl) => decl.prop === 'font-size')?.value
   const genericValue = genericSize(width)
@@ -130,7 +133,7 @@ for (const width of [1920, 1440, 1024, 900, 700]) {
 const mobile = winner(500)
 const mobilePx = resolveSize(mobile?.decls.find((decl) => decl.prop === 'font-size')?.value, 500)
 check('@500px mobile rail override still wins', mobile?.part ?? '(none)', (part) => /\.trip-card--rail/.test(String(part)))
-check('@500px mobile rail heading stays compact', mobilePx, (px) => px <= 16)
+check('@500px mobile rail heading stays readable and compact', mobilePx, (px) => px >= 18 && px <= 24)
 
 console.log(failures === 0 ? 'RAIL HEADING OK' : `RAIL HEADING FAILED (${failures})`)
 process.exit(failures === 0 ? 0 : 1)

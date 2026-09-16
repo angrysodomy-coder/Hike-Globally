@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
     "lint": "eslint .",
-    "test": "esbuild scripts/smoke-trips.entry.jsx --bundle --format=cjs --platform=node --outfile=scripts/.smoke-bundle.cjs --loader:.js=jsx --jsx=automatic --log-level=warning && node scripts/smoke-trips.mjs && node scripts/check-rail-heading.mjs && node scripts/check-hero-title.mjs"
+    "test": "esbuild scripts/smoke-trips.entry.jsx --bundle --format=cjs --platform=node --outfile=scripts/.smoke-bundle.cjs --loader:.js=jsx --jsx=automatic --log-level=warning && node scripts/smoke-trips.mjs && node scripts/check-rail-heading.mjs && node scripts/check-rail-width.mjs && node scripts/check-hero-title.mjs"
   },
   "dependencies": {
     "@fontsource/cal-sans": "^5.3.0",
