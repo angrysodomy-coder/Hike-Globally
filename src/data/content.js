@@ -293,6 +293,22 @@ export const treks = [
 
 export const articles = [
   {
+    id: 'best-summer-treks-family-nepal-beginners',
+    category: 'Family Guides',
+    title: 'Best Summer Treks For Family in Nepal For Beginners',
+    excerpt: 'Five beginner-friendly summer routes tested for families with kids aged 6 to 16 — from 2-day Dhampus strolls to 9-day Langtang adventures. Interactive guide with budget calculator, packing checklist & altitude visualizer.',
+    body: [
+      'Nepal will offer several beginner-friendly summer treks that families can complete safely with proper pacing and preparation. The best options will combine lower altitude, reliable accommodation, manageable walking hours, and strong cultural experiences.',
+      'This premium interactive guide helps beginner families choose realistic routes based on altitude, comfort, safety, budget, and children’s fitness levels — with custom visuals, interactive tools, and local expert insights.',
+    ],
+    date: 'September 16, 2026',
+    readTime: '18 min read',
+    image: '/images/blog-family-summer-hero.jpg',
+    alt: 'Happy family trekking in Nepal during summer monsoon season with lush green Himalayan backdrop',
+    featured: true,
+    premium: true,
+  },
+  {
     id: 'before-nepal',
     category: 'Travel Guides',
     title: 'Before Nepal: what the mountains wish you knew',
@@ -306,7 +322,7 @@ export const articles = [
     readTime: '8 min read',
     image: '/images/journal-kathmandu.webp',
     alt: 'Colourful prayer flags radiating across a white stupa in Kathmandu',
-    featured: true,
+    featured: false,
   },
   {
     id: 'people-who-carry-himalaya',
