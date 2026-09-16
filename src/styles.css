@@ -4751,3 +4751,959 @@ dd {
     transform: none !important;
   }
 }
+/* ============================================================
+   Device-responsive system — Mobile / Tablet / Desktop / TV
+   ------------------------------------------------------------
+   Breakpoint map (this layer builds on the base + legacy blocks above):
+     no query ............ foundation shared by every device
+     <=620px ............. phones (extends the legacy mobile block)
+     <=380px ............. small phones (refines the phone rules)
+     621-820px ........... large phones / small tablets
+     621-1050px .......... trek-title smoothing across tablet widths
+     821-1023px .......... tablets (portrait + small landscape)
+     >=1024px + <=820px h  short-height guard for the pinned rail
+     (hover: none) ....... touch devices (any viewport size)
+     <=560px h landscape . short landscape phones / tablets
+     >=1921px ............ TV / large desktop displays
+     >=2560px ............ 4K displays
+   Guarded by repo tests — never re-declared below 1921px except with a
+   value the guards accept (rail meta floor stays inside 16-40px):
+     .hero h1 / .hero__heading--cal font-size,
+     any `.trip-card* h3` font-size,
+     .trip-card--rail .trip-card__link margin-top,
+     .trip-card--rail .trip-card__meta margin-bottom,
+     --shell / --rail-card-w (viewport units only, px floors on media).
+   ============================================================ */
+
+/* ---------- Responsive foundation (every device) ---------- */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+:where(h1, h2, h3) {
+  text-wrap: balance;
+}
+
+:where(p, blockquote, figcaption, dd) {
+  text-wrap: pretty;
+}
+
+img,
+video {
+  max-width: 100%;
+}
+
+/* The full-screen menu must scroll on short viewports instead of clipping. */
+.mobile-menu__content {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Long words never blow out narrow cards. */
+.trip-card__description,
+.destination-card__text,
+.story-card > p,
+.review blockquote,
+.trek-story__content > div > p,
+.featured-story__content > p,
+.trip-card__meta > span {
+  overflow-wrap: break-word;
+}
+
+/* The story-drawer invitation row wraps instead of squeezing on narrow panels. */
+.story-drawer aside {
+  flex-wrap: wrap;
+  row-gap: 16px;
+}
+
+/* Comfortable minimum tap target for the card CTAs. */
+.trip-card__link {
+  min-height: 44px;
+}
+
+/* ---------- Phones (<=620px): comfort + platform polish ---------- */
+@media (max-width: 620px) {
+  /* Stack the hero CTAs full-width: side-by-side overflows small shells
+     and crowds thumbs everywhere else. */
+  .hero__ctas {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .hero__ctas .button {
+    justify-content: space-between;
+    min-height: 52px;
+    gap: 12px;
+    padding-inline: 18px;
+    font-size: 10px;
+  }
+
+  /* iOS Safari auto-zooms form fields set below 16px; hold the layout. */
+  .finder-field select,
+  .trip-search input,
+  .filter-select select,
+  .trip-results-bar select,
+  .booking-form input:not([type='checkbox']),
+  .booking-form select,
+  .booking-form textarea {
+    font-size: 16px;
+  }
+
+  .trip-results-bar {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  .trip-results-bar > label {
+    margin-left: auto;
+  }
+
+  /* Reclaim horizontal room inside narrow rail cards. */
+  .trip-card--rail .trip-card__body {
+    padding: 16px 18px 22px;
+  }
+
+  .trip-card--rail .trip-card__meta > span {
+    padding: 0 10px;
+  }
+
+  .trip-card__link {
+    min-height: 46px;
+  }
+
+  /* Notched phones: keep the sticky CTA clear of the home indicator. */
+  .mobile-booking-cta {
+    left: max(12px, env(safe-area-inset-left));
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  .mobile-menu__content nav a {
+    font-size: clamp(32px, 6.5vh, 44px);
+  }
+
+  .trek-story dl > div {
+    padding-right: 6px;
+  }
+
+  .footer-links a,
+  .footer-links address {
+    font-size: 12px;
+  }
+}
+
+/* ---------- Small phones (<=380px) ---------- */
+@media (max-width: 380px) {
+  .section-intro h2,
+  .treks-section h2,
+  .reviews-summary h2 {
+    font-size: clamp(44px, 13.5vw, 56px);
+    line-height: 0.9;
+  }
+
+  .section-intro__aside > p {
+    font-size: 12.5px;
+  }
+
+  .eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+  }
+
+  .hero__copy {
+    font-size: 12.5px;
+  }
+
+  .trip-card--rail .trip-card__body {
+    padding: 15px 16px 20px;
+  }
+
+  .trip-card--rail .trip-card__meta > span {
+    padding: 0 8px;
+    font-size: 9px;
+  }
+
+  .trip-card__meta strong {
+    font-size: 13px;
+  }
+
+  .trek-story__content > div > p {
+    font-size: 11.5px;
+  }
+
+  .featured-story h3 {
+    font-size: 34px;
+  }
+
+  .story-card h3 {
+    font-size: 28px;
+  }
+
+  .review blockquote {
+    font-size: 24px;
+  }
+
+  .newsletter h2 {
+    font-size: 42px;
+  }
+
+  .newsletter input {
+    font-size: 17px;
+  }
+
+  /* Hold the watermark inside very narrow viewports. */
+  .footer-wordmark span {
+    font-size: clamp(38px, 12.5vw, 54px);
+  }
+
+  .footer-wordmark em {
+    font-size: clamp(40px, 13vw, 57px);
+  }
+
+  .booking-drawer__content h2,
+  .booking-success h2 {
+    font-size: 44px;
+  }
+
+  .story-drawer h2 {
+    font-size: 46px;
+  }
+
+  .story-drawer__standfirst {
+    font-size: 18px;
+  }
+
+  .story-drawer__copy p {
+    font-size: 17px;
+  }
+}
+
+/* ---------- Large phones / small tablets (621-820px) ---------- */
+@media (min-width: 621px) and (max-width: 820px) {
+  /* The two-row finder stands ~210px tall; keep the hero copy clear of it. */
+  .hero--left-bottom .hero__content {
+    padding-bottom: 258px;
+  }
+
+  .finder-field {
+    min-height: 72px;
+  }
+
+  .finder-submit {
+    min-height: 62px;
+  }
+
+  /* Give the two-line card texts breathing room on narrow rows. */
+  .destination-grid {
+    grid-template-rows: repeat(3, clamp(230px, 30vw, 290px));
+  }
+
+  .destination-card__text {
+    font-size: 13px;
+  }
+}
+
+/* Small tablets + large phones share one trek-title scale so neither the
+   620px nor the 820px boundary jumps. */
+@media (min-width: 621px) and (max-width: 1050px) {
+  .trek-story__content h3 {
+    font-size: clamp(25px, 2.6vw, 28px);
+  }
+}
+
+/* ---------- Tablets (821-1023px) ---------- */
+@media (min-width: 821px) and (max-width: 1023px) {
+  /* Two footer columns + a 15vw gap overflow shells below ~922px. */
+  .footer-lead {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+
+  /* One-and-a-peek swipeable reviews, matching the phone behaviour. */
+  .review-grid {
+    display: flex;
+    width: calc(100vw - 32px);
+    margin-right: calc((var(--shell) - 100vw) / 2);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .review-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .review {
+    width: min(68vw, 520px);
+    min-height: 340px;
+    flex: 0 0 auto;
+    padding: 40px 30px;
+    border-right: 1px solid var(--line);
+    scroll-snap-align: start;
+  }
+
+  .review:first-child {
+    padding-left: 0;
+  }
+
+  .review:last-child {
+    padding-right: 30px;
+  }
+
+  .review blockquote {
+    font-size: clamp(24px, 3vw, 29px);
+  }
+
+  .reviews-summary {
+    gap: 48px;
+  }
+
+  .section-intro {
+    gap: clamp(40px, 6vw, 70px);
+  }
+}
+
+/* ---------- Short desktop / tablet viewports: keep the pinned rail on screen ----------
+   NOTE: the repo's CSS checks ignore height conditions, so the meta floor here
+   must stay inside the guarded 16-40px band (18px = the base minimum). */
+@media (min-width: 1024px) and (max-height: 820px) {
+  .trip-card--rail .trip-card__image {
+    height: clamp(170px, 26vh, 300px);
+    height: clamp(170px, 26svh, 300px);
+  }
+
+  .trip-card--rail .trip-card__body {
+    padding: 14px 18px 18px;
+  }
+
+  .trip-card--rail .trip-card__description {
+    margin-top: 7px;
+    font-size: 13px;
+    -webkit-line-clamp: 1;
+  }
+
+  .trip-card--rail .trip-card__meta {
+    margin-top: 12px;
+    margin-bottom: 18px;
+  }
+
+  .trips-scroll__bar {
+    margin-top: 14px;
+  }
+}
+
+/* ---------- Touch devices (any viewport) ---------- */
+@media (hover: none), (pointer: coarse) {
+  /* Hover-only affordances must be visible without a cursor. */
+  .trip-card__image-cta {
+    opacity: 1;
+    transform: none;
+  }
+
+  .destination-card__content {
+    transform: none;
+  }
+
+  /* Thumb-sized rail dots + round controls. */
+  .trips-scroll__dots button {
+    width: 44px;
+    height: 32px;
+  }
+
+  .trips-scroll__dots button::after {
+    inset: 15px 0;
+  }
+
+  .trips-controls button,
+  .trek-controls button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .inline-link {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+}
+
+/* ---------- Short landscape viewports (phones / tablets held sideways) ---------- */
+@keyframes finder-landscape-arrive {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-height: 560px) and (orientation: landscape) {
+  .site-header {
+    padding-left: max(24px, env(safe-area-inset-left));
+    padding-right: max(24px, env(safe-area-inset-right));
+  }
+
+  .hero {
+    height: auto;
+    min-height: 100svh;
+  }
+
+  .hero--left-bottom .hero__content {
+    padding-top: 110px;
+    padding-bottom: 24px;
+  }
+
+  .hero__copy {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    margin-top: 16px;
+  }
+
+  .hero__ctas {
+    margin-top: 20px;
+  }
+
+  /* Flow the finder under the copy instead of overlapping it. */
+  .journey-finder {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    width: var(--shell);
+    min-height: 0;
+    margin: 20px auto 30px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: finder-landscape-arrive 0.9s 1.24s var(--ease-out) forwards;
+  }
+
+  .mobile-menu__content {
+    padding-top: calc(var(--header-height) + 24px);
+  }
+
+  .mobile-menu__content nav a {
+    padding-block: 10px;
+    font-size: clamp(24px, 7vh, 34px);
+  }
+
+  .trek-story {
+    height: 480px;
+    min-height: 480px;
+  }
+
+  .section-pad {
+    padding-block: 72px;
+  }
+}
+
+/* ---------- TV / large displays (>=1921px) ----------
+   Type ramps are anchored to the 1920px desktop caps so crossing into TV
+   widths never shrinks anything. Shell + rail vars stay viewport-unit based
+   with px floors, per the rail-width guard. */
+@media (min-width: 1921px) {
+  :root {
+    --shell: min(1720px, calc(100vw - 128px));
+    --rail-gap: clamp(22px, 1.6vw, 34px);
+    --rail-card-w: max(400px, calc((var(--shell) - 2 * var(--rail-gap)) / 3));
+    --header-height: 96px;
+  }
+
+  .site-header {
+    padding-inline: max(48px, calc((100vw - 1840px) / 2));
+  }
+
+  .site-header--solid {
+    height: 84px;
+  }
+
+  .brand-logo__mark {
+    width: 46px;
+    height: 46px;
+  }
+
+  .brand-logo__hike {
+    font-size: 15px;
+  }
+
+  .brand-logo__globally {
+    font-size: 18px;
+  }
+
+  .desktop-nav a {
+    font-size: 12px;
+  }
+
+  .header-book {
+    height: 52px;
+    padding: 0 22px;
+    font-size: 11px;
+  }
+
+  /* D-pad / remote navigation needs a focus ring readable at 3 metres. */
+  :focus-visible {
+    outline-width: 3px;
+    outline-offset: 6px;
+  }
+
+  .section-pad {
+    padding-block: clamp(140px, 8.5vw, 210px);
+  }
+
+  .eyebrow {
+    font-size: 12px;
+  }
+
+  .button {
+    min-height: 60px;
+    padding: 0 32px;
+    font-size: 13px;
+  }
+
+  .inline-link {
+    font-size: 13px;
+  }
+
+  /* Hero title: continuous with the 124px desktop cap via the shared scale. */
+  .hero h1,
+  .hero__heading--cal {
+    font-size: calc(clamp(124px, 6.4vw, 170px) * var(--hero-title-scale));
+  }
+
+  .hero__eyebrow {
+    font-size: 11px;
+  }
+
+  .hero__copy {
+    max-width: 620px;
+    font-size: 17px;
+  }
+
+  .hero--left-bottom .hero__content {
+    padding-bottom: clamp(190px, 20vh, 300px);
+  }
+
+  .journey-finder {
+    min-height: 128px;
+    grid-template-columns: 170px minmax(220px, 1.25fr) minmax(200px, 0.9fr) minmax(240px, 1.1fr) 230px;
+  }
+
+  .journey-finder__intro {
+    font-size: 19px;
+  }
+
+  .finder-field small {
+    font-size: 10px;
+  }
+
+  .finder-field select {
+    font-size: 15px;
+  }
+
+  .finder-submit {
+    font-size: 12px;
+  }
+
+  .section-intro h2,
+  .treks-section h2 {
+    font-size: clamp(90px, 5.5vw, 150px);
+  }
+
+  .reviews-summary h2 {
+    font-size: clamp(76px, 4.6vw, 120px);
+  }
+
+  .section-intro__aside > p {
+    max-width: 520px;
+    font-size: 17px;
+  }
+
+  /* Same row slope as the base bento; only the ceiling is raised. */
+  .destination-grid {
+    grid-template-rows: repeat(3, clamp(240px, 25.5vh, 400px));
+  }
+
+  .destination-card h3 {
+    font-size: clamp(22px, 1.15vw, 34px);
+  }
+
+  .destination-card--feature h3 {
+    font-size: clamp(30px, 1.55vw, 46px);
+  }
+
+  .destination-card__kicker {
+    font-size: 10px;
+  }
+
+  .destination-card__text {
+    font-size: 14.5px;
+  }
+
+  .destination-card--feature .destination-card__text {
+    font-size: 15.5px;
+  }
+
+  .destination-card__cta {
+    font-size: 11px;
+  }
+
+  /* Rail headings keep their ~72% ratio to the generic card heading. */
+  .trip-card h3 {
+    font-size: clamp(40px, 2.45vw, 56px);
+  }
+
+  .trip-card.trip-card--rail h3 {
+    font-size: clamp(28.9px, 1.77vw, 40.5px);
+  }
+
+  .trip-card--rail .trip-card__image {
+    height: clamp(360px, 40vh, 560px);
+  }
+
+  .trip-card--rail .trip-card__body {
+    padding: 24px 28px 30px;
+  }
+
+  .trip-card__location {
+    font-size: 10px;
+  }
+
+  .trip-card__description {
+    font-size: 15px;
+  }
+
+  .trip-card--rail .trip-card__description {
+    font-size: 15.5px;
+  }
+
+  .trip-card__meta > span {
+    font-size: 12px;
+  }
+
+  .trip-card__meta strong {
+    font-size: 16px;
+  }
+
+  .trip-card__link {
+    min-height: 50px;
+    font-size: 11px;
+  }
+
+  .trips-controls > span {
+    font-size: 18px;
+  }
+
+  .trips-controls > span strong {
+    font-size: 30px;
+  }
+
+  .trips-controls button,
+  .trek-controls button {
+    width: 54px;
+    height: 54px;
+  }
+
+  .trips-scroll__hint {
+    font-size: 10px;
+  }
+
+  .treks-section__top {
+    gap: 110px;
+  }
+
+  .treks-section__aside > p {
+    font-size: 16px;
+  }
+
+  .trek-controls > span {
+    font-size: 19px;
+  }
+
+  .trek-controls > span strong {
+    font-size: 30px;
+  }
+
+  .trek-rail {
+    gap: 30px;
+  }
+
+  .trek-rail__spacer {
+    width: max(48px, calc((100vw - 1720px) / 2 + 48px));
+  }
+
+  .trek-story {
+    width: min(42vw, 1120px);
+    height: clamp(520px, 52vh, 720px);
+    min-height: 520px;
+  }
+
+  .trek-story__number {
+    font-size: clamp(120px, 7.2vw, 190px);
+  }
+
+  .trek-story__region {
+    font-size: 10px;
+  }
+
+  .trek-story__content h3 {
+    font-size: clamp(34px, 2vw, 48px);
+  }
+
+  .trek-story__content > div > p {
+    font-size: 15px;
+  }
+
+  .trek-story dt {
+    font-size: 9px;
+  }
+
+  .trek-story dd {
+    font-size: 13px;
+  }
+
+  .trek-story__cta {
+    width: 88px;
+    height: 88px;
+  }
+
+  .trek-rail__end > span {
+    font-size: 40px;
+  }
+
+  .featured-story {
+    min-height: 640px;
+  }
+
+  .featured-story h3 {
+    font-size: clamp(52px, 3.17vw, 80px);
+  }
+
+  .featured-story__content > p {
+    font-size: 15px;
+  }
+
+  .story-kicker {
+    font-size: 10px;
+  }
+
+  .story-card h3 {
+    font-size: clamp(32px, 1.86vw, 48px);
+  }
+
+  .story-card > p {
+    font-size: 13.5px;
+  }
+
+  .reviews-summary {
+    gap: 110px;
+  }
+
+  .google-word {
+    font-size: 17px;
+  }
+
+  .google-score > strong {
+    font-size: 34px;
+  }
+
+  .review {
+    min-height: 400px;
+  }
+
+  .review blockquote {
+    font-size: clamp(28px, 1.7vw, 40px);
+  }
+
+  .review__person strong {
+    font-size: 13px;
+  }
+
+  .review__person small {
+    font-size: 10px;
+  }
+
+  .review figcaption {
+    font-size: 9.5px;
+  }
+
+  .reviews-foot > a {
+    font-size: 11px;
+  }
+
+  .trust-points span {
+    font-size: 10px;
+  }
+
+  .footer-brand > p {
+    max-width: 420px;
+    font-size: 15px;
+  }
+
+  .newsletter h2 {
+    font-size: clamp(60px, 3.5vw, 96px);
+  }
+
+  .newsletter form {
+    grid-template-columns: 1fr 68px;
+  }
+
+  .newsletter input {
+    height: 66px;
+    font-size: 26px;
+  }
+
+  .newsletter > small {
+    font-size: 9px;
+  }
+
+  .footer-links h3 {
+    font-size: 9px;
+  }
+
+  .footer-links a,
+  .footer-links address {
+    font-size: 13px;
+  }
+
+  .footer-wordmark span {
+    font-size: clamp(240px, 12vw, 320px);
+  }
+
+  .footer-wordmark em {
+    font-size: clamp(255px, 12.6vw, 340px);
+  }
+
+  .footer-bottom {
+    font-size: 9px;
+  }
+
+  .booking-drawer {
+    width: min(780px, 93vw);
+  }
+
+  .story-drawer {
+    width: min(920px, 94vw);
+  }
+
+  .booking-drawer__content h2,
+  .booking-success h2 {
+    font-size: clamp(56px, 3.4vw, 84px);
+  }
+
+  .story-drawer h2 {
+    font-size: clamp(64px, 4.01vw, 100px);
+  }
+
+  .story-drawer__standfirst {
+    font-size: 25px;
+  }
+
+  .story-drawer__copy p {
+    font-size: 20px;
+  }
+
+  .empty-trips h3 {
+    font-size: clamp(60px, 3.75vw, 96px);
+  }
+}
+
+/* ---------- 4K displays (>=2560px): raise the ceilings ----------
+   Same slopes as the TV block — only caps, shell and fixed art grow. */
+@media (min-width: 2560px) {
+  :root {
+    --shell: min(2080px, calc(100vw - 160px));
+    --rail-gap: clamp(26px, 1.4vw, 44px);
+    --rail-card-w: max(480px, calc((var(--shell) - 2 * var(--rail-gap)) / 3));
+  }
+
+  .site-header {
+    padding-inline: max(56px, calc((100vw - 2200px) / 2));
+  }
+
+  .hero h1,
+  .hero__heading--cal {
+    font-size: calc(clamp(124px, 6.4vw, 190px) * var(--hero-title-scale));
+  }
+
+  .section-intro h2,
+  .treks-section h2 {
+    font-size: clamp(90px, 5.5vw, 180px);
+  }
+
+  .reviews-summary h2 {
+    font-size: clamp(76px, 4.6vw, 150px);
+  }
+
+  .trek-rail__spacer {
+    width: max(56px, calc((100vw - 2080px) / 2 + 56px));
+  }
+
+  .trek-story {
+    width: min(42vw, 1360px);
+    height: clamp(560px, 52vh, 860px);
+  }
+
+  .destination-grid {
+    grid-template-rows: repeat(3, clamp(240px, 25.5vh, 480px));
+  }
+
+  .trip-card--rail .trip-card__image {
+    height: clamp(360px, 40vh, 640px);
+  }
+
+  .footer-wordmark span {
+    font-size: clamp(240px, 12vw, 400px);
+  }
+
+  .footer-wordmark em {
+    font-size: clamp(255px, 12.6vw, 420px);
+  }
+}
+
+/* ---------- Overflow-band fixes (found by auditing grid minimums) ---------- */
+/* Small laptops cannot fit the three-column trek-story layout: its 260px +
+   240px + CTA minimums overflow the card below ~1210px and the card's
+   overflow:hidden clips the CTA. Stack it like tablets do. */
+@media (max-width: 1240px) {
+  .trek-story__content {
+    grid-template-columns: 1fr auto;
+  }
+
+  .trek-story__content > div {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Narrow tablets/phones: the split menu's 300px visual floor plus link
+   minimums clip the nav labels, so use the single-column menu to 900px. */
+@media (min-width: 621px) and (max-width: 900px) {
+  .mobile-menu {
+    display: block;
+  }
+
+  .mobile-menu__visual {
+    display: none;
+  }
+
+  .mobile-menu__content {
+    height: 100%;
+    padding: calc(var(--header-height) + 32px) clamp(22px, 6vw, 44px) 28px;
+  }
+
+  .mobile-menu__content nav a {
+    font-size: clamp(30px, 5.5vh, 44px);
+  }
+}
+
+/* When the advanced filters open on small tablets, four-across minimums
+   (3 x 170px + clear button) overflow sub-700px shells. */
+@media (min-width: 621px) and (max-width: 820px) {
+  .advanced-filters__inner {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .clear-filters {
+    grid-column: 1 / -1;
+    min-height: 52px;
+  }
+}
+
+}
