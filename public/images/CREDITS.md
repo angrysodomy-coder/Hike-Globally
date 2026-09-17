@@ -25,3 +25,7 @@ The destinations landing page (`/destinations`) art-direction imagery
 (`dest-hero-ridge.webp`, `dest-hero-mobile.webp`, `dest-craft-guide.webp`,
 `dest-lodge.webp`, `dest-valley.webp`) is likewise AI-generated for this demonstration and
 carries no third-party attribution.
+
+The trips landing page (`/trips`) art-direction imagery
+(`trip-hero.jpg`, `trip-cta.jpg`) is likewise AI-generated for this
+demonstration and carries no third-party attribution.

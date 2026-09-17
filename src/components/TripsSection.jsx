@@ -1,6 +1,7 @@
 import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react'
 import { trips } from '../data/content'
+import { Link } from '../lib/router'
 import Reveal from './Reveal'
 
 const MOBILE_QUERY = '(max-width: 1023px)'
@@ -212,6 +213,10 @@ export default function TripsSection({ onBook }) {
           </Reveal>
           <Reveal className="section-intro__aside" delay={110}>
             <p>From unforgettable mountain adventures to immersive cultural journeys, discover trips designed around the places worth experiencing. Scroll sideways through the collection.</p>
+            <Link className="inline-link" href="/trips">
+              View the full collection
+              <ArrowUpRight size={15} aria-hidden="true" />
+            </Link>
           </Reveal>
         </div>
       </div>

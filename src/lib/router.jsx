@@ -22,7 +22,7 @@ import {
 
 const RouterContext = createContext(null)
 
-export const ROUTES = ['/', '/destinations']
+export const ROUTES = ['/', '/destinations', '/trips']
 
 export function normalizePath(pathname) {
   if (!pathname || pathname === '/') return '/'

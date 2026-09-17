@@ -8,3 +8,4 @@ scripts/.smoke-dest-bundle.cjs
 .env.*
 !.env.example
 scripts/.blog-content-bundle.cjs
+scripts/.smoke-trips-page-bundle.cjs
