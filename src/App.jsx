@@ -8,8 +8,10 @@ import SummerFamilyTreksBlog from './components/SummerFamilyTreksBlog'
 import HomePage from './pages/HomePage'
 import { useRouter } from './lib/router'
 
-/* The destinations page pulls in framer-motion + GSAP; load it only when visited. */
+/* The destinations and trips pages pull in framer-motion + GSAP;
+   load them only when visited. */
 const DestinationsPage = lazy(() => import('./pages/DestinationsPage'))
+const TripsPage = lazy(() => import('./pages/TripsPage'))
 
 export default function App() {
   const { path } = useRouter()
@@ -73,7 +75,13 @@ export default function App() {
             <DestinationsPage onBook={openBooking} />
           </Suspense>
         )
-        : <HomePage discovery={discovery} onFind={findTrips} onRead={handleRead} onBook={openBooking} />}
+        : path === '/trips'
+          ? (
+            <Suspense fallback={null}>
+              <TripsPage onBook={openBooking} />
+            </Suspense>
+          )
+          : <HomePage discovery={discovery} onFind={findTrips} onRead={handleRead} onBook={openBooking} />}
 
       <Footer onBook={openBooking} />
 

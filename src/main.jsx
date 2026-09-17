@@ -11,6 +11,7 @@ import { RouterProvider } from './lib/router'
 import App from './App'
 import './styles.css'
 import './styles/destinations.css'
+import './styles/trips.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

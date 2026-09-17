@@ -4,7 +4,7 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 
 export default [
-  { ignores: ['dist', 'scripts/.smoke-bundle.cjs', 'scripts/.smoke-dest-bundle.cjs'] },
+  { ignores: ['dist', 'scripts/.smoke-bundle.cjs', 'scripts/.smoke-dest-bundle.cjs', 'scripts/.smoke-trips-page-bundle.cjs'] },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {

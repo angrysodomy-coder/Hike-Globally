@@ -1,6 +1,6 @@
 export const navigation = [
   { label: 'Destinations', href: '/destinations' },
-  { label: 'Trips', href: '#trips' },
+  { label: 'Trips', href: '/trips' },
   { label: 'Treks', href: '#treks' },
   { label: 'Journal', href: '#journal' },
   { label: 'About', href: '#footer' },
@@ -90,6 +90,10 @@ export const trips = [
     type: 'Trek',
     price: 1490,
     seasons: ['Spring', 'Autumn'],
+    prime: 'Autumn',
+    departures: 'Mar · Apr · Oct · Nov',
+    elevation: '5,364 m',
+    highlight: 'First light on the icefall from the ridge above Gorak Shep',
     availability: '4 places in October',
     description: 'Follow the storied Khumbu trail through Sherpa villages to the foot of the world’s highest mountain.',
     image: '/images/trip-everest.webp',
@@ -108,6 +112,10 @@ export const trips = [
     type: 'Trek',
     price: 1290,
     seasons: ['Spring', 'Autumn', 'Winter'],
+    prime: 'Autumn',
+    departures: 'Feb · Mar · Oct · Nov',
+    elevation: '4,130 m',
+    highlight: 'Machhapuchhre burning pink above a silent cloud line',
     availability: 'New November departure',
     description: 'Walk from subtropical forest into a natural amphitheatre of luminous eight-thousand-metre peaks.',
     image: '/images/trip-annapurna.webp',
@@ -125,6 +133,10 @@ export const trips = [
     type: 'Trek',
     price: 1890,
     seasons: ['Spring', 'Autumn'],
+    prime: 'Autumn',
+    departures: 'Apr · Oct · Nov',
+    elevation: '5,160 m',
+    highlight: 'Larkya La at dawn, the valley opening like a door',
     availability: 'Guaranteed departure',
     description: 'A quieter passage around the world’s eighth-highest mountain, rich in solitude and Tibetan culture.',
     image: '/images/trip-manaslu.webp',
@@ -142,6 +154,10 @@ export const trips = [
     type: 'Cultural',
     price: 2150,
     seasons: ['Spring', 'Summer', 'Autumn'],
+    prime: 'Summer',
+    departures: 'May · Jun · Sep · Oct',
+    elevation: '4,200 m',
+    highlight: 'Lo Manthang’s gates closing on the last light of the day',
     availability: 'Limited permit journey',
     description: 'Enter an ancient rain-shadow kingdom of ochre cliffs, cave monasteries and wind-carved valleys.',
     image: '/images/trip-mustang.webp',
@@ -159,6 +175,10 @@ export const trips = [
     type: 'Trek',
     price: 1080,
     seasons: ['Spring', 'Autumn', 'Winter'],
+    prime: 'Autumn',
+    departures: 'Mar · Oct · Nov',
+    elevation: '4,984 m',
+    highlight: 'Tserko Ri at sunrise, the whole valley still and gold',
     availability: '5 places in November',
     description: 'A soulful trail through rhododendron forests, yak pastures and resilient Tamang communities.',
     image: '/images/trip-langtang.webp',
@@ -176,6 +196,10 @@ export const trips = [
     type: 'Cultural',
     price: 980,
     seasons: ['Spring', 'Autumn', 'Winter'],
+    prime: 'Spring',
+    departures: 'Apr · May · Oct',
+    elevation: '1,710 m',
+    highlight: 'Dawn drumming inside Boudhanath’s ring of prayer flags',
     availability: 'Private dates available',
     description: 'Temple courtyards, ridge walks and intimate encounters with the living culture of the Kathmandu Valley.',
     image: '/images/trip-culture.webp',
@@ -193,6 +217,10 @@ export const trips = [
     type: 'Trek',
     price: 2090,
     seasons: ['Spring', 'Autumn'],
+    prime: 'Spring',
+    departures: 'Mar · Apr · Oct',
+    elevation: '5,420 m',
+    highlight: 'Gokyo Ri at 5,416 m — Everest’s whole west wall in one breath',
     availability: 'Small groups only',
     description: 'Climb to turquoise glacial lakes and the silent grandeur of Gokyo Ri, returning over the Cho La pass.',
     image: '/images/trip-gokyo.jpg',
@@ -210,6 +238,10 @@ export const trips = [
     type: 'Trek',
     price: 890,
     seasons: ['Spring', 'Autumn', 'Winter'],
+    prime: 'Autumn',
+    departures: 'Mar · Apr · Nov',
+    elevation: '4,500 m',
+    highlight: 'A sea of clouds holding its breath below the ridge',
     availability: 'New this season',
     description: 'A short, spectacular ridge walk above the clouds, face to face with Machhapuchhre’s fluted summit.',
     image: '/images/trip-mardi.jpg',
@@ -578,5 +610,116 @@ export const destinationFaqs = [
   {
     q: 'Can you build a private journey for a family or small group?',
     a: 'That is our favourite work. Private departures run on your dates, at your pace, with the same local leaders. The Far and Mid-West regions are especially rewarding for small groups seeking real solitude.',
+  },
+]
+
+/* ------------------------------------------------------------------
+   Trips landing page (`/trips`)
+   ------------------------------------------------------------------ */
+
+export const tripsMarquee = [
+  'Everest Base Camp', 'Annapurna Sanctuary', 'Manaslu Circuit', 'Upper Mustang',
+  'Langtang Valley', 'Kathmandu Foothills', 'Gokyo Lakes & Cho La', 'Mardi Himal Ridge',
+]
+
+export const tripStats = [
+  { value: 8, suffix: '', label: 'Curated journeys', note: 'Every one scouted, walked and led by the same local teams' },
+  { value: 5545, suffix: ' m', label: 'Highest viewpoint', note: 'Kalapathar at 2 a.m., above Everest Base Camp' },
+  { value: 8, suffix: '', label: 'Travellers per group', note: 'The absolute maximum — most groups run four to six' },
+  { value: 98, suffix: '%', label: 'Who return or recommend', note: 'Counted across every departure since 2019' },
+]
+
+/* The eight highlighted days of the 15-day Everest Base Camp signature
+   journey, shown in the sticky two-column feature on /trips. */
+export const signatureItinerary = [
+  {
+    day: '01',
+    title: 'Kathmandu to Lukla',
+    body: 'A short hop over the Hinku valley, then the first honest step of the trip — the stone trail climbing through oak and rhododendron to the teashops of Phakding.',
+  },
+  {
+    day: '03',
+    title: 'Namche Bazaar',
+    body: 'The Sherpa capital hanging in the cloud. Acclimatise high and sleep low, and watch Ama Dablam’s face fill with morning gold from your own veranda.',
+  },
+  {
+    day: '05',
+    title: 'Tengboche',
+    body: 'One of the largest monasteries in the Khumbu. Butter lamps, a drumming dawn, mani stones worn smooth by generations of hands.',
+  },
+  {
+    day: '07',
+    title: 'Dingboche',
+    body: 'The air is thin and honest here. A graded walking day with the Chhukung Ri hike above, and the Himalaya filling every degree of sky.',
+  },
+  {
+    day: '09',
+    title: 'Gorak Shep',
+    body: 'A last push along the Khumbu glacier, yak bells close. From the small ridge above camp, Everest has already started to glow.',
+  },
+  {
+    day: '10',
+    title: 'Everest Base Camp',
+    body: '5,364 metres. The icefall on your left, Lhotse’s face on your right — and the highest mountain on Earth standing quietly in front of you.',
+  },
+  {
+    day: '12',
+    title: 'Kalapathar',
+    body: 'A 2 a.m. start, an hour of climbing, three minutes at 5,545 m with the whole range lit like the inside of a lantern.',
+  },
+  {
+    day: '15',
+    title: 'Kathmandu',
+    body: 'The valley, the temple courtyards, a long lunch in Jhamsikhel — the journey folding back into the city that started it.',
+  },
+]
+
+export const tripInclusions = [
+  {
+    title: 'Two leaders, one team',
+    body: 'A Kathmandu-based designer shapes the journey; a local leader who has walked it for a decade leads it. You travel with both.',
+  },
+  {
+    title: 'Permits — handled, never handed',
+    body: 'Sagarmatha, ACAP, TIMS and restricted-area paperwork is completed before you land. Your first morning is for walking, not queueing.',
+  },
+  {
+    title: 'Family-run lodges, chosen by walking',
+    body: 'Warm, clean teahouses picked over years on foot — never by a booking engine. The ones where the kitchen smells like thukpa at seven.',
+  },
+  {
+    title: 'Mountain kitchens, real food',
+    body: 'Local produce with international warmth. Dinner is the day’s slowest hour, and the best — snow views, tea, and a table full of stories.',
+  },
+  {
+    title: 'Oxygen, monitoring, margin',
+    body: 'Supplemental oxygen and first aid with every group, daily altitude checks, contingency days built in, and two leaders who know every exit.',
+  },
+  {
+    title: 'Footprint, accounted for',
+    body: 'A measured offset for every flight and footprint, and a share of every booking returned to trail restoration and school funds in the valleys.',
+  },
+]
+
+export const tripsFaqs = [
+  {
+    q: 'How far in advance should I book?',
+    a: 'Eight to twelve months for spring and autumn; two to four for shoulder dates. Private journeys and Upper Mustang benefit from earlier — restricted permits are capped at eight travellers per guide, and we hold the slots you need before the season opens.',
+  },
+  {
+    q: 'What exactly does the price include?',
+    a: 'Both leaders, every permit, family-run lodge stays, all meals on the trail, ground transport in Nepal, supplemental oxygen and first aid, daily altitude checks, and a measured carbon offset. International flights are the one big thing we don’t handle — and we’ll happily help you route them.',
+  },
+  {
+    q: 'How small are the groups, really?',
+    a: 'Never more than eight travellers, and in practice most groups run four to six. With two leaders, the ratio on the trail is one guide for every four people — small enough that the mountain, not the queue, sets the pace.',
+  },
+  {
+    q: 'Can I travel privately or as a family?',
+    a: 'Yes — that is our favourite work. Private departures run on your dates, at your pace, with the same leaders and the same inclusions. Families with younger walkers are usually best matched to Langtang, the Kathmandu foothills, or Mardi Himal.',
+  },
+  {
+    q: 'What if I’ve never trekked before?',
+    a: 'Start with Langtang Valley, the Kathmandu foothills, or Mardi Himal. Most journeys ask for four to seven walking hours a day over several days — acclimatisation and rest days are built in, and your leaders pace the altitude, not the trail rating. Many of our strongest Base Camp groups started exactly here.',
   },
 ]
