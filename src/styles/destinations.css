@@ -384,8 +384,8 @@
 }
 
 .dp-rail__title em {
-  font-family: var(--serif);
-  font-style: italic;
+  font-family: var(--display);
+  font-style: normal;
   color: var(--sand);
 }
 
@@ -669,8 +669,8 @@
 }
 
 .dp-explorer__panel h3 em {
-  font-family: var(--serif);
-  font-style: italic;
+  font-family: var(--display);
+  font-style: normal;
   color: var(--sage);
 }
 
