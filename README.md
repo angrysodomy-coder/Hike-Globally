@@ -46,4 +46,6 @@ npm run build
 - `src/styles.css` — visual system, motion and responsive layouts
 - `src/styles/destinations.css` — isolated `dp-` design system for the destinations page
 - `src/styles/trips.css` — isolated `tp-` design system for the trips page
+- `src/styles/blog.css` — the single article design for every blog post: type scale
+  and the symmetric vertical rhythm every block keeps above and below itself
 - `public/images/` — optimized local photography and credits
