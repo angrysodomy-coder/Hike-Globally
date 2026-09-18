@@ -1,0 +1,689 @@
+/* ============================================================
+   Blog — the single article design for every Hike Globally post
+   ------------------------------------------------------------
+   One layout, one type system, shared by all blog content:
+     SummerFamilyTreksBlog.jsx (full markdown article) and any
+     future post rendered through src/components/BlogPage.jsx.
+
+   Type system
+   -----------
+   Headings: 'Cal Sans' (weight 400 — the face is a display cut,
+     the hierarchy comes from size, not weight).
+   Body:     'DM Sans' (400 regular, 600 for emphasis).
+
+   Article scale (desktop, 760px column)
+     H1  clamp(38px, 5.2vw, 72px)  lh 1.06  ls -0.02em  (hero title)
+     H2  clamp(28px, 3.4vw, 42px)  lh 1.10  ls -0.015em (sections)
+     H3  clamp(23px, 2.5vw, 29px)  lh 1.18  ls -0.01em
+     H4  21px                   lh 1.30  ls -0.005em
+     H5  18.5px                 lh 1.35  ls 0
+     H6  16.5px                 lh 1.40  ls 0
+     P   18px  DM Sans          lh 1.75  ls 0
+     Lead paragraph  21px       lh 1.62
+     List item       17px       lh 1.65
+     Table           15px       lh 1.55
+
+   Vertical rhythm
+     paragraph -> paragraph            32px
+     content  -> bullet list           42px   <- generous room above
+     bullet list -> content            42px   <- and below
+     around tables                     36px
+     before an H2 section              72px + 1px rule
+     before an H3                      48px
+     before an H4                      34px
+     heading -> following content      26px (H2) / 16px (H3) / 12px (H4+)
+   ============================================================ */
+
+/* ---------- Page shell ---------- */
+.blog-page {
+  position: fixed;
+  z-index: 1500;
+  inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--paper);
+  color: var(--ink);
+  animation: blog-page-in 0.45s var(--ease-out) both;
+}
+
+@keyframes blog-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+.blog-page__progress {
+  position: fixed;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--clay);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+/* ---------- Sticky bar ---------- */
+.blog-bar {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 68px;
+  padding-inline: clamp(18px, 4vw, 44px);
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+}
+
+.blog-bar__close {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.blog-bar__close:hover {
+  border-color: var(--ink);
+  color: var(--clay);
+}
+
+.blog-bar__title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-align: center;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.blog-bar__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--white);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.blog-bar__cta:hover {
+  background: var(--clay);
+}
+
+/* ---------- Hero ---------- */
+.blog-hero {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: clamp(430px, 62vh, 620px);
+  padding: clamp(64px, 9vw, 120px) clamp(20px, 5vw, 44px);
+  overflow: hidden;
+  background: var(--forest-deep);
+}
+
+.blog-hero__media {
+  position: absolute;
+  inset: 0;
+}
+
+.blog-hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.52;
+  transform: scale(1.05);
+  animation: blog-hero-in 1.3s var(--ease-out) both;
+}
+
+@keyframes blog-hero-in {
+  from {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+  to {
+    opacity: 0.52;
+    transform: scale(1);
+  }
+}
+
+.blog-hero__media::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(29, 53, 87, 0.5) 0%, rgba(29, 53, 87, 0.72) 58%, rgba(29, 53, 87, 0.9) 100%);
+  content: '';
+}
+
+.blog-hero__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 960px;
+  animation: fade-up 0.8s 0.15s var(--ease-out) both;
+}
+
+/* Optional category kicker, rendered only when a post supplies one. */
+.blog-hero__kicker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 22px;
+  color: var(--sand);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.blog-hero__kicker::before,
+.blog-hero__kicker::after {
+  width: 30px;
+  height: 1px;
+  background: rgba(241, 250, 238, 0.45);
+  content: '';
+}
+
+.blog-hero__inner h1 {
+  margin: 0;
+  color: var(--white);
+  font-family: var(--display);
+  font-size: clamp(38px, 5.2vw, 72px);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* ---------- Layout: contents rail + article column ---------- */
+.blog-layout {
+  display: grid;
+  grid-template-columns: 264px minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 72px);
+  width: min(1240px, calc(100% - 48px));
+  margin-inline: auto;
+  padding-block: clamp(44px, 6vw, 80px) clamp(56px, 8vw, 104px);
+}
+
+.blog-contents {
+  align-self: start;
+  position: sticky;
+  top: 96px;
+}
+
+.blog-contents__inner {
+  max-height: calc(100vh - 130px);
+  padding: 22px 20px;
+  border: 1px solid var(--line);
+  background: var(--card-surface);
+  overflow-y: auto;
+}
+
+.blog-contents .eyebrow {
+  margin-bottom: 16px;
+  font-size: 10px;
+}
+
+.blog-contents nav {
+  display: grid;
+  gap: 2px;
+}
+
+.blog-contents nav button {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 10px;
+  border-left: 2px solid transparent;
+  background: transparent;
+  color: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.blog-contents nav button span {
+  flex: none;
+  color: var(--sage);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.blog-contents nav button:hover {
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--ink);
+}
+
+.blog-contents nav button.is-active {
+  border-left-color: var(--clay);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.blog-contents nav button.is-active span {
+  color: var(--clay);
+}
+
+/* ---------- Article typography (markdown output) ---------- */
+.blog-article {
+  /* Scale + rhythm tokens (see the table at the top of this file). */
+  --blog-h2: clamp(28px, 3.4vw, 42px);
+  --blog-h3: clamp(23px, 2.5vw, 29px);
+  --blog-h4: 21px;
+  --blog-h5: 18.5px;
+  --blog-h6: 16.5px;
+  --blog-space: 32px;           /* paragraph to paragraph */
+  --blog-space-list: 42px;      /* room above AND below bullet lists */
+  --blog-space-table: 36px;     /* room around tables */
+  --blog-section-gap: 72px;     /* before an H2 section */
+  --blog-h3-gap: 48px;          /* before an H3 */
+  --blog-h4-gap: 34px;          /* before an H4 and smaller */
+  max-width: 760px;
+}
+
+/* Base block rhythm: every block starts 32px below the one before it. */
+.blog-article > * + * {
+  margin-top: var(--blog-space);
+}
+
+/* Bullet lists and tables get clearly more room than plain paragraphs —
+   the content above and below them must never sit flush. */
+.blog-article > * + ul,
+.blog-article > ul + * {
+  margin-top: var(--blog-space-list);
+}
+
+.blog-article > * + .blog-table-wrap,
+.blog-article > .blog-table-wrap + * {
+  margin-top: var(--blog-space-table);
+}
+
+/* --- Headings: Cal Sans, every level --- */
+.blog-article h2 {
+  margin-top: var(--blog-section-gap);
+  margin-bottom: 26px;
+  padding-top: 30px;
+  border-top: 1px solid var(--line);
+  font-family: var(--display);
+  font-size: var(--blog-h2);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  scroll-margin-top: 96px;
+  text-wrap: balance;
+}
+
+.blog-article h2:first-child {
+  margin-top: 0;
+  border-top: 0;
+  padding-top: 0;
+}
+
+.blog-article h3 {
+  margin-top: var(--blog-h3-gap);
+  margin-bottom: 16px;
+  font-family: var(--display);
+  font-size: var(--blog-h3);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.18;
+  text-wrap: balance;
+}
+
+.blog-article h4 {
+  margin-top: var(--blog-h4-gap);
+  margin-bottom: 12px;
+  font-family: var(--display);
+  font-size: var(--blog-h4);
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  line-height: 1.3;
+}
+
+.blog-article h5 {
+  margin-top: var(--blog-h4-gap);
+  margin-bottom: 10px;
+  font-family: var(--display);
+  font-size: var(--blog-h5);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+.blog-article h6 {
+  margin-top: var(--blog-h4-gap);
+  margin-bottom: 10px;
+  font-family: var(--display);
+  font-size: var(--blog-h6);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.4;
+}
+
+/* Markdown `**bold**` inside a heading is emphasis syntax, not a weight
+   change — Cal Sans is a single-weight display face. */
+.blog-article h2 strong,
+.blog-article h3 strong,
+.blog-article h4 strong,
+.blog-article h5 strong,
+.blog-article h6 strong {
+  font-weight: 400;
+}
+
+/* --- Body: DM Sans --- */
+.blog-article p {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.75;
+}
+
+/* Opening standfirst: one step up from body, a touch lighter. */
+.blog-article > p:first-of-type {
+  color: var(--ink-soft);
+  font-size: 21px;
+  line-height: 1.62;
+}
+
+.blog-article strong {
+  color: var(--forest-deep);
+  font-weight: 600;
+}
+
+/* --- Bullet lists --- */
+.blog-article ul {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.blog-article li {
+  position: relative;
+  padding-left: 28px;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.65;
+}
+
+.blog-article li::before {
+  position: absolute;
+  top: 0.62em;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sage);
+  content: '';
+}
+
+/* --- Tables --- */
+.blog-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  background: var(--card-surface);
+}
+
+.blog-article table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.blog-article th,
+.blog-article td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.blog-article thead th {
+  background: var(--ink);
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.blog-article tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.blog-article tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.blog-article td:first-child {
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+/* --- Blocks future posts may use (parser can emit them without changes) --- */
+.blog-article blockquote {
+  margin: 0;
+  padding-left: 24px;
+  border-left: 2px solid var(--clay);
+  color: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 20px;
+  line-height: 1.6;
+}
+
+.blog-article blockquote p {
+  font-size: inherit;
+}
+
+.blog-article hr {
+  height: 1px;
+  margin: 0;
+  border: 0;
+  background: var(--line);
+}
+
+.blog-article img {
+  width: 100%;
+  margin: 0;
+  border-radius: 3px;
+}
+
+/* ---------- Article end ---------- */
+.blog-end {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  padding: clamp(44px, 6vw, 76px) 24px clamp(64px, 9vw, 110px);
+  border-top: 1px solid var(--line);
+  background: var(--card-surface);
+}
+
+.blog-end__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 17px 32px;
+  border-radius: 999px;
+  background: var(--clay);
+  color: var(--white);
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.25s var(--ease-out), background 0.25s ease;
+}
+
+.blog-end__cta:hover {
+  background: var(--ink);
+  transform: translateY(-2px);
+}
+
+.blog-end__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.blog-end__back:hover {
+  color: var(--ink);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1023px) {
+  .blog-layout {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(1240px, calc(100% - 40px));
+  }
+
+  .blog-contents {
+    position: static;
+  }
+
+  .blog-contents__inner {
+    max-height: none;
+  }
+
+  .blog-contents nav {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0 14px;
+  }
+}
+
+@media (max-width: 620px) {
+  /* Tighter rhythm on phones — still with real room around lists. */
+  .blog-article {
+    --blog-space: 26px;
+    --blog-space-list: 34px;
+    --blog-space-table: 30px;
+    --blog-section-gap: 56px;
+    --blog-h3-gap: 38px;
+    --blog-h4-gap: 28px;
+  }
+
+  .blog-article h2 {
+    margin-bottom: 20px;
+    padding-top: 24px;
+    scroll-margin-top: 84px;
+  }
+
+  .blog-article h3 {
+    margin-bottom: 12px;
+  }
+
+  .blog-article ul {
+    gap: 10px;
+  }
+
+  .blog-bar {
+    gap: 10px;
+    height: 60px;
+  }
+
+  .blog-bar__title {
+    display: none;
+  }
+
+  .blog-bar__close,
+  .blog-bar__cta {
+    padding: 10px 14px;
+  }
+
+  .blog-hero {
+    min-height: clamp(340px, 56vh, 460px);
+  }
+
+  .blog-hero__inner h1 {
+    font-size: clamp(32px, 9vw, 44px);
+  }
+
+  .blog-hero__kicker {
+    font-size: 9px;
+  }
+
+  .blog-article p {
+    font-size: 17px;
+  }
+
+  .blog-article > p:first-of-type {
+    font-size: 19px;
+  }
+
+  .blog-article li {
+    font-size: 16px;
+  }
+
+  .blog-contents nav {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-page,
+  .blog-hero__media img,
+  .blog-hero__inner {
+    animation: none;
+  }
+
+  .blog-hero__media img {
+    opacity: 0.52;
+    transform: none;
+  }
+}
