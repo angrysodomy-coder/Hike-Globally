@@ -10,9 +10,15 @@
  * The rhythm is now symmetric and additive: every top-level block declares the
  * gap it keeps above AND below itself (`margin-block: var(--blog-space)`), and
  * `.blog-article` is a single-column grid, where margins never collapse, so both
- * sides are always paid for. Two consecutive paragraphs are therefore 44px apart
- * (22 + 22); a list or a table keeps its own, larger side; and the paragraph
+ * sides are always paid for. Two consecutive paragraphs are therefore 26px apart
+ * (13 + 13); a list or a table keeps its own, larger side; and the paragraph
  * under a heading gives up its top gap so headings stay with their copy.
+ *
+ * The paragraph side was cut by 40% (22 -> 13 on desktop, 18 -> 11 on phones)
+ * after two rounds of feedback that the article still breathed too much between
+ * paragraphs. The heading -> its paragraph gaps came down by the same 40%, so a
+ * heading keeps sitting closer to the copy it introduces than two paragraphs sit
+ * to each other.
  *
  * This check fails if a paragraph loses its gap on either side, if the article
  * stops being a grid (which would collapse those gaps away), if a list or table
@@ -31,9 +37,9 @@ const css = readFileSync(resolve(here, '../src/styles/blog.css'), 'utf8')
 /* The smallest and largest gap a block may keep on one of its own sides: small
  * enough that copy never sits flush, large enough that a column of paragraphs
  * stays an article and not a wall of whitespace. The design now keeps a tight
- * 22px (18px on phones) side, so the floor sits just under that — it still
+ * 13px (11px on phones) side, so the floor sits just under that — it still
  * catches the original bug, a paragraph zeroed flush against its neighbour. */
-const MIN_SIDE = 16
+const MIN_SIDE = 10
 const MAX_SIDE = 40
 
 const stripComments = (text) => text.replace(/\/\*[\s\S]*?\*\//g, '')
@@ -232,10 +238,10 @@ function blockSides(partTest, width) {
 
 let failures = 0
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b)
-const check = (label, actual, expected) => {
+const check = (label, actual, expected, wantLabel) => {
   const ok = typeof expected === 'function' ? expected(actual) : same(actual, expected)
   if (!ok) failures += 1
-  const want = typeof expected === 'function' ? `a value between ${MIN_SIDE} and ${MAX_SIDE}` : JSON.stringify(expected)
+  const want = wantLabel ?? (typeof expected === 'function' ? `a value between ${MIN_SIDE} and ${MAX_SIDE}` : JSON.stringify(expected))
   console.log(`${ok ? 'PASS' : 'FAIL'} ${label}${ok ? '' : ` (got ${JSON.stringify(actual)}, want ${want})`}`)
 }
 
@@ -262,11 +268,11 @@ const H4 = or(isBase, isH4)
 /* 1023px and below swap the contents rail for a stacked one; 620px and below
  * retune the rhythm tokens. Both sides of a gap must hold at every width. */
 const VIEWS = [
-  { width: 1440, label: 'desktop 1440', space: 22, list: 42, table: 36, section: 62, h3Gap: 38, h4Gap: 30, h2Below: 26, h3Below: 16, h4Below: 12 },
-  { width: 1024, label: 'laptop 1024', space: 22, list: 42, table: 36, section: 62, h3Gap: 38, h4Gap: 30, h2Below: 26, h3Below: 16, h4Below: 12 },
-  { width: 768, label: 'tablet 768', space: 22, list: 42, table: 36, section: 62, h3Gap: 38, h4Gap: 30, h2Below: 26, h3Below: 16, h4Below: 12 },
-  { width: 620, label: 'phone 620', space: 18, list: 34, table: 30, section: 48, h3Gap: 30, h4Gap: 24, h2Below: 20, h3Below: 12, h4Below: 12 },
-  { width: 380, label: 'phone 380', space: 18, list: 34, table: 30, section: 48, h3Gap: 30, h4Gap: 24, h2Below: 20, h3Below: 12, h4Below: 12 },
+  { width: 1440, label: 'desktop 1440', space: 13, list: 42, table: 36, section: 53, h3Gap: 29, h4Gap: 21, h2Below: 16, h3Below: 10, h4Below: 7 },
+  { width: 1024, label: 'laptop 1024', space: 13, list: 42, table: 36, section: 53, h3Gap: 29, h4Gap: 21, h2Below: 16, h3Below: 10, h4Below: 7 },
+  { width: 768, label: 'tablet 768', space: 13, list: 42, table: 36, section: 53, h3Gap: 29, h4Gap: 21, h2Below: 16, h3Below: 10, h4Below: 7 },
+  { width: 620, label: 'phone 620', space: 11, list: 34, table: 30, section: 41, h3Gap: 23, h4Gap: 17, h2Below: 12, h3Below: 7, h4Below: 7 },
+  { width: 380, label: 'phone 380', space: 11, list: 34, table: 30, section: 41, h3Gap: 23, h4Gap: 17, h2Below: 12, h3Below: 7, h4Below: 7 },
 ]
 
 for (const view of VIEWS) {
@@ -308,6 +314,15 @@ for (const view of VIEWS) {
   check(`${label}: H2 -> its paragraph`, h2.bottom + paraUnderHeading.top, view.h2Below)
   check(`${label}: H3 -> its paragraph`, h3.bottom + paraUnderHeading.top, view.h3Below)
   check(`${label}: H4 -> its paragraph`, h4.bottom + paraUnderHeading.top, view.h4Below)
+
+  /* Tightening the paragraph side must not cost a heading its grip on the copy
+   * below it: that gap has to stay smaller than a paragraph-to-paragraph gap,
+   * otherwise a heading reads as just another block of text. */
+  for (const [name, below] of [['H2', view.h2Below], ['H3', view.h3Below], ['H4', view.h4Below]]) {
+    check(`${label}: ${name} stays tighter to its paragraph than paragraphs sit to each other`,
+      below + paraUnderHeading.top, (value) => value < view.space * 2,
+      `a value under ${view.space * 2}px`)
+  }
 
   /* A list under a heading keeps its own roomy top gap instead of collapsing
    * into the heading's margin-bottom. */
