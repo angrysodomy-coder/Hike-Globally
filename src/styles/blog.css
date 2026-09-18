@@ -24,14 +24,28 @@
      Table           15px       lh 1.55
 
    Vertical rhythm
-     paragraph -> paragraph            32px
-     content  -> bullet list           42px   <- generous room above
-     bullet list -> content            42px   <- and below
-     around tables                     36px
-     before an H2 section              72px + 1px rule
-     before an H3                      48px
-     before an H4                      34px
-     heading -> following content      26px (H2) / 16px (H3) / 12px (H4+)
+   ---------------
+   Spacing is symmetric and additive: every block declares the room it keeps
+   ABOVE and BELOW itself (margin-block), and .blog-article is a single-column
+   grid, so margins never collapse. The gap between two neighbours is the sum
+   of the two sides each one asks for.
+
+     a paragraph's own side            32px  (--blog-space)
+     paragraph -> paragraph            64px  (32 below + 32 above)
+     bullet list (own side)            42px  -> 74px beside a paragraph
+     table       (own side)            36px  -> 68px beside a paragraph
+     before an H2 section              72px + 1px rule  (32 + 40)
+     before an H3                      48px              (32 + 16)
+     before an H4                      40px              (32 + 8)
+     heading -> its paragraph           26px (H2) / 16px (H3) / 12px (H4+)
+                                       <- the paragraph under a heading gives up
+                                          its own top gap so headings stay with
+                                          the copy they introduce; a list or a
+                                          table under a heading keeps its own,
+                                          roomier top gap
+
+   scripts/check-blog-paragraph-gap.mjs resolves these tokens per breakpoint and
+   fails if a paragraph ever renders without room on one side.
    ============================================================ */
 
 /* ---------- Page shell ---------- */
@@ -309,33 +323,44 @@
   --blog-h4: 21px;
   --blog-h5: 18.5px;
   --blog-h6: 16.5px;
-  --blog-space: 32px;           /* paragraph to paragraph */
-  --blog-space-list: 42px;      /* room above AND below bullet lists */
-  --blog-space-table: 36px;     /* room around tables */
-  --blog-section-gap: 72px;     /* before an H2 section */
-  --blog-h3-gap: 48px;          /* before an H3 */
-  --blog-h4-gap: 34px;          /* before an H4 and smaller */
+  --blog-space: 32px;           /* a paragraph's own side: above AND below */
+  --blog-space-list: 42px;      /* a bullet list's own side, above and below */
+  --blog-space-table: 36px;     /* a table's own side, above and below */
+  --blog-section-gap: 40px;     /* an H2 adds this to the 32px above it -> 72px */
+  --blog-h3-gap: 16px;          /* -> 48px before an H3 */
+  --blog-h4-gap: 8px;           /* -> 40px before an H4 and smaller */
+  /* A single-column grid keeps block margins from collapsing, so the gap a
+     block asks for is real on both of its sides — the first block gets its gap
+     above and the last one gets its gap below, not just the ones in between. */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   max-width: 760px;
 }
 
-/* Base block rhythm: every block starts 32px below the one before it. */
-.blog-article > * + * {
-  margin-top: var(--blog-space);
+/* Base block rhythm: every block keeps --blog-space above it and the same room
+   below it, so no two blocks ever sit flush. */
+.blog-article > * {
+  margin-block: var(--blog-space);
 }
 
-/* Bullet lists and tables get clearly more room than plain paragraphs —
-   the content above and below them must never sit flush. */
-.blog-article > * + ul,
-.blog-article > ul + * {
-  margin-top: var(--blog-space-list);
+/* Bullet lists and tables keep more room than plain paragraphs on both sides —
+   the content above and below them must never crowd them. */
+.blog-article > ul {
+  margin-block: var(--blog-space-list);
 }
 
-.blog-article > * + .blog-table-wrap,
-.blog-article > .blog-table-wrap + * {
-  margin-top: var(--blog-space-table);
+.blog-article > .blog-table-wrap {
+  margin-block: var(--blog-space-table);
 }
 
 /* --- Headings: Cal Sans, every level --- */
+/* The paragraph right under a heading gives up its own top gap: a heading
+   belongs to the copy it introduces, so only its margin-bottom separates the
+   two. Lists and tables are excluded — they keep their own roomier top gap. */
+.blog-article > :is(h2, h3, h4, h5, h6) + p {
+  margin-top: 0;
+}
+
 .blog-article h2 {
   margin-top: var(--blog-section-gap);
   margin-bottom: 26px;
@@ -408,8 +433,10 @@
 }
 
 /* --- Body: DM Sans --- */
+/* Only the inline margins are reset here — the vertical gap every paragraph
+   keeps belongs to the block rhythm above, so it must not be zeroed. */
 .blog-article p {
-  margin: 0;
+  margin-inline: 0;
   color: var(--ink);
   font-family: var(--sans);
   font-size: 18px;
@@ -431,10 +458,12 @@
 }
 
 /* --- Bullet lists --- */
+/* Vertical margins come from the block rhythm (--blog-space-list); only the
+   list's inline offsets are reset. */
 .blog-article ul {
   display: grid;
   gap: 12px;
-  margin: 0;
+  margin-inline: 0;
   padding: 0;
   list-style: none;
 }
@@ -508,8 +537,10 @@
 }
 
 /* --- Blocks future posts may use (parser can emit them without changes) --- */
+/* These sit in the same rhythm: the block rule gives them a gap above and
+   below, so none of them resets its vertical margins. */
 .blog-article blockquote {
-  margin: 0;
+  margin-inline: 0;
   padding-left: 24px;
   border-left: 2px solid var(--clay);
   color: var(--ink-soft);
@@ -519,19 +550,20 @@
 }
 
 .blog-article blockquote p {
+  /* Nested copy is not a top-level block: no rhythm of its own here. */
+  margin-block: 0;
   font-size: inherit;
 }
 
 .blog-article hr {
   height: 1px;
-  margin: 0;
+  margin-inline: 0;
   border: 0;
   background: var(--line);
 }
 
 .blog-article img {
   width: 100%;
-  margin: 0;
   border-radius: 3px;
 }
 
@@ -608,14 +640,15 @@
 }
 
 @media (max-width: 620px) {
-  /* Tighter rhythm on phones — still with real room around lists. */
+  /* Tighter rhythm on phones — every side still gets its own gap, so a
+     paragraph-to-paragraph gap is 52px (26 + 26) and lists stay airy. */
   .blog-article {
     --blog-space: 26px;
     --blog-space-list: 34px;
     --blog-space-table: 30px;
-    --blog-section-gap: 56px;
-    --blog-h3-gap: 38px;
-    --blog-h4-gap: 28px;
+    --blog-section-gap: 30px;   /* 26 + 30 = 56px before an H2 section */
+    --blog-h3-gap: 12px;        /* 26 + 12 = 38px before an H3 */
+    --blog-h4-gap: 6px;         /* 26 + 6 = 32px before an H4 and smaller */
   }
 
   .blog-article h2 {
