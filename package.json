@@ -8,12 +8,7 @@
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
     "lint": "eslint .",
-    "test": "esbuild scripts/smoke-trips.entry.jsx --bundle --format=cjs --platform=node --outfile=scripts/.smoke-bundle.cjs --loader:.js=jsx --jsx=automatic --log-level=warning && node scripts/smoke-trips.mjs && esbuild scripts/smoke-destinations.entry.jsx --bundle --format=cjs --platform=node --outfile=scripts/.smoke-dest-bundle.cjs --loader:.js=jsx --loader:.md=text --jsx=automatic --log-level=warning && node scripts/smoke-destinations.mjs && esbuild scripts/smoke-trips-page.entry.jsx --bundle --format=cjs --platform=node --outfile=scripts/.smoke-trips-page-bundle.cjs --loader:.js=jsx --loader:.md=text --jsx=automatic --log-level=warning && node scripts/smoke-trips-page.mjs && node scripts/check-rail-heading.mjs && node scripts/check-rail-width.mjs && node scripts/check-rail-cta-gap.mjs && node scripts/check-hero-title.mjs && node scripts/check-blog-content.mjs",
-    "cms:dev": "npm --prefix cms run dev",
-    "cms:build": "npm --prefix cms run build",
-    "cms:start": "npm --prefix cms run start",
-    "cms:seed": "npm --prefix cms run seed",
-    "cms:db": "npm --prefix cms run db:start"
+    "test": "esbuild scripts/smoke-trips.entry.jsx --bundle --format=cjs --platform=node --outfile=scripts/.smoke-bundle.cjs --loader:.js=jsx --jsx=automatic --log-level=warning && node scripts/smoke-trips.mjs && esbuild scripts/smoke-destinations.entry.jsx --bundle --format=cjs --platform=node --outfile=scripts/.smoke-dest-bundle.cjs --loader:.js=jsx --loader:.md=text --jsx=automatic --log-level=warning && node scripts/smoke-destinations.mjs && esbuild scripts/smoke-trips-page.entry.jsx --bundle --format=cjs --platform=node --outfile=scripts/.smoke-trips-page-bundle.cjs --loader:.js=jsx --loader:.md=text --jsx=automatic --log-level=warning && node scripts/smoke-trips-page.mjs && node scripts/check-rail-heading.mjs && node scripts/check-rail-width.mjs && node scripts/check-rail-cta-gap.mjs && node scripts/check-hero-title.mjs && node scripts/check-blog-content.mjs"
   },
   "dependencies": {
     "@fontsource/cal-sans": "^5.3.0",
