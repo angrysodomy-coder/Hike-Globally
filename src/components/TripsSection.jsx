@@ -1,6 +1,7 @@
 import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react'
-import { trips } from '../data/content'
+import { trips as staticTrips } from '../data/content'
+import { useTrips } from '../services/payload/trips'
 import { Link } from '../lib/router'
 import Reveal from './Reveal'
 
@@ -202,7 +203,9 @@ function TripsRail({ list, onBook }) {
   )
 }
 
-export default function TripsSection({ onBook }) {
+export default function TripsSection({ onBook, trips: propTrips }) {
+  const { trips: liveTrips } = useTrips()
+  const trips = propTrips || liveTrips || staticTrips
   return (
     <section id="trips" className="trips-section section-pad" aria-labelledby="trips-title">
       <div className="shell">

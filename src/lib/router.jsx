@@ -22,12 +22,12 @@ import {
 
 const RouterContext = createContext(null)
 
-export const ROUTES = ['/', '/destinations', '/trips']
+export const ROUTES = ['/', '/destinations', '/trips', '/blog']
 
 export function normalizePath(pathname) {
   if (!pathname || pathname === '/') return '/'
   const trimmed = pathname.replace(/\/+$/, '') || '/'
-  return ROUTES.includes(trimmed) ? trimmed : '/'
+  return trimmed
 }
 
 export function parseHref(href) {

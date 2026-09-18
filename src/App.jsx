@@ -8,10 +8,15 @@ import SummerFamilyTreksBlog from './components/SummerFamilyTreksBlog'
 import HomePage from './pages/HomePage'
 import { useRouter } from './lib/router'
 
-/* The destinations and trips pages pull in framer-motion + GSAP;
+/* The destinations, trips, and detail pages pull in framer-motion + GSAP;
    load them only when visited. */
 const DestinationsPage = lazy(() => import('./pages/DestinationsPage'))
+const DestinationDetailPage = lazy(() => import('./pages/DestinationDetailPage'))
 const TripsPage = lazy(() => import('./pages/TripsPage'))
+const TripDetailPage = lazy(() => import('./pages/TripDetailPage'))
+const BlogListPage = lazy(() => import('./pages/BlogListPage'))
+const BlogDetailPage = lazy(() => import('./pages/BlogDetailPage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 export default function App() {
   const { path } = useRouter()
@@ -65,23 +70,67 @@ export default function App() {
     setDiscovery({ ...filters, key: Date.now() })
   }
 
+  const renderCurrentRoute = () => {
+    if (path === '/') {
+      return <HomePage discovery={discovery} onFind={findTrips} onRead={handleRead} onBook={openBooking} />
+    }
+    if (path === '/destinations') {
+      return (
+        <Suspense fallback={null}>
+          <DestinationsPage onBook={openBooking} />
+        </Suspense>
+      )
+    }
+    if (path.startsWith('/destinations/')) {
+      const slug = path.replace('/destinations/', '').trim()
+      return (
+        <Suspense fallback={null}>
+          <DestinationDetailPage slug={slug} onBook={openBooking} />
+        </Suspense>
+      )
+    }
+    if (path === '/trips') {
+      return (
+        <Suspense fallback={null}>
+          <TripsPage onBook={openBooking} />
+        </Suspense>
+      )
+    }
+    if (path.startsWith('/trips/')) {
+      const slug = path.replace('/trips/', '').trim()
+      return (
+        <Suspense fallback={null}>
+          <TripDetailPage slug={slug} onBook={openBooking} />
+        </Suspense>
+      )
+    }
+    if (path === '/blog') {
+      return (
+        <Suspense fallback={null}>
+          <BlogListPage onRead={handleRead} onBook={openBooking} />
+        </Suspense>
+      )
+    }
+    if (path.startsWith('/blog/')) {
+      const slug = path.replace('/blog/', '').trim()
+      return (
+        <Suspense fallback={null}>
+          <BlogDetailPage slug={slug} onBook={openBooking} />
+        </Suspense>
+      )
+    }
+    return (
+      <Suspense fallback={null}>
+        <NotFoundPage />
+      </Suspense>
+    )
+  }
+
   return (
     <div className="site-wrap">
       <Header onBook={openBooking} />
 
-      {path === '/destinations'
-        ? (
-          <Suspense fallback={null}>
-            <DestinationsPage onBook={openBooking} />
-          </Suspense>
-        )
-        : path === '/trips'
-          ? (
-            <Suspense fallback={null}>
-              <TripsPage onBook={openBooking} />
-            </Suspense>
-          )
-          : <HomePage discovery={discovery} onFind={findTrips} onRead={handleRead} onBook={openBooking} />}
+      {renderCurrentRoute()}
 
       <Footer onBook={openBooking} />
 
