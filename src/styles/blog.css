@@ -30,13 +30,13 @@
    grid, so margins never collapse. The gap between two neighbours is the sum
    of the two sides each one asks for.
 
-     a paragraph's own side            32px  (--blog-space)
-     paragraph -> paragraph            64px  (32 below + 32 above)
-     bullet list (own side)            42px  -> 74px beside a paragraph
-     table       (own side)            36px  -> 68px beside a paragraph
-     before an H2 section              72px + 1px rule  (32 + 40)
-     before an H3                      48px              (32 + 16)
-     before an H4                      40px              (32 + 8)
+     a paragraph's own side            22px  (--blog-space)
+     paragraph -> paragraph            44px  (22 below + 22 above)
+     bullet list (own side)            42px  -> 64px beside a paragraph
+     table       (own side)            36px  -> 58px beside a paragraph
+     before an H2 section              62px + 1px rule  (22 + 40)
+     before an H3                      38px              (22 + 16)
+     before an H4                      30px              (22 + 8)
      heading -> its paragraph           26px (H2) / 16px (H3) / 12px (H4+)
                                        <- the paragraph under a heading gives up
                                           its own top gap so headings stay with
@@ -323,12 +323,12 @@
   --blog-h4: 21px;
   --blog-h5: 18.5px;
   --blog-h6: 16.5px;
-  --blog-space: 32px;           /* a paragraph's own side: above AND below */
+  --blog-space: 22px;           /* a paragraph's own side: above AND below */
   --blog-space-list: 42px;      /* a bullet list's own side, above and below */
   --blog-space-table: 36px;     /* a table's own side, above and below */
-  --blog-section-gap: 40px;     /* an H2 adds this to the 32px above it -> 72px */
-  --blog-h3-gap: 16px;          /* -> 48px before an H3 */
-  --blog-h4-gap: 8px;           /* -> 40px before an H4 and smaller */
+  --blog-section-gap: 40px;     /* an H2 adds this to the 22px above it -> 62px */
+  --blog-h3-gap: 16px;          /* -> 38px before an H3 */
+  --blog-h4-gap: 8px;           /* -> 30px before an H4 and smaller */
   /* A single-column grid keeps block margins from collapsing, so the gap a
      block asks for is real on both of its sides — the first block gets its gap
      above and the last one gets its gap below, not just the ones in between. */
@@ -641,14 +641,14 @@
 
 @media (max-width: 620px) {
   /* Tighter rhythm on phones — every side still gets its own gap, so a
-     paragraph-to-paragraph gap is 52px (26 + 26) and lists stay airy. */
+     paragraph-to-paragraph gap is 36px (18 + 18) and lists stay airy. */
   .blog-article {
-    --blog-space: 26px;
+    --blog-space: 18px;
     --blog-space-list: 34px;
     --blog-space-table: 30px;
-    --blog-section-gap: 30px;   /* 26 + 30 = 56px before an H2 section */
-    --blog-h3-gap: 12px;        /* 26 + 12 = 38px before an H3 */
-    --blog-h4-gap: 6px;         /* 26 + 6 = 32px before an H4 and smaller */
+    --blog-section-gap: 30px;   /* 18 + 30 = 48px before an H2 section */
+    --blog-h3-gap: 12px;        /* 18 + 12 = 30px before an H3 */
+    --blog-h4-gap: 6px;         /* 18 + 6 = 24px before an H4 and smaller */
   }
 
   .blog-article h2 {
