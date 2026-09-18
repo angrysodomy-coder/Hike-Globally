@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, ArrowUpRight, CalendarDays, Footprints, Gauge, MapPin, Sparkles } from 'lucide-react'
-import { destinationRegions, trips } from '../../data/content'
+import { destinationRegions, trips as staticTrips } from '../../data/content'
+import { useTrips } from '../../services/payload/trips'
 import Reveal from '../Reveal'
 
 const EASE = [0.22, 1, 0.36, 1]
@@ -38,12 +39,14 @@ function ExplorerTripCard({ trip, onBook }) {
   )
 }
 
-export default function RegionExplorer({ selected, onSelect, onBook }) {
+export default function RegionExplorer({ selected, onSelect, onBook, trips: propTrips }) {
+  const { trips: liveTrips } = useTrips()
+  const trips = propTrips || liveTrips || staticTrips
   const region = destinationRegions.find((r) => r.id === selected) || null
   const list = useMemo(() => {
     if (!region) return trips
-    return region.trips.map((id) => trips.find((t) => t.id === id)).filter(Boolean)
-  }, [region])
+    return region.trips.map((id) => trips.find((t) => t.id === id || t.slug === id)).filter(Boolean)
+  }, [region, trips])
 
   return (
     <section id="dp-explorer" className="dp-explorer section-pad" aria-labelledby="dp-explorer-title">

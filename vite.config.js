@@ -6,9 +6,29 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     allowedHosts: true,
+    proxy: {
+      '/admin': {
+        target: 'http://127.0.0.1:3000',
+        changeOrigin: true,
+      },
+      '/api': {
+        target: 'http://127.0.0.1:3000',
+        changeOrigin: true,
+      },
+    },
   },
   preview: {
     host: '0.0.0.0',
     allowedHosts: true,
+    proxy: {
+      '/admin': {
+        target: 'http://127.0.0.1:3000',
+        changeOrigin: true,
+      },
+      '/api': {
+        target: 'http://127.0.0.1:3000',
+        changeOrigin: true,
+      },
+    },
   },
 })
