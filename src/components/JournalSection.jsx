@@ -1,11 +1,8 @@
 import { ArrowRight, ArrowUpRight, Star, Clock } from 'lucide-react'
-import { articles as staticArticles } from '../data/content'
-import { useBlogs } from '../services/payload/blogs'
+import { articles } from '../data/content'
 import Reveal from './Reveal'
 
-export default function JournalSection({ onRead, articles: propArticles }) {
-  const { blogs: liveBlogs } = useBlogs()
-  const articles = propArticles || (liveBlogs && liveBlogs.length > 0 ? liveBlogs : staticArticles)
+export default function JournalSection({ onRead }) {
   const [featured, ...secondary] = articles
 
   return (

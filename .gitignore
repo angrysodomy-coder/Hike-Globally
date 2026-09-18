@@ -9,13 +9,3 @@ scripts/.smoke-dest-bundle.cjs
 !.env.example
 scripts/.blog-content-bundle.cjs
 scripts/.smoke-trips-page-bundle.cjs
-
-# CMS specific ignores
-cms/.next/
-cms/.pgdata/
-cms/media/
-cms/public/media/
-cms/.env
-cms/.env.*
-!cms/.env.example
-

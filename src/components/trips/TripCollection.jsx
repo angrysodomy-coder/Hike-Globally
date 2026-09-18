@@ -1,14 +1,12 @@
 import { useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, Clock3, Gauge, Mountain, Search, Sparkles } from 'lucide-react'
-import { trips as staticTrips } from '../../data/content'
-import { useTrips } from '../../services/payload/trips'
-import { Link } from '../../lib/router'
+import { trips } from '../../data/content'
 import Reveal from '../Reveal'
 
 const EASE = [0.22, 1, 0.36, 1]
 
-const REGIONS = ['All', ...new Set(staticTrips.map((t) => t.destination))]
+const REGIONS = ['All', ...new Set(trips.map((t) => t.destination))]
 const DIFFICULTIES = ['All', 'Easy', 'Moderate', 'Challenging']
 const SEASONS = ['All', 'Spring', 'Summer', 'Autumn', 'Winter']
 
@@ -57,9 +55,7 @@ function TripCard({ trip, index, onBook }) {
           <Sparkles size={12} aria-hidden="true" />
           {trip.location} · {trip.type}
         </p>
-        <h3 className="tp-card__title">
-          <Link href={`/trips/${trip.slug || trip.id}`}>{trip.title}</Link>
-        </h3>
+        <h3 className="tp-card__title">{trip.title}</h3>
         <p className="tp-card__moment">“{trip.highlight}”</p>
         <div className="tp-card__meta">
           <span><Clock3 size={14} aria-hidden="true" />{trip.duration}</span>
@@ -80,9 +76,7 @@ function TripCard({ trip, index, onBook }) {
   )
 }
 
-export default function TripCollection({ onBook, trips: propTrips }) {
-  const { trips: liveTrips } = useTrips()
-  const trips = propTrips || liveTrips || staticTrips
+export default function TripCollection({ onBook }) {
   const [query, setQuery] = useState('')
   const [region, setRegion] = useState('All')
   const [difficulty, setDifficulty] = useState('All')
@@ -99,7 +93,7 @@ export default function TripCollection({ onBook, trips: propTrips }) {
       return true
     })
     return [...list].sort(SORTERS[sort] || SORTERS.featured)
-  }, [query, region, difficulty, season, sort, trips])
+  }, [query, region, difficulty, season, sort])
 
   const filtersActive = query.trim() !== '' || region !== 'All' || difficulty !== 'All' || season !== 'All'
 

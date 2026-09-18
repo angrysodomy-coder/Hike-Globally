@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { ArrowRight } from 'lucide-react'
-import { destinations as staticDestinations } from '../data/content'
-import { useDestinations } from '../services/payload/destinations'
+import { destinations } from '../data/content'
 import Reveal from './Reveal'
 
 /* Pointer parallax only where a precise hover exists, and never against
@@ -101,9 +100,7 @@ function DestinationCard({ item, index }) {
   )
 }
 
-export default function DestinationsSection({ destinations: propDestinations }) {
-  const { destinations: liveDestinations } = useDestinations()
-  const destinations = propDestinations || liveDestinations || staticDestinations
+export default function DestinationsSection() {
   return (
     <section id="destinations" className="destinations-section section-pad" aria-labelledby="destinations-title">
       <div className="shell">
