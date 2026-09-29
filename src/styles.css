@@ -1033,7 +1033,8 @@ dd {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   /* Explicit rows match the three template-areas rows; auto-rows would never apply. */
-  grid-template-rows: repeat(3, clamp(224px, 25.5vh, 292px));
+  /* Laptop/desktop rows bumped ~110px taller so the bento cards read larger. */
+  grid-template-rows: repeat(3, clamp(334px, 36vh, 402px));
   gap: clamp(14px, 1.35vw, 20px);
   grid-template-areas:
     'far far far far mid mid'
@@ -2167,8 +2168,9 @@ dd {
   position: relative;
   /* Compact cards: the section heading, arrows and rail fit one viewport. */
   width: min(58vw, 800px);
-  height: clamp(420px, 36vw, 530px);
-  min-height: 420px;
+  /* Laptop/desktop cards raised ~110px taller for a fuller trek preview. */
+  height: clamp(530px, 43vw, 650px);
+  min-height: 530px;
   flex: 0 0 auto;
   overflow: hidden;
   background: var(--forest);
