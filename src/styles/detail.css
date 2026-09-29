@@ -1,0 +1,649 @@
+/* ============================================================
+   Detail pages — standalone trip pages (/trips/<slug>) and
+   journal article pages (/blog/<slug>).
+   ============================================================ */
+
+/* ---------- Trip detail ---------- */
+
+.trip-detail__hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: min(78svh, 760px);
+  padding: calc(var(--header-height) + 40px) 0 clamp(36px, 5vw, 64px);
+  color: var(--ivory);
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.trip-detail__hero-media,
+.trip-detail__hero-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.trip-detail__hero-media img {
+  object-fit: cover;
+}
+
+.trip-detail__hero-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgba(13, 27, 42, 0.86) 0%, rgba(13, 27, 42, 0.42) 46%, rgba(13, 27, 42, 0.28) 100%);
+}
+
+.trip-detail__hero-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.trip-detail__back,
+.article-page__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: clamp(20px, 3vw, 34px);
+  padding: 9px 16px;
+  border: 1px solid rgba(241, 250, 238, 0.36);
+  border-radius: 999px;
+  color: var(--ivory);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.25s var(--ease-out), border-color 0.25s var(--ease-out);
+}
+
+.trip-detail__back:hover,
+.article-page__back:hover {
+  background: rgba(241, 250, 238, 0.14);
+  border-color: rgba(241, 250, 238, 0.6);
+}
+
+.trip-detail__hero h1 {
+  margin: 14px 0 0;
+  font-family: var(--display);
+  font-size: clamp(40px, 6.4vw, 84px);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  color: var(--white);
+}
+
+.trip-detail__standfirst {
+  max-width: 62ch;
+  margin: 18px 0 0;
+  font-size: clamp(15.5px, 1.4vw, 18px);
+  line-height: 1.65;
+  color: rgba(241, 250, 238, 0.88);
+}
+
+.trip-detail__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  max-width: 760px;
+  margin: clamp(24px, 3.4vw, 40px) 0 0;
+  border: 1px solid rgba(241, 250, 238, 0.24);
+  background: rgba(241, 250, 238, 0.24);
+  backdrop-filter: blur(6px);
+}
+
+.trip-detail__stats > div {
+  padding: 14px 18px;
+  background: rgba(13, 27, 42, 0.55);
+}
+
+.trip-detail__stats dt {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(241, 250, 238, 0.72);
+}
+
+.trip-detail__stats dd {
+  margin: 7px 0 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--white);
+}
+
+/* ---------- Overview + booking rail ---------- */
+
+.trip-detail__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+  gap: clamp(32px, 5vw, 84px);
+  align-items: start;
+}
+
+.trip-detail__overview h2 {
+  margin: 14px 0 0;
+  font-family: var(--display);
+  font-size: clamp(28px, 3.2vw, 44px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+}
+
+.trip-detail__highlight {
+  margin: clamp(22px, 3vw, 34px) 0;
+  padding-left: 22px;
+  border-left: 2px solid var(--clay);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(20px, 2.1vw, 27px);
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.trip-detail__copy {
+  max-width: 66ch;
+  margin: 0 0 18px;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--ink-soft);
+}
+
+.trip-detail__facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1px;
+  margin: clamp(26px, 3.4vw, 44px) 0 0;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.trip-detail__facts > div {
+  padding: 16px 18px;
+  background: var(--card-surface);
+}
+
+.trip-detail__facts dt {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.trip-detail__facts dd {
+  margin: 7px 0 0;
+  font-size: 15.5px;
+  font-weight: 600;
+}
+
+/* ---------- Itinerary ---------- */
+
+.trip-detail__itinerary {
+  margin-top: clamp(44px, 6vw, 80px);
+}
+
+.trip-detail__itinerary h2 {
+  margin: 14px 0 clamp(24px, 3vw, 38px);
+}
+
+.trip-detail__itinerary ol {
+  display: grid;
+  gap: clamp(20px, 2.6vw, 30px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trip-detail__itinerary li {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 18px;
+}
+
+.trip-detail__itinerary li > span {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font-family: var(--display);
+  font-size: 17px;
+}
+
+.trip-detail__itinerary h3 {
+  margin: 4px 0 6px;
+  font-family: var(--display);
+  font-size: 19px;
+  font-weight: 400;
+}
+
+.trip-detail__itinerary li p {
+  max-width: 62ch;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+/* ---------- Booking card ---------- */
+
+.trip-detail__aside {
+  position: sticky;
+  top: calc(var(--header-height) + 24px);
+}
+
+.trip-detail__card {
+  padding: clamp(24px, 2.6vw, 34px);
+  border: 1px solid var(--line);
+  background: var(--card-surface);
+}
+
+.trip-detail__card-price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(30px, 3vw, 38px);
+}
+
+.trip-detail__card-price small {
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.trip-detail__card-price span {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.trip-detail__card-avail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.trip-detail__card-avail i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--clay);
+}
+
+.trip-detail__card dl {
+  display: grid;
+  gap: 12px;
+  margin: 20px 0 24px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.trip-detail__card dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.trip-detail__card dt {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.trip-detail__card dd {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: right;
+}
+
+.trip-detail__card .button {
+  width: 100%;
+  justify-content: center;
+}
+
+.trip-detail__ask {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 10px 0;
+  border: 0;
+  background: none;
+  font: 600 13.5px var(--sans);
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: color 0.2s var(--ease-out);
+}
+
+.trip-detail__ask:hover {
+  color: var(--ink);
+}
+
+/* ---------- Inclusions ---------- */
+
+.trip-detail__inclusions {
+  border-top: 1px solid var(--line);
+}
+
+.trip-detail__inclusions h2 {
+  margin: 14px 0 clamp(28px, 3.6vw, 48px);
+  font-family: var(--display);
+  font-size: clamp(28px, 3.2vw, 44px);
+  font-weight: 400;
+  line-height: 1.08;
+}
+
+.trip-detail__inclusion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(22px, 3vw, 40px);
+}
+
+.trip-detail__inclusion-grid h3 {
+  margin: 0 0 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.trip-detail__inclusion-grid p {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+/* ---------- Closing CTA ---------- */
+
+.trip-detail__cta {
+  padding: clamp(48px, 7vw, 96px) 0;
+  border-top: 1px solid var(--line);
+  background: var(--card-surface);
+  text-align: center;
+}
+
+.trip-detail__cta h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(30px, 3.6vw, 50px);
+  font-weight: 400;
+  line-height: 1.08;
+}
+
+.trip-detail__cta p {
+  margin: 14px auto 26px;
+  max-width: 46ch;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.trip-detail__cta-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 18px 28px;
+}
+
+/* ---------- Missing states ---------- */
+
+.trip-detail--missing .shell,
+.article-page--missing .shell {
+  padding: calc(var(--header-height) + clamp(60px, 10vw, 120px)) 0 clamp(80px, 12vw, 160px);
+}
+
+.trip-detail--missing h1,
+.article-page--missing h1 {
+  margin: 16px 0 12px;
+  font-family: var(--display);
+  font-size: clamp(32px, 4.4vw, 58px);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.trip-detail--missing p,
+.article-page--missing p {
+  max-width: 52ch;
+  margin: 0 0 28px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+/* ---------- Article page ---------- */
+
+.article-page__hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: min(64svh, 620px);
+  padding: calc(var(--header-height) + 40px) 0 clamp(32px, 4.4vw, 56px);
+  color: var(--ivory);
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.article-page__hero-media,
+.article-page__hero-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.article-page__hero-media img {
+  object-fit: cover;
+}
+
+.article-page__hero-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(13, 27, 42, 0.85) 0%, rgba(13, 27, 42, 0.4) 52%, rgba(13, 27, 42, 0.3) 100%);
+}
+
+.article-page__hero-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.article-page__hero .story-kicker {
+  color: rgba(241, 250, 238, 0.85);
+}
+
+.article-page__hero h1 {
+  max-width: 22ch;
+  margin: 14px 0 0;
+  font-family: var(--display);
+  font-size: clamp(32px, 4.8vw, 64px);
+  font-weight: 400;
+  line-height: 1.06;
+  letter-spacing: -0.012em;
+  color: var(--white);
+}
+
+.article-page__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+  gap: clamp(36px, 6vw, 96px);
+  align-items: start;
+  padding-top: clamp(40px, 6vw, 76px);
+  padding-bottom: clamp(56px, 8vw, 110px);
+}
+
+.article-page__standfirst {
+  margin: 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(20px, 2.2vw, 27px);
+  line-height: 1.45;
+}
+
+.article-page__byline {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: clamp(20px, 2.6vw, 30px) 0;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-size: 13.5px;
+  color: var(--ink-soft);
+}
+
+.article-page__copy p {
+  max-width: 66ch;
+  margin: 0 0 20px;
+  font-size: 16.5px;
+  line-height: 1.8;
+  color: var(--ink);
+}
+
+.article-page__cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: clamp(30px, 4vw, 48px);
+  padding: clamp(22px, 3vw, 32px);
+  background: var(--forest);
+  color: var(--ivory);
+}
+
+.article-page__cta span {
+  font-family: var(--display);
+  font-size: clamp(18px, 2vw, 23px);
+}
+
+.article-page__cta button {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 22px;
+  border: 0;
+  background: var(--clay);
+  color: var(--white);
+  font: 600 14px var(--sans);
+  cursor: pointer;
+  transition: transform 0.25s var(--ease-out), opacity 0.25s var(--ease-out);
+}
+
+.article-page__cta button:hover {
+  transform: translateY(-2px);
+  opacity: 0.94;
+}
+
+.article-page__more {
+  position: sticky;
+  top: calc(var(--header-height) + 24px);
+}
+
+.article-page__more ul {
+  display: grid;
+  gap: 0;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.article-page__more a {
+  position: relative;
+  display: block;
+  padding: 16px 26px 16px 0;
+  border-top: 1px solid var(--line);
+  font-family: var(--display);
+  font-size: 16.5px;
+  line-height: 1.3;
+  color: var(--ink);
+  text-decoration: none;
+  transition: color 0.2s var(--ease-out);
+}
+
+.article-page__more li:last-child a {
+  border-bottom: 1px solid var(--line);
+}
+
+.article-page__more a:hover {
+  color: var(--ink-soft);
+}
+
+.article-page__more a small {
+  display: block;
+  margin-bottom: 5px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.article-page__more a svg {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.55;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1023px) {
+  .trip-detail__grid,
+  .article-page__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .trip-detail__aside,
+  .article-page__more {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .trip-detail__stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .trip-detail__itinerary li {
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .trip-detail__itinerary li > span {
+    width: 44px;
+    height: 44px;
+    font-size: 15px;
+  }
+}

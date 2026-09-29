@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { trips, signatureItinerary } from '../../data/content'
+import { tripPath } from '../../data/tripDetails'
+import { Link } from '../../lib/router'
 import Reveal from '../Reveal'
 
 const EASE = [0.22, 1, 0.36, 1]
@@ -89,9 +91,9 @@ export default function SignatureJourney({ onBook }) {
               Seven more days of the finest trail in the world — with every permit, lodge,
               meal and altitude check already handled.
             </p>
-            <button className="button button--outline" type="button" onClick={() => onBook(everest)}>
+            <Link className="button button--outline" href={tripPath(everest)}>
               <span>Open the full itinerary</span><ArrowRight size={17} aria-hidden="true" />
-            </button>
+            </Link>
           </Reveal>
         </div>
       </div>

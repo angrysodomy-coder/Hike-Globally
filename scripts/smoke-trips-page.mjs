@@ -176,15 +176,32 @@ const card = cards()[0]
 check('card shows availability tag', card?.querySelector('.tp-card__tag')?.textContent.includes('October'), true)
 check('card shows signature moment', card?.querySelector('.tp-card__moment')?.textContent.length > 10, true)
 check('card shows departures', card?.querySelector('.tp-card__dep')?.textContent.includes('Mar'), true)
-const viewBtn = card?.querySelector('.tp-card__go')
-check('card has a view-journey CTA', !!viewBtn, true)
-viewBtn?.click()
+const viewLink = card?.querySelector('.tp-card__go')
+check('card has a view-journey CTA', !!viewLink, true)
+check('view-journey links to the trip page', viewLink?.getAttribute('href'), '/trips/everest-base-camp')
+viewLink?.click()
+await sleep(500)
+
+/* ---- Trip detail page ---- */
+check('view-journey opens the trip detail page', !!$('.trip-detail'), true)
+check('detail page shows the right trip', $('.trip-detail h1')?.textContent, 'Everest Base Camp')
+check('detail page title set', document.title, 'Everest Base Camp — Hike Globally')
+check('detail page has a booking card', !!$('.trip-detail__card'), true)
+check('signature itinerary renders on the Everest page', $$('.trip-detail__itinerary li').length, 8)
+const bookBtn = $('.trip-detail__card .button')
+bookBtn?.click()
 await sleep(300)
-check('view-journey opens the booking drawer', !!$('.booking-drawer'), true)
+check('book CTA opens the booking drawer', !!$('.booking-drawer'), true)
 check('drawer shows the right trip', $('.booking-drawer')?.textContent.includes('Everest Base Camp'), true)
 window.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
 await sleep(300)
 check('escape closes the drawer', !!$('.booking-drawer'), false)
+
+/* ---- Back to the collection ---- */
+window.history.pushState({}, '', '/trips')
+window.dispatchEvent(new window.Event('popstate'))
+await sleep(800)
+check('collection re-renders after returning', cards().length, 8)
 
 /* ---- FAQ ---- */
 const questions = $$('.tp-faq__question')

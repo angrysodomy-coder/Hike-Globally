@@ -1,8 +1,10 @@
 import { ArrowRight, ArrowUpRight, Star, Clock } from 'lucide-react'
 import { articles } from '../data/content'
+import { articlePath } from '../data/tripDetails'
+import { Link } from '../lib/router'
 import Reveal from './Reveal'
 
-export default function JournalSection({ onRead }) {
+export default function JournalSection() {
   const [featured, ...secondary] = articles
 
   return (
@@ -15,18 +17,18 @@ export default function JournalSection({ onRead }) {
           </Reveal>
           <Reveal className="section-intro__aside" delay={100}>
             <p>Field notes, practical guides and honest stories to help you travel more deeply.</p>
-            <button className="inline-link" type="button" onClick={() => onRead(featured)}>
+            <Link className="inline-link" href={articlePath(featured)}>
               Explore the journal <ArrowUpRight size={17} aria-hidden="true" />
-            </button>
+            </Link>
           </Reveal>
         </div>
 
         <Reveal as="article" className={`featured-story ${featured.premium ? 'featured-story--premium' : ''}`}>
-          <button type="button" className="featured-story__image" onClick={() => onRead(featured)} aria-label={`Read ${featured.title}`}>
+          <Link className="featured-story__image" href={articlePath(featured)} aria-label={`Read ${featured.title}`}>
             <img src={featured.image} alt={featured.alt} loading="lazy" decoding="async" />
             <span>{featured.premium ? 'Premium Guide · Featured' : 'Field notes · 001'}</span>
             {featured.premium && <span className="premium-badge"><Star size={12} /> Premium Guide</span>}
-          </button>
+          </Link>
           <div className="featured-story__content">
             <div className="story-kicker">
               <span>{featured.category}</span>
@@ -45,9 +47,9 @@ export default function JournalSection({ onRead }) {
             )}
             <div className="featured-story__foot">
               <time>{featured.date}</time>
-              <button type="button" onClick={() => onRead(featured)}>
+              <Link href={articlePath(featured)}>
                 {featured.premium ? 'Explore Guide' : 'Read article'} <ArrowRight size={17} aria-hidden="true" />
-              </button>
+              </Link>
             </div>
           </div>
         </Reveal>
@@ -55,19 +57,19 @@ export default function JournalSection({ onRead }) {
         <div className="secondary-stories">
           {secondary.map((article, index) => (
             <Reveal as="article" className={`story-card ${article.premium ? 'story-card--premium' : ''}`} key={article.id} delay={index * 80}>
-              <button type="button" className="story-card__image" onClick={() => onRead(article)} aria-label={`Read ${article.title}`}>
+              <Link className="story-card__image" href={articlePath(article)} aria-label={`Read ${article.title}`}>
                 <img src={article.image} alt={article.alt} loading="lazy" decoding="async" />
                 <span>0{index + 2}</span>
-              </button>
+              </Link>
               <div className="story-kicker">
                 <span>{article.category}</span>
                 <span>{article.readTime}</span>
               </div>
-              <h3><button type="button" onClick={() => onRead(article)}>{article.title}</button></h3>
+              <h3><Link href={articlePath(article)}>{article.title}</Link></h3>
               <p>{article.excerpt}</p>
               <footer>
                 <time>{article.date}</time>
-                <button type="button" onClick={() => onRead(article)} aria-label={`Read ${article.title}`}><ArrowUpRight size={18} /></button>
+                <Link href={articlePath(article)} aria-label={`Read ${article.title}`}><ArrowUpRight size={18} /></Link>
               </footer>
             </Reveal>
           ))}
@@ -77,7 +79,7 @@ export default function JournalSection({ onRead }) {
       <style>{`
         .featured-story--premium {
           position: relative;
-          border: 2px solid #E63946;
+          border: none;
         }
         .featured-story--premium .featured-story__image {
           position: relative;
