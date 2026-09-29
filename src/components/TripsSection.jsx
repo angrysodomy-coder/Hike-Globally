@@ -1,6 +1,7 @@
 import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react'
 import { trips } from '../data/content'
+import { tripPath } from '../data/tripDetails'
 import { Link } from '../lib/router'
 import Reveal from './Reveal'
 
@@ -10,7 +11,7 @@ const MOTION_QUERY = '(prefers-reduced-motion: reduce)'
    formula in src/styles.css: (shell - (PER_VIEW_DESKTOP - 1) * gap) / PER_VIEW_DESKTOP. */
 export const PER_VIEW_DESKTOP = 3
 
-function TripCard({ trip, index, onBook }) {
+function TripCard({ trip, index }) {
   return (
     <Reveal as="article" className="trip-card trip-card--rail" delay={(index % PER_VIEW_DESKTOP) * 80}>
       <div className="trip-card__image">
@@ -23,9 +24,9 @@ function TripCard({ trip, index, onBook }) {
         />
         <span className="trip-card__index">0{index + 1}</span>
         <span className="trip-card__availability"><i /> {trip.availability}</span>
-        <button type="button" className="trip-card__image-cta" onClick={() => onBook(trip)} aria-label={`View ${trip.title}`}>
+        <Link className="trip-card__image-cta" href={tripPath(trip)} aria-label={`View ${trip.title}`}>
           <ArrowUpRight size={22} aria-hidden="true" />
-        </button>
+        </Link>
       </div>
       <div className="trip-card__body">
         <div className="trip-card__location">{trip.location}</div>
@@ -36,15 +37,15 @@ function TripCard({ trip, index, onBook }) {
           <span><small>Difficulty</small>{trip.difficulty}</span>
           <span><small>From</small><strong>${trip.price.toLocaleString()}</strong></span>
         </div>
-        <button className="trip-card__link" type="button" onClick={() => onBook(trip)}>
+        <Link className="trip-card__link" href={tripPath(trip)}>
           <span>View this trip</span><ArrowRight size={17} aria-hidden="true" />
-        </button>
+        </Link>
       </div>
     </Reveal>
   )
 }
 
-function TripsRail({ list, onBook }) {
+function TripsRail({ list }) {
   const outerRef = useRef(null)
   const viewportRef = useRef(null)
   const trackRef = useRef(null)
@@ -167,7 +168,7 @@ function TripsRail({ list, onBook }) {
         >
           <div className="trips-scroll__track" ref={trackRef}>
             {list.map((trip, index) => (
-              <TripCard key={trip.id} trip={trip} index={index} onBook={onBook} />
+              <TripCard key={trip.id} trip={trip} index={index} />
             ))}
           </div>
         </div>
@@ -202,7 +203,7 @@ function TripsRail({ list, onBook }) {
   )
 }
 
-export default function TripsSection({ onBook }) {
+export default function TripsSection() {
   return (
     <section id="trips" className="trips-section section-pad" aria-labelledby="trips-title">
       <div className="shell">
@@ -221,7 +222,7 @@ export default function TripsSection({ onBook }) {
         </div>
       </div>
 
-      <TripsRail list={trips} onBook={onBook} />
+      <TripsRail list={trips} />
     </section>
   )
 }

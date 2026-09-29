@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight, ArrowUpRight, Mountain } from 'lucide-react'
 import { treks } from '../data/content'
+import { trekPath } from '../data/tripDetails'
+import { Link } from '../lib/router'
 import Reveal from './Reveal'
 
 export default function TreksSection({ onBook }) {
@@ -169,9 +171,9 @@ export default function TreksSection({ onBook }) {
                 <div><dt>High point</dt><dd>{trek.elevation}</dd></div>
                 <div><dt>From</dt><dd>${trek.price.toLocaleString()}</dd></div>
               </dl>
-              <button className="trek-story__cta" type="button" onClick={() => onBook(trek)}>
+              <Link className="trek-story__cta" href={trekPath(trek)}>
                 <span>Explore the trek</span><ArrowUpRight size={19} aria-hidden="true" />
-              </button>
+              </Link>
             </div>
           </article>
         ))}

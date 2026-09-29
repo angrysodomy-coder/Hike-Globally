@@ -3,9 +3,10 @@ import { ArrowRight } from 'lucide-react'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import BookingDrawer from './components/BookingDrawer'
-import StoryDrawer from './components/StoryDrawer'
-import SummerFamilyTreksBlog from './components/SummerFamilyTreksBlog'
 import HomePage from './pages/HomePage'
+import BlogArticlePage from './pages/BlogArticlePage'
+import TripDetailPage from './pages/TripDetailPage'
+import { getArticleSlug, getTripSlug } from './data/tripDetails'
 import { useRouter } from './lib/router'
 
 /* The destinations and trips pages pull in framer-motion + GSAP;
@@ -14,12 +15,10 @@ const DestinationsPage = lazy(() => import('./pages/DestinationsPage'))
 const TripsPage = lazy(() => import('./pages/TripsPage'))
 
 export default function App() {
-  const { path } = useRouter()
+  const { path, navigate } = useRouter()
   const [discovery, setDiscovery] = useState(null)
   const [bookingTrip, setBookingTrip] = useState(null)
   const [bookingOpen, setBookingOpen] = useState(false)
-  const [story, setStory] = useState(null)
-  const [premiumBlog, setPremiumBlog] = useState(null)
   const [showMobileCta, setShowMobileCta] = useState(false)
 
   useEffect(() => {
@@ -29,59 +28,59 @@ export default function App() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  /* Legacy links used a hash for the premium guide — redirect them to the
+     article's own page. */
   useEffect(() => {
     const checkHash = () => {
       if (window.location.hash.includes('best-summer-treks') || window.location.hash.includes('family-nepal')) {
-        setPremiumBlog({ id: 'best-summer-treks-family-nepal-beginners' })
-        window.scrollTo(0, 0)
+        navigate('/blog/best-summer-treks-family-nepal-beginners', { replace: true })
       }
     }
     checkHash()
     window.addEventListener('hashchange', checkHash)
     return () => window.removeEventListener('hashchange', checkHash)
-  }, [])
+  }, [navigate])
 
   const openBooking = useCallback((trip = null) => {
-    setStory(null)
     setBookingTrip(trip)
     setBookingOpen(true)
   }, [])
 
   const closeBooking = useCallback(() => setBookingOpen(false), [])
-  const closeStory = useCallback(() => setStory(null), [])
-  const closePremiumBlog = useCallback(() => setPremiumBlog(null), [])
-
-  const handleRead = useCallback((article) => {
-    if (article?.premium || article?.id === 'best-summer-treks-family-nepal-beginners') {
-      setPremiumBlog(article)
-      setStory(null)
-      window.scrollTo(0, 0)
-    } else {
-      setStory(article)
-    }
-  }, [])
 
   const findTrips = (filters) => {
     setDiscovery({ ...filters, key: Date.now() })
+  }
+
+  const tripSlug = getTripSlug(path)
+  const blogSlug = getArticleSlug(path)
+
+  let page
+  if (blogSlug) {
+    page = <BlogArticlePage key={blogSlug} slug={blogSlug} onBook={openBooking} />
+  } else if (tripSlug) {
+    page = <TripDetailPage key={tripSlug} slug={tripSlug} onBook={openBooking} />
+  } else if (path === '/destinations') {
+    page = (
+      <Suspense fallback={null}>
+        <DestinationsPage onBook={openBooking} />
+      </Suspense>
+    )
+  } else if (path === '/trips') {
+    page = (
+      <Suspense fallback={null}>
+        <TripsPage onBook={openBooking} />
+      </Suspense>
+    )
+  } else {
+    page = <HomePage discovery={discovery} onFind={findTrips} onBook={openBooking} />
   }
 
   return (
     <div className="site-wrap">
       <Header onBook={openBooking} />
 
-      {path === '/destinations'
-        ? (
-          <Suspense fallback={null}>
-            <DestinationsPage onBook={openBooking} />
-          </Suspense>
-        )
-        : path === '/trips'
-          ? (
-            <Suspense fallback={null}>
-              <TripsPage onBook={openBooking} />
-            </Suspense>
-          )
-          : <HomePage discovery={discovery} onFind={findTrips} onRead={handleRead} onBook={openBooking} />}
+      {page}
 
       <Footer onBook={openBooking} />
 
@@ -97,21 +96,6 @@ export default function App() {
       </button>
 
       {bookingOpen && <BookingDrawer key={bookingTrip?.id || 'custom'} trip={bookingTrip} onClose={closeBooking} />}
-      {story && (
-        <StoryDrawer
-          key={story.id}
-          article={story}
-          onClose={closeStory}
-          onPlan={() => openBooking()}
-        />
-      )}
-      {premiumBlog && (
-        <SummerFamilyTreksBlog
-          key={premiumBlog.id}
-          onClose={closePremiumBlog}
-          onBook={() => openBooking()}
-        />
-      )}
     </div>
   )
 }

@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, Clock3, Gauge, Mountain, Search, Sparkles } from 'lucide-react'
 import { trips } from '../../data/content'
+import { tripPath } from '../../data/tripDetails'
+import { Link } from '../../lib/router'
 import Reveal from '../Reveal'
 
 const EASE = [0.22, 1, 0.36, 1]
@@ -26,7 +28,7 @@ const SORTERS = {
   'duration-desc': (a, b) => b.durationDays - a.durationDays,
 }
 
-function TripCard({ trip, index, onBook }) {
+function TripCard({ trip, index }) {
   return (
     <motion.article
       className="tp-card"
@@ -67,9 +69,9 @@ function TripCard({ trip, index, onBook }) {
             <small>Departures</small>
             <strong>{trip.departures}</strong>
           </span>
-          <button className="tp-card__go" type="button" onClick={() => onBook(trip)}>
+          <Link className="tp-card__go" href={tripPath(trip)}>
             View journey <ArrowRight size={15} aria-hidden="true" />
-          </button>
+          </Link>
         </div>
       </div>
     </motion.article>
@@ -202,7 +204,7 @@ export default function TripCollection({ onBook }) {
           <motion.div className="tp-grid" layout>
             <AnimatePresence mode="popLayout">
               {filtered.map((trip, index) => (
-                <TripCard key={trip.id} trip={trip} index={index} onBook={onBook} />
+                <TripCard key={trip.id} trip={trip} index={index} />
               ))}
             </AnimatePresence>
           </motion.div>

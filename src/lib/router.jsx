@@ -24,10 +24,15 @@ const RouterContext = createContext(null)
 
 export const ROUTES = ['/', '/destinations', '/trips']
 
+/* Detail pages carry a slug segment: /trips/<trip-slug>, /blog/<article-slug>. */
+export const DYNAMIC_ROUTES = [/^\/trips\/[a-z0-9-]+$/, /^\/blog\/[a-z0-9-]+$/]
+
 export function normalizePath(pathname) {
   if (!pathname || pathname === '/') return '/'
   const trimmed = pathname.replace(/\/+$/, '') || '/'
-  return ROUTES.includes(trimmed) ? trimmed : '/'
+  if (ROUTES.includes(trimmed)) return trimmed
+  if (DYNAMIC_ROUTES.some((pattern) => pattern.test(trimmed))) return trimmed
+  return '/'
 }
 
 export function parseHref(href) {
