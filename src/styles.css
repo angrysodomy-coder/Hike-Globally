@@ -1623,8 +1623,10 @@ dd {
 }
 
 .trip-card--rail .trip-card__image {
-  height: clamp(220px, calc(100vh - 520px), 430px);
-  height: clamp(220px, calc(100svh - 520px), 430px);
+  /* +130px vs. the original clamp (mandatory Popular Treks card-height bump
+     of 100-160px): min/preferred/max all shifted up by the same amount. */
+  height: clamp(350px, calc(100vh - 390px), 560px);
+  height: clamp(350px, calc(100svh - 390px), 560px);
 }
 
 .trips-scroll .trip-card.trip-card--rail .trip-card__image {
@@ -4676,7 +4678,8 @@ dd {
   }
 
   .trip-card--rail .trip-card__image {
-    height: clamp(220px, 52vw, 360px);
+    /* +130px bump, see base .trip-card--rail .trip-card__image rule above. */
+    height: clamp(350px, calc(52vw + 130px), 490px);
   }
 
   .trips-controls > span {
@@ -5091,8 +5094,9 @@ video {
    must stay inside the guarded 16-40px band (18px = the base minimum). */
 @media (min-width: 1024px) and (max-height: 820px) {
   .trip-card--rail .trip-card__image {
-    height: clamp(170px, 26vh, 300px);
-    height: clamp(170px, 26svh, 300px);
+    /* +130px bump, see base .trip-card--rail .trip-card__image rule above. */
+    height: clamp(300px, calc(26vh + 130px), 430px);
+    height: clamp(300px, calc(26svh + 130px), 430px);
   }
 
   .trip-card--rail .trip-card__body {
@@ -5374,7 +5378,8 @@ video {
   }
 
   .trip-card--rail .trip-card__image {
-    height: clamp(360px, 40vh, 560px);
+    /* +130px bump, see base .trip-card--rail .trip-card__image rule above. */
+    height: clamp(490px, calc(40vh + 130px), 690px);
   }
 
   .trip-card--rail .trip-card__body {
@@ -5665,7 +5670,8 @@ video {
   }
 
   .trip-card--rail .trip-card__image {
-    height: clamp(360px, 40vh, 640px);
+    /* +130px bump, see base .trip-card--rail .trip-card__image rule above. */
+    height: clamp(490px, calc(40vh + 130px), 770px);
   }
 
   .footer-wordmark span {
