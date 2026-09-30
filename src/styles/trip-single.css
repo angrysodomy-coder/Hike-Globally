@@ -1585,7 +1585,7 @@
   line-height: 1.72;
 }
 
-/* ---- Auto-sliding 3-image gallery ---- */
+/* ---- Three-up auto-sliding gallery ---- */
 
 .tsp-slider { display: grid; gap: 10px; }
 
@@ -1597,25 +1597,31 @@
   overflow: hidden;
 }
 
-.tsp-slider__slide {
-  position: absolute;
-  inset: 0;
-  margin: 0;
-  opacity: 0;
-  transform: scale(1.04);
-  transition: opacity 0.85s var(--tsp-ease), transform 1.6s var(--tsp-ease);
+.tsp-slider__track {
+  display: flex;
+  height: 100%;
+  gap: 10px;
+  transform: translateX(calc(var(--tsp-slide-index) * -1 * ( (100% + 10px) / var(--tsp-slide-count) )));
+  transition: transform 0.85s var(--tsp-ease);
+  will-change: transform;
 }
 
-.tsp-slider__slide.is-active {
-  opacity: 1;
-  transform: scale(1);
+.tsp-slider__slide {
+  flex: 0 0 calc((100% - (10px * (var(--tsp-slide-count) - 1))) / var(--tsp-slide-count));
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
 }
 
 .tsp-slider__slide img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.8s var(--tsp-ease);
 }
+
+.tsp-slider__slide:hover img { transform: scale(1.035); }
 
 .tsp-slider__counter {
   position: absolute;
