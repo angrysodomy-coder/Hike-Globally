@@ -1,15 +1,58 @@
-import { ArrowLeft, ArrowRight, ArrowUpRight, CalendarDays, Clock3, Gauge, Mountain } from 'lucide-react'
-import { tripInclusions, signatureItinerary } from '../data/content'
+import { useMemo } from 'react'
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  CalendarDays,
+  Check,
+  Clock3,
+  Compass,
+  Gauge,
+  MapPin,
+  Mountain,
+  Star,
+  X,
+} from 'lucide-react'
 import { getTripBySlug } from '../data/tripDetails'
+import { buildDepartures, getTripPageContent } from '../data/tripPageContent'
 import { Link, usePageMeta } from '../lib/router'
 import Reveal from '../components/Reveal'
+import TripPriceRail from '../components/trip/TripPriceRail'
+import TripBookingCalendar from '../components/trip/TripBookingCalendar'
+import ItineraryAccordion from '../components/trip/ItineraryAccordion'
+import TripFaqs from '../components/trip/TripFaqs'
 
 /* ------------------------------------------------------------------
-   TripDetailPage — the standalone page every trip package resolves to
-   (`/trips/<slug>`). Booking stays a deliberate second step: the page
-   presents the journey, and the "Book this journey" CTAs open the
-   booking drawer via `onBook`.
+   Single trip page — /trips/<slug>
+
+   Reading order, top to bottom:
+     hero · title · excerpt · byline · highlights · overview ·
+     day-to-day outline · booking calendar · full itinerary ·
+     includes & excludes · essential information · route map ·
+     packing list · FAQs
+
+   A sticky left rail carries the price and the Book now CTA on every
+   screen wide enough to hold it, and folds into a full-width card
+   above the article below 1080px.
    ------------------------------------------------------------------ */
+
+const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+function formatShortDate(iso) {
+  if (!iso) return 'On request'
+  const [year, month, day] = iso.split('-').map(Number)
+  return `${day} ${MONTHS_SHORT[month - 1]} ${year}`
+}
+
+function SectionHead({ index, eyebrow, title, intro, id }) {
+  return (
+    <header className="tsp-secHead">
+      <p className="tsp-eyebrow"><span>{index}</span> {eyebrow}</p>
+      <h2 id={id}>{title}</h2>
+      {intro && <p className="tsp-secHead__intro">{intro}</p>}
+    </header>
+  )
+}
 
 function NotFound() {
   usePageMeta({ title: 'Journey not found — Hike Globally' })
@@ -29,140 +72,277 @@ function NotFound() {
 
 export default function TripDetailPage({ slug, onBook }) {
   const trip = getTripBySlug(slug)
+  const content = useMemo(() => getTripPageContent(slug), [slug])
+
+  const nextDeparture = useMemo(() => {
+    if (!trip) return null
+    const departures = buildDepartures(trip)
+    const iso = Object.keys(departures).sort().find((key) => departures[key].status !== 'sold-out')
+    return iso || null
+  }, [trip])
 
   usePageMeta({
-    title: trip ? `${trip.title} — Hike Globally` : 'Journey not found — Hike Globally',
-    description: trip?.description,
+    title: trip ? `${trip.title} — ${trip.duration} trek, itinerary & dates | Hike Globally` : 'Journey not found — Hike Globally',
+    description: content?.excerpt || trip?.description,
   })
 
-  if (!trip) return <NotFound />
+  if (!trip || !content) return <NotFound />
 
-  const showItinerary = trip.id === 'everest-base-camp'
+  const { author } = content
 
   return (
-    <main id="main-content" className="trip-detail">
-      {/* ---------- Hero ---------- */}
-      <section className="trip-detail__hero" aria-labelledby="trip-detail-title">
-        <div className="trip-detail__hero-media" aria-hidden="true">
-          <img src={trip.image} alt="" style={{ objectPosition: trip.imagePosition }} />
+    <main id="main-content" className="tsp">
+      {/* ---------- 1 · Hero + featured image ---------- */}
+      <section className="tsp-hero" aria-label={`${trip.title} featured image`}>
+        <div className="tsp-hero__media">
+          <img
+            src={trip.image}
+            alt={trip.alt}
+            style={{ objectPosition: trip.imagePosition }}
+            fetchPriority="high"
+            decoding="async"
+          />
         </div>
-        <div className="trip-detail__hero-inner shell">
-          <Link className="trip-detail__back" href="/trips">
-            <ArrowLeft size={15} aria-hidden="true" /> All journeys
-          </Link>
-          <p className="eyebrow eyebrow--light"><span>{trip.type}</span> {trip.location}</p>
-          <h1 id="trip-detail-title">{trip.title}</h1>
-          <p className="trip-detail__standfirst">{trip.description}</p>
-          <dl className="trip-detail__stats">
-            <div><dt><Clock3 size={14} aria-hidden="true" /> Duration</dt><dd>{trip.duration}</dd></div>
-            <div><dt><Gauge size={14} aria-hidden="true" /> Difficulty</dt><dd>{trip.difficulty}</dd></div>
-            <div><dt><Mountain size={14} aria-hidden="true" /> High point</dt><dd>{trip.elevation}</dd></div>
-            <div><dt><CalendarDays size={14} aria-hidden="true" /> From</dt><dd>${trip.price.toLocaleString()}</dd></div>
-          </dl>
+        <div className="tsp-hero__scrim" aria-hidden="true" />
+
+        <div className="tsp-hero__inner tsp-shell">
+          <nav className="tsp-crumbs" aria-label="Breadcrumb">
+            <Link href="/"><ArrowLeft size={14} aria-hidden="true" /> Home</Link>
+            <span aria-hidden="true">/</span>
+            <Link href="/trips">Journeys</Link>
+            <span aria-hidden="true">/</span>
+            <em>{trip.title}</em>
+          </nav>
+
+          <div className="tsp-hero__foot">
+            <p className="tsp-hero__kicker">
+              <MapPin size={14} aria-hidden="true" /> {trip.location}
+              <i aria-hidden="true" />
+              {trip.type}
+              <i aria-hidden="true" />
+              <Star size={13} aria-hidden="true" className="tsp-hero__star" /> 4.9 · 218 reviews
+            </p>
+            <ul className="tsp-hero__chips">
+              <li><Clock3 size={15} aria-hidden="true" /> <span><small>Duration</small>{trip.duration}</span></li>
+              <li><Gauge size={15} aria-hidden="true" /> <span><small>Grade</small>{trip.difficulty}</span></li>
+              <li><Mountain size={15} aria-hidden="true" /> <span><small>Max altitude</small>{trip.elevation}</span></li>
+              <li><CalendarDays size={15} aria-hidden="true" /> <span><small>Best season</small>{trip.prime}</span></li>
+              <li><Compass size={15} aria-hidden="true" /> <span><small>Region</small>{trip.destination}</span></li>
+            </ul>
+          </div>
         </div>
       </section>
 
-      {/* ---------- Overview + booking rail ---------- */}
-      <section className="trip-detail__body section-pad">
-        <div className="shell trip-detail__grid">
-          <div className="trip-detail__overview">
-            <Reveal>
-              <p className="eyebrow"><span>01</span> The journey</p>
-              <h2>The moment this trip is built around.</h2>
-              <blockquote className="trip-detail__highlight">“{trip.highlight}”</blockquote>
-              <p className="trip-detail__copy">{trip.description}</p>
-              <p className="trip-detail__copy">
-                Like every Hike Globally departure, this journey runs with two leaders, never
-                more than eight travellers, family-run lodges chosen on foot, and every permit,
-                meal and altitude check handled before your first step.
-              </p>
-            </Reveal>
+      {/* ---------- Layout: left price rail + article ---------- */}
+      <div className="tsp-shell tsp-layout">
+        <TripPriceRail trip={trip} nextDeparture={formatShortDate(nextDeparture)} onBook={onBook} />
 
-            <Reveal>
-              <dl className="trip-detail__facts">
-                <div><dt>Best seasons</dt><dd>{trip.seasons.join(' · ')}</dd></div>
-                <div><dt>Prime window</dt><dd>{trip.prime}</dd></div>
-                <div><dt>Departures</dt><dd>{trip.departures}</dd></div>
-                <div><dt>Region</dt><dd>{trip.destination}</dd></div>
-                <div><dt>Style</dt><dd>{trip.type}</dd></div>
-                <div><dt>Group size</dt><dd>Max 8 travellers</dd></div>
+        <article className="tsp-article">
+          {/* 2 · Title  3 · Excerpt  4 · Byline */}
+          <header className="tsp-lede">
+            <p className="tsp-lede__tag">{trip.destination} · {trip.type}</p>
+            <h1>{trip.title}</h1>
+            <p className="tsp-lede__excerpt">{content.excerpt}</p>
+
+            <div className="tsp-byline">
+              <span className="tsp-byline__avatar" aria-hidden="true">{author.initials}</span>
+              <div className="tsp-byline__who">
+                <p className="tsp-byline__name">{author.name}</p>
+                <p className="tsp-byline__role">{author.role}</p>
+              </div>
+              <dl className="tsp-byline__meta">
+                <div><dt>Published</dt><dd>{content.published}</dd></div>
+                <div><dt>Updated</dt><dd>{content.updated}</dd></div>
+                <div><dt>Reading time</dt><dd>{content.readingTime}</dd></div>
               </dl>
-            </Reveal>
+            </div>
+          </header>
 
-            {showItinerary && (
-              <Reveal className="trip-detail__itinerary">
-                <p className="eyebrow"><span>02</span> Day by day</p>
-                <h2>Eight defining days of the route.</h2>
-                <ol>
-                  {signatureItinerary.map((beat) => (
-                    <li key={beat.day}>
-                      <span aria-label={`Day ${parseInt(beat.day, 10)}`}>{beat.day}</span>
-                      <div>
-                        <h3>{beat.title}</h3>
-                        <p>{beat.body}</p>
-                      </div>
-                    </li>
+          {/* 5 · Highlights */}
+          <Reveal as="section" className="tsp-section" id="highlights" aria-labelledby="highlights-title">
+            <SectionHead index="01" eyebrow="Why this trek" title="Trip highlights" id="highlights-title" />
+            <div className="tsp-highlights">
+              <ul>
+                {content.highlights.map((item) => (
+                  <li key={item}><i aria-hidden="true"><Check size={13} /></i><span>{item}</span></li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
+
+          {/* 6 · Overview */}
+          <Reveal as="section" className="tsp-section" id="overview" aria-labelledby="overview-title">
+            <SectionHead index="02" eyebrow="The route, honestly" title="Trek overview" id="overview-title" />
+            <div className="tsp-prose">
+              {content.overview.map((paragraph) => <p key={paragraph.slice(0, 40)}>{paragraph}</p>)}
+              <blockquote>“{trip.highlight}” — the moment the whole itinerary is built around.</blockquote>
+            </div>
+          </Reveal>
+
+          {/* 7 · Day-to-day outline */}
+          <Reveal as="section" className="tsp-section" id="itinerary-outline" aria-labelledby="outline-title">
+            <SectionHead
+              index="03"
+              eyebrow="At a glance"
+              title="Day-to-day itinerary"
+              intro="The shape of the journey in one screen. Full detail — altitudes, lodges, walking hours and photographs — is in section 05."
+              id="outline-title"
+            />
+            <ol className="tsp-outline">
+              {content.outline.map((day) => (
+                <li key={day.id}>
+                  <span className="tsp-outline__day">{day.day}</span>
+                  <span className="tsp-outline__title">{day.title}</span>
+                  <span className="tsp-outline__meta">{day.altitude}<i aria-hidden="true" />{day.trekDuration}</span>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+
+          {/* 8 · Booking calendar */}
+          <Reveal as="section" className="tsp-section tsp-section--booking" id="booking" aria-labelledby="booking-title">
+            <SectionHead
+              index="04"
+              eyebrow="Departure dates"
+              title="Book your departure"
+              intro="Pick a date, tell us who is coming, and we will hold your place for 48 hours. No payment is taken on this page."
+              id="booking-title"
+            />
+            <TripBookingCalendar trip={trip} />
+          </Reveal>
+
+          {/* 9 · Full itinerary */}
+          <Reveal as="section" className="tsp-section" id="itinerary" aria-labelledby="itinerary-title">
+            <SectionHead
+              index="05"
+              eyebrow="Every single day"
+              title="Full itinerary details"
+              intro="Open any day for its altitude, walking hours, lodge, meals, the story of the stage and photographs from the trail."
+              id="itinerary-title"
+            />
+            <ItineraryAccordion days={content.itinerary} />
+          </Reveal>
+
+          {/* 10 · Includes & excludes */}
+          <Reveal as="section" className="tsp-section" id="inclusions" aria-labelledby="inclusions-title">
+            <SectionHead
+              index="06"
+              eyebrow="The full picture"
+              title="What’s included & excluded"
+              intro="No asterisks and no on-trail surprises. If it is in the left column, it is paid for."
+              id="inclusions-title"
+            />
+            <div className="tsp-inex">
+              <div className="tsp-inex__col tsp-inex__col--in">
+                <header><span aria-hidden="true"><Check size={17} /></span><h3>What’s included</h3></header>
+                <ul>
+                  {content.includes.map((item) => (
+                    <li key={item}><i aria-hidden="true"><Check size={13} /></i>{item}</li>
                   ))}
-                </ol>
-              </Reveal>
-            )}
-          </div>
-
-          <aside className="trip-detail__aside">
-            <div className="trip-detail__card">
-              <p className="trip-detail__card-price"><small>From</small>${trip.price.toLocaleString()}<span> / person</span></p>
-              <p className="trip-detail__card-avail"><i aria-hidden="true" /> {trip.availability}</p>
-              <dl>
-                <div><dt>Duration</dt><dd>{trip.duration}</dd></div>
-                <div><dt>Departures</dt><dd>{trip.departures}</dd></div>
-                <div><dt>Difficulty</dt><dd>{trip.difficulty}</dd></div>
-              </dl>
-              <button className="button button--dark" type="button" onClick={() => onBook(trip)}>
-                <span>Book this journey</span><ArrowRight size={17} aria-hidden="true" />
-              </button>
-              <button className="trip-detail__ask" type="button" onClick={() => onBook()}>
-                Ask a trip designer <ArrowUpRight size={15} aria-hidden="true" />
-              </button>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      {/* ---------- Inclusions ---------- */}
-      <section className="trip-detail__inclusions section-pad" aria-labelledby="trip-detail-inclusions">
-        <div className="shell">
-          <Reveal>
-            <p className="eyebrow"><span>{showItinerary ? '03' : '02'}</span> Included, always</p>
-            <h2 id="trip-detail-inclusions">Every departure, handled end to end.</h2>
-          </Reveal>
-          <div className="trip-detail__inclusion-grid">
-            {tripInclusions.map((item, index) => (
-              <Reveal key={item.title} delay={(index % 3) * 80}>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- Closing CTA ---------- */}
-      <section className="trip-detail__cta">
-        <div className="shell">
-          <Reveal>
-            <h2>Ready to walk {trip.title}?</h2>
-            <p>Tell us your dates and your pace — we’ll shape the rest around you.</p>
-            <div className="trip-detail__cta-actions">
-              <button className="button button--dark" type="button" onClick={() => onBook(trip)}>
-                <span>Start planning</span><ArrowRight size={17} aria-hidden="true" />
-              </button>
-              <Link className="inline-link" href="/trips">
-                Browse other journeys <ArrowUpRight size={15} aria-hidden="true" />
-              </Link>
+                </ul>
+              </div>
+              <div className="tsp-inex__col tsp-inex__col--ex">
+                <header><span aria-hidden="true"><X size={17} /></span><h3>What’s excluded</h3></header>
+                <ul>
+                  {content.excludes.map((item) => (
+                    <li key={item}><i aria-hidden="true"><X size={13} /></i>{item}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </Reveal>
-        </div>
-      </section>
+
+          {/* 11 · Essential information */}
+          <Reveal as="section" className="tsp-section" id="essential-information" aria-labelledby="essential-title">
+            <SectionHead
+              index="07"
+              eyebrow="Before you fly"
+              title="Essential information"
+              id="essential-title"
+            />
+            <div className="tsp-prose tsp-prose--split">
+              {content.essentialInfo.map((block) => (
+                <div key={block.title} className="tsp-prose__block">
+                  <h3>{block.title}</h3>
+                  {block.body.map((paragraph) => <p key={paragraph.slice(0, 40)}>{paragraph}</p>)}
+                </div>
+              ))}
+            </div>
+          </Reveal>
+
+          {/* 12 · Map */}
+          <Reveal as="section" className="tsp-section" id="route-map" aria-labelledby="map-title">
+            <SectionHead index="08" eyebrow="The line on the ground" title="Route map" id="map-title" />
+            <figure className="tsp-map">
+              <div className="tsp-map__frame">
+                <img src={content.map.image} alt={content.map.alt} loading="lazy" decoding="async" />
+              </div>
+              <figcaption>
+                <p>{content.map.caption}</p>
+                <dl>
+                  {content.map.legend.map((entry) => (
+                    <div key={entry.label}><dt>{entry.label}</dt><dd>{entry.value}</dd></div>
+                  ))}
+                </dl>
+              </figcaption>
+            </figure>
+          </Reveal>
+
+          {/* 13 · Packing list */}
+          <Reveal as="section" className="tsp-section" id="packing-list" aria-labelledby="packing-title">
+            <SectionHead
+              index="09"
+              eyebrow="Pack once, pack right"
+              title="Packing list"
+              intro="Your duffel is carried by a porter and capped at 15 kg; your daypack is yours to carry all day. Down jacket, four-season sleeping bag and poles are loaned free of charge."
+              id="packing-title"
+            />
+            <div className="tsp-packing">
+              {content.packing.map((box) => (
+                <section key={box.title} className="tsp-packing__box">
+                  <header>
+                    <h3>{box.title}</h3>
+                    <p>{box.note}</p>
+                  </header>
+                  <ul>
+                    {box.items.map((item) => (
+                      <li key={item}><i aria-hidden="true" />{item}</li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+            </div>
+          </Reveal>
+
+          {/* 14 · FAQs */}
+          <Reveal as="section" className="tsp-section" id="faqs" aria-labelledby="faqs-title">
+            <SectionHead index="10" eyebrow="Asked and answered" title="Frequently asked questions" id="faqs-title" />
+            <TripFaqs faqs={content.faqs} />
+          </Reveal>
+
+          {/* Closing CTA */}
+          <Reveal as="section" className="tsp-closing" aria-label="Book this journey">
+            <div className="tsp-closing__inner">
+              <p className="tsp-eyebrow tsp-eyebrow--light"><span>—</span> Your dates, your pace</p>
+              <h2>Ready to walk {trip.title}?</h2>
+              <p>
+                {trip.availability}. Reserve a date with a 20% deposit, or talk it through with the
+                Kathmandu team first — both start in the same place.
+              </p>
+              <div className="tsp-closing__actions">
+                <button className="tsp-bookBtn tsp-bookBtn--wide" type="button" onClick={() => onBook(trip)}>
+                  <span className="tsp-bookBtn__shine" aria-hidden="true" />
+                  <span className="tsp-bookBtn__label">Book this journey</span>
+                  <ArrowRight size={18} aria-hidden="true" />
+                </button>
+                <Link className="tsp-closing__link" href="/trips">
+                  Browse other journeys <ArrowUpRight size={15} aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
+          </Reveal>
+        </article>
+      </div>
     </main>
   )
 }

@@ -15,6 +15,7 @@ import './styles/destinations.css'
 import './styles/trips.css'
 import './styles/blog.css'
 import './styles/detail.css'
+import './styles/trip-single.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

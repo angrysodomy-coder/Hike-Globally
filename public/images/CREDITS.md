@@ -29,3 +29,8 @@ carries no third-party attribution.
 The trips landing page (`/trips`) art-direction imagery
 (`trip-hero.jpg`, `trip-cta.jpg`) is likewise AI-generated for this
 demonstration and carries no third-party attribution.
+
+The single trip page (`/trips/<slug>`) route map (`trip-route-map.jpg`) is an
+AI-generated illustrated placeholder created for this demonstration. Replace it with the
+supplied JPG/PNG/WebP route map per trip — the path lives in `map.image` in
+`src/data/tripPageContent.js`, and the figure accepts any aspect ratio.

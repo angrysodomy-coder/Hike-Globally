@@ -9,3 +9,4 @@ scripts/.smoke-dest-bundle.cjs
 !.env.example
 scripts/.blog-content-bundle.cjs
 scripts/.smoke-trips-page-bundle.cjs
+scripts/.smoke-trip-single-bundle.cjs
