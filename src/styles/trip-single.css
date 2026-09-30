@@ -45,14 +45,18 @@
   --tsp-radius: clamp(14px, 1.2vw, 22px);
   --tsp-radius-lg: clamp(18px, 1.6vw, 30px);
 
-  /* --- type --- */
-  --tsp-h1: clamp(30px, 4.4vw, 68px);
-  --tsp-h2: clamp(24px, 2.7vw, 46px);
-  --tsp-h3: clamp(17px, 1.35vw, 24px);
-  --tsp-lede: clamp(16.5px, 1.42vw, 25px);
-  --tsp-body-size: clamp(15.5px, 1.18vw, 20px);
-  --tsp-small: clamp(13px, 0.85vw, 16px);
-  --tsp-micro: clamp(11px, 0.7vw, 14px);
+  /* --- type ---
+     Keep the reading scale close to editorial travel sites: headings retain a
+     clear hierarchy without becoming display-sized, and long-form copy stays
+     around the browser's comfortable 16px default. The low viewport factors
+     deliberately stop typography ballooning on large desktop screens. */
+  --tsp-h1: clamp(32px, 2.7vw, 44px);
+  --tsp-h2: clamp(25px, 1.8vw, 32px);
+  --tsp-h3: clamp(18px, 1.15vw, 21px);
+  --tsp-lede: clamp(16px, 1vw, 18px);
+  --tsp-body-size: clamp(15px, 0.9vw, 16px);
+  --tsp-small: clamp(13px, 0.78vw, 14px);
+  --tsp-micro: clamp(11px, 0.65vw, 12px);
 
   --tsp-shadow-sm: 0 2px 8px rgba(18, 36, 61, 0.05);
   --tsp-shadow: 0 18px 44px -28px rgba(18, 36, 61, 0.42);
@@ -2029,18 +2033,13 @@
    Responsive structure changes
    ============================================================ */
 
-/* --- Ultra-wide / TV: hold the measure, grow the rail --- */
+/* --- Ultra-wide / TV: grow the layout, not the reading type.
+   A conventional editorial scale remains easier to scan even when there is
+   more physical screen space; the wider shell simply shows more structure. */
 @media (min-width: 2200px) {
   .tsp {
     --tsp-shell: min(2320px, calc(100vw - 2 * var(--tsp-gutter)));
     --tsp-rail-w: clamp(392px, 20vw, 520px);
-    --tsp-body-size: clamp(19px, 0.9vw, 26px);
-    --tsp-small: clamp(15px, 0.68vw, 20px);
-    --tsp-micro: clamp(13px, 0.56vw, 17px);
-    --tsp-h1: clamp(68px, 3.6vw, 104px);
-    --tsp-h2: clamp(46px, 2.3vw, 68px);
-    --tsp-h3: clamp(24px, 1.15vw, 34px);
-    --tsp-lede: clamp(23px, 1.1vw, 32px);
   }
 
   .tsp-article { max-width: 1680px; }
@@ -2049,13 +2048,6 @@
 @media (min-width: 3400px) {
   .tsp {
     --tsp-shell: min(3000px, calc(100vw - 2 * var(--tsp-gutter)));
-    --tsp-body-size: 30px;
-    --tsp-small: 23px;
-    --tsp-micro: 19px;
-    --tsp-h1: 132px;
-    --tsp-h2: 84px;
-    --tsp-h3: 40px;
-    --tsp-lede: 38px;
     --tsp-rail-w: 620px;
   }
 }
