@@ -72,6 +72,9 @@
   overflow-x: clip;
 }
 
+/* Shell for the hero's inner content (crumbs, kicker, chips) only.
+   The content below the hero deliberately breaks from the shell and
+   runs at 85% of the viewport, centered — see .tsp-layout. */
 .tsp-shell {
   width: var(--tsp-shell);
   margin-inline: auto;
@@ -239,6 +242,11 @@
    ------------------------------------------------------------ */
 
 .tsp-layout {
+  /* Content below the full-bleed hero: 85% of the page width,
+     centered. On screens narrower than ~213px the gutter-based
+     fallback keeps a sliver of margin on both sides. */
+  width: min(85%, calc(100vw - 2 * var(--tsp-gutter)));
+  margin-inline: auto;
   display: grid;
   grid-template-columns: var(--tsp-rail-w) minmax(0, 1fr);
   /* `stretch` (not `start`) is load-bearing: the rail column has to be as tall
@@ -2060,16 +2068,18 @@
    Responsive structure changes
    ============================================================ */
 
-/* --- Ultra-wide / TV: grow the layout, not the reading type.
-   A conventional editorial scale remains easier to scan even when there is
-   more physical screen space; the wider shell simply shows more structure. */
+/* --- Ultra-wide / TV: grow the hero shell and the rail, not the reading
+   type. The body layout stays at 85% of the viewport at every width; the
+   article column is additionally capped so prose and grids keep an
+   editorial scale even when there is more physical screen space. */
 @media (min-width: 2200px) {
   .tsp {
     --tsp-shell: min(2320px, calc(100vw - 2 * var(--tsp-gutter)));
     --tsp-rail-w: clamp(392px, 20vw, 520px);
   }
 
-  .tsp-article { max-width: 1680px; }
+  /* When the cap bites, center the article inside its wider grid column. */
+  .tsp-article { max-width: 1680px; margin-inline: auto; }
 }
 
 @media (min-width: 3400px) {

@@ -133,8 +133,9 @@ export default function TripDetailPage({ slug, onBook }) {
         </div>
       </section>
 
-      {/* ---------- Layout: left price rail + article ---------- */}
-      <div className="tsp-shell tsp-layout">
+      {/* ---------- Layout: left price rail + article ----------
+          85% of the viewport, centered — the hero above stays full-bleed. */}
+      <div className="tsp-layout">
         <TripPriceRail trip={trip} nextDeparture={formatShortDate(nextDeparture)} onBook={onBook} />
 
         <article className="tsp-article">
