@@ -1585,9 +1585,30 @@
   line-height: 1.72;
 }
 
-/* ---- Three-up auto-sliding gallery ---- */
+/* ---- Three-up auto-sliding gallery ----
 
-.tsp-slider { display: grid; gap: 10px; }
+   `--tsp-slide-scale` shrinks the whole strip by one factor: the stage width,
+   the gap between photographs and — because the stage keeps its 16/7
+   aspect-ratio — the stage height all follow it. At 0.5 every photograph is
+   rendered at exactly half its former width *and* half its former height
+   (a quarter of the area) instead of towering over the day's copy.
+
+   Quality is untouched: the source files are the same full-resolution
+   photographs, now displayed in a smaller box, so the browser downsamples
+   them (roughly 2x the device pixels per CSS pixel) and they render sharper
+   than before, never softer. */
+
+.tsp-slider {
+  --tsp-slide-scale: 0.5;
+  --tsp-slide-gap: calc(10px * var(--tsp-slide-scale));
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  max-width: calc(100% * var(--tsp-slide-scale));
+  /* A grid item capped by max-width stops stretching, so anchor it to the
+     text column's left edge rather than letting it drift. */
+  justify-self: start;
+}
 
 .tsp-slider__stage {
   position: relative;
@@ -1600,14 +1621,14 @@
 .tsp-slider__track {
   display: flex;
   height: 100%;
-  gap: 10px;
-  transform: translateX(calc(var(--tsp-slide-index) * -1 * ( (100% + 10px) / var(--tsp-slide-count) )));
+  gap: var(--tsp-slide-gap);
+  transform: translateX(calc(var(--tsp-slide-index) * -1 * ( (100% + var(--tsp-slide-gap)) / var(--tsp-slide-count) )));
   transition: transform 0.85s var(--tsp-ease);
   will-change: transform;
 }
 
 .tsp-slider__slide {
-  flex: 0 0 calc((100% - (10px * (var(--tsp-slide-count) - 1))) / var(--tsp-slide-count));
+  flex: 0 0 calc((100% - (var(--tsp-slide-gap) * (var(--tsp-slide-count) - 1))) / var(--tsp-slide-count));
   min-width: 0;
   height: 100%;
   margin: 0;
@@ -2159,6 +2180,10 @@
   .tsp-bookBtn { padding: 14px 18px; }
   .tsp-bookBtn--wide { width: 100%; }
 
+  /* Phones already show one photograph at a time inside a ~320px column, so
+     the half-size strip would shrink to a stamp. Keep the mobile gallery at
+     full column width — the oversized-photograph problem is a desktop one. */
+  .tsp-slider { --tsp-slide-scale: 1; }
   .tsp-slider__stage { aspect-ratio: 4 / 3; }
 
   .tsp-acc__trigger {
