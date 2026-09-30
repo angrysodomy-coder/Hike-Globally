@@ -127,7 +127,10 @@ check('legend explains the three states', $$('.tsp-calendar__legend li').length,
 
 const monthLabel = () => text('.tsp-calendar__month')
 const [prev, next] = $$('.tsp-calendar__nav button')
-check('previous month disabled on the current month', prev?.disabled, true)
+/* The calendar opens on the first month that actually has a departure, not on
+   an empty current month. */
+check('calendar opens on a month with departures', /departures? this month/.test(text('.tsp-calendar__count')), true)
+check('opening month is not in the past', $$('.tsp-day--departure').length > 0, true)
 const firstMonth = monthLabel()
 next?.click()
 await sleep(200)
@@ -135,6 +138,15 @@ check('next month paginates forward', monthLabel() !== firstMonth, true)
 prev?.click()
 await sleep(200)
 check('previous month paginates back', monthLabel(), firstMonth)
+
+/* Paginating back to today must stop there — no travelling into the past. */
+for (let step = 0; step < 24; step += 1) {
+  const back = $$('.tsp-calendar__nav button')[0]
+  if (back?.disabled) break
+  back?.click()
+  await sleep(60)
+}
+check('pagination stops at the current month', $$('.tsp-calendar__nav button')[0]?.disabled, true)
 
 /* Walk forward until a month with departures shows up, then pick one. */
 let guard = 0

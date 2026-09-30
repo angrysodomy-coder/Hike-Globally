@@ -237,7 +237,9 @@
 .tsp-layout {
   display: grid;
   grid-template-columns: var(--tsp-rail-w) minmax(0, 1fr);
-  align-items: start;
+  /* `stretch` (not `start`) is load-bearing: the rail column has to be as tall
+     as the article for `position: sticky` inside it to have anywhere to travel. */
+  align-items: stretch;
   gap: var(--tsp-gap);
   padding-block: clamp(28px, 3.4vw, 76px) clamp(60px, 7vw, 150px);
 }
@@ -972,6 +974,8 @@
   place-content: center;
   gap: 2px;
   aspect-ratio: 1 / 0.92;
+  /* The cells are square-ish, but never tower on a wide, stacked calendar. */
+  max-height: clamp(52px, 8vw, 92px);
   padding: 2px;
   border: 1px solid transparent;
   border-radius: clamp(8px, 0.8vw, 14px);
@@ -1052,6 +1056,36 @@
 }
 
 .tsp-day--departure.is-selected .tsp-day__price { color: rgba(241, 250, 238, 0.78); }
+
+.tsp-calendar__note {
+  margin-top: auto;
+  padding-top: clamp(12px, 1.1vw, 20px);
+  font-size: var(--tsp-micro);
+  line-height: 1.6;
+  color: var(--tsp-muted);
+  max-width: 54ch;
+}
+
+.tsp-calendar__jump {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: clamp(10px, 1vw, 18px);
+  padding: clamp(9px, 0.8vw, 14px) clamp(13px, 1.1vw, 20px);
+  border: 1px dashed rgba(69, 123, 157, 0.45);
+  border-radius: 999px;
+  background: rgba(168, 218, 220, 0.16);
+  color: var(--tsp-ink-2);
+  font-size: var(--tsp-small);
+  font-weight: 600;
+  transition: background-color 0.2s var(--tsp-ease), border-color 0.2s var(--tsp-ease);
+}
+
+.tsp-calendar__jump:hover {
+  background: rgba(168, 218, 220, 0.34);
+  border-color: var(--tsp-sage);
+}
 
 .tsp-calendar__legend {
   display: flex;
@@ -1189,7 +1223,8 @@
 
 .tsp-field__row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  /* Country needs more room than the traveller count so its label never clips. */
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
   gap: clamp(10px, 0.9vw, 16px);
 }
 
@@ -2034,6 +2069,9 @@
 /* --- Small laptop: the calendar stacks --- */
 @media (max-width: 1180px) {
   .tsp-calendar { grid-template-columns: minmax(0, 1fr); }
+  /* Stacked, the month would stretch the full card width; keep it a calendar. */
+  .tsp-calendar__grid-side { width: min(100%, 620px); margin-inline: auto; }
+  .tsp-calendar__note { max-width: none; }
   .tsp-acc__trigger { grid-template-columns: auto minmax(0, 1fr) auto; }
   .tsp-acc__peek { display: none; }
 }

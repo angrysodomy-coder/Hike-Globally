@@ -48,11 +48,21 @@ export default function TripBookingCalendar({ trip }) {
   const today = useMemo(() => new Date(), [])
   const departures = useMemo(() => buildDepartures(trip, today), [trip, today])
 
-  const [cursor, setCursor] = useState(0)
-  const [selected, setSelected] = useState(() => {
-    const next = Object.keys(departures).sort().find((key) => departures[key].status !== 'sold-out')
-    return next || null
-  })
+  /* First bookable date, and the month it lives in: the calendar opens on a
+     month that actually has departures rather than on an empty current month. */
+  const firstOpen = useMemo(
+    () => Object.keys(departures).sort().find((key) => departures[key].status !== 'sold-out') || null,
+    [departures],
+  )
+
+  const monthOffset = (iso) => {
+    if (!iso) return 0
+    const [year, month] = iso.split('-').map(Number)
+    return Math.max(0, (year - today.getFullYear()) * 12 + (month - 1 - today.getMonth()))
+  }
+
+  const [cursor, setCursor] = useState(() => monthOffset(firstOpen))
+  const [selected, setSelected] = useState(firstOpen)
   const [form, setForm] = useState({ name: '', email: '', country: '', travellers: '2' })
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
@@ -72,6 +82,12 @@ export default function TripBookingCalendar({ trip }) {
   const jump = (delta) => {
     setCursor((current) => Math.min(MONTHS_AHEAD, Math.max(0, current + delta)))
   }
+
+  /* The next month, after the one in view, that still has a place on it. */
+  const nextOpen = Object.keys(departures).sort().find((key) => {
+    if (departures[key].status === 'sold-out') return false
+    return monthOffset(key) > cursor
+  })
 
   const update = (field) => (event) => {
     setForm((current) => ({ ...current, [field]: event.target.value }))
@@ -188,11 +204,28 @@ export default function TripBookingCalendar({ trip }) {
           })}
         </div>
 
+        {monthDepartures.length === 0 && nextOpen && (
+          <button
+            type="button"
+            className="tsp-calendar__jump"
+            onClick={() => setCursor(monthOffset(nextOpen))}
+          >
+            Jump to the next departure — {formatLongDate(nextOpen)}
+            <ChevronRight size={15} aria-hidden="true" />
+          </button>
+        )}
+
         <ul className="tsp-calendar__legend">
           <li><i className="is-available" aria-hidden="true" /> Places open</li>
           <li><i className="is-limited" aria-hidden="true" /> Few places left</li>
           <li><i className="is-sold-out" aria-hidden="true" /> Sold out</li>
         </ul>
+
+        <p className="tsp-calendar__note">
+          Prices are per person, twin-share, and include everything listed under
+          “What’s included”. Private departures run on any date you like — choose the
+          closest one and tell us in the follow-up email.
+        </p>
       </div>
 
       <form className="tsp-calendar__form" onSubmit={submit}>
@@ -266,7 +299,7 @@ export default function TripBookingCalendar({ trip }) {
               <Users size={17} aria-hidden="true" />
               <select id="tsp-travellers" name="travellers" value={form.travellers} onChange={update('travellers')}>
                 {['1', '2', '3', '4', '5', '6', '7', '8'].map((count) => (
-                  <option key={count} value={count}>{count} {count === '1' ? 'traveller' : 'travellers'}</option>
+                  <option key={count} value={count}>{count}</option>
                 ))}
               </select>
             </div>
