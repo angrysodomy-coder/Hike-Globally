@@ -95,7 +95,7 @@ export default function App() {
         <ArrowRight size={19} />
       </button>
 
-      {bookingOpen && <BookingDrawer key={bookingTrip?.id || 'custom'} trip={bookingTrip} onClose={closeBooking} />}
+      {bookingOpen && <BookingDrawer key={`booking-${bookingTrip?.id || 'custom'}`} trip={bookingTrip} onClose={closeBooking} />}
     </div>
   )
 }
