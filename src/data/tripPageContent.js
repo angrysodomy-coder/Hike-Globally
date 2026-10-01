@@ -319,7 +319,7 @@ function buildDefault(trip) {
       alt: `Illustrated route map of the ${trip.title} trek showing villages, altitudes and the daily trail`,
       caption: `${trip.title} — full route, overnight villages and altitude profile.`,
       legend: [
-        { label: 'Trekking route', value: 'Dashed red line, walked daily' },
+        { label: 'Trekking route', value: 'Dashed teal line, walked daily' },
         { label: 'Overnight stops', value: 'Circled villages, all lodge-based' },
         { label: 'High point', value: trip.elevation },
         { label: 'Total distance', value: `${Math.round(days * 9.5)} km on foot` },

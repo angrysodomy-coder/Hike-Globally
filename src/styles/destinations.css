@@ -246,7 +246,7 @@
 }
 
 .dp-marquee__item svg {
-  color: var(--clay);
+  color: var(--clay-bright);
   flex: none;
 }
 
@@ -484,7 +484,7 @@
 .dp-rail__line i {
   position: absolute;
   inset: 0;
-  background: var(--clay);
+  background: var(--clay-bright);
   transform: scaleX(0);
   transform-origin: 0 50%;
 }
@@ -564,7 +564,7 @@
 }
 
 .dp-stats__suffix {
-  color: var(--clay);
+  color: var(--clay-bright);
   font-size: 0.6em;
 }
 
@@ -983,7 +983,7 @@
 }
 
 .dp-craft__steps button.is-active span {
-  color: var(--clay);
+  color: var(--clay-bright);
 }
 
 .dp-craft__scroll {
@@ -1200,7 +1200,7 @@
 }
 
 .dp-voices__dots button.is-active {
-  background: var(--clay);
+  background: var(--clay-bright);
 }
 
 .dp-voices__arrows {
