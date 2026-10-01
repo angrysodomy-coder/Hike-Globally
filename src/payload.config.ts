@@ -14,8 +14,21 @@ import { defaultLexical } from '@/fields/defaultLexical'
 import { documentHref } from '@/lib/utils/documentHref'
 import { getServerSideURL } from '@/lib/utils/getURL'
 
+import { Authors } from '@/collections/Authors'
+import { Categories } from '@/collections/Categories'
+import { Departures } from '@/collections/Departures'
+import { Destinations } from '@/collections/Destinations'
+import { Enquiries } from '@/collections/Enquiries'
 import { Media } from '@/collections/Media'
+import { Pages } from '@/collections/Pages'
+import { Posts } from '@/collections/Posts'
+import { Reviews } from '@/collections/Reviews'
+import { Trips } from '@/collections/Trips'
 import { Users } from '@/collections/Users'
+
+import { Footer } from '@/globals/Footer'
+import { Header } from '@/globals/Header'
+import { SiteSettings } from '@/globals/SiteSettings'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -87,14 +100,38 @@ export default buildConfig({
   }),
 
   /**
-   * Collections are added as each step of the integration lands, so the admin
-   * always boots. Remaining, in order:
-   *   step 4 — Trips, Departures
-   *   step 6 — Pages, Posts, Destinations, Reviews, Enquiries, Categories,
-   *            Authors, plus the Header / Footer / SiteSettings globals and
-   *            the redirects + search plugins.
+   * Order here drives the admin sidebar within each `admin.group`, so it is
+   * roughly "what an editor opens most often" rather than alphabetical.
+   *
+   * Registration order does NOT matter for relationships — Payload resolves
+   * every `relationTo` against the finished config, so Trips may point at
+   * Destinations regardless of which is listed first. What matters is that
+   * each referenced slug is present SOMEWHERE in this array; a missing one
+   * throws `InvalidFieldRelationship` at boot, which is what broke the admin
+   * during step 3.
+   *
+   * Still to come: the redirects and search plugins (step 6 leftovers).
    */
-  collections: [Media, Users],
+  collections: [
+    // Catalogue
+    Trips,
+    Destinations,
+    Departures,
+    // Journal
+    Posts,
+    Categories,
+    // Site
+    Pages,
+    // People and operations
+    Authors,
+    Reviews,
+    Enquiries,
+    // Library and settings
+    Media,
+    Users,
+  ],
+
+  globals: [Header, Footer, SiteSettings],
 
   cors: [getServerSideURL()].filter(Boolean),
   csrf: [getServerSideURL()].filter(Boolean),

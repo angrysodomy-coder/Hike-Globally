@@ -3,9 +3,9 @@
 Companion to [`payload-integration-plan.md`](./payload-integration-plan.md). The plan is the
 *reference*; this file is the *state*. Update the status table as each step lands.
 
-**Branch:** `arena/01a0f76c-hike-globally`
+**Branch:** `arena/01a0f7cb-hike-globally` (steps 1–3 landed on `arena/01a0f76c-hike-globally`)
 **Approach:** embedded Payload 3 inside Next.js App Router, one repo, one deploy, Local API.
-**Last updated:** 2026-10-01
+**Last updated:** 2026-10-01 (step 4)
 
 ---
 
@@ -16,12 +16,21 @@ Companion to [`payload-integration-plan.md`](./payload-integration-plan.md). The
 | 1 | Scaffold | `package.json`, `next.config.ts`, `tsconfig.json`, `.env.example`, `.gitignore`, `src/app/(payload)/**` | ✅ **Done** |
 | 2 | Shared primitives | `src/access/*`, `src/fields/{slug,seo,link,artDirectedImage,defaultLexical}.ts`, `src/lib/utils/*` | ✅ **Done** |
 | 3 | First boot | `src/collections/{Media,Users}.ts` + `src/payload.config.ts` → `/admin` loads | ✅ **Done** |
-| 4 | Core content | `src/collections/Trips/index.ts`, `src/collections/Departures.ts`, `src/hooks/revalidate.ts` | ⬜ Not started |
+| 4 | Core content | `src/collections/Trips/index.ts`, `src/collections/Departures.ts`, `src/hooks/revalidate.ts` | ✅ **Done** |
 | 5 | First rendered route | `src/lib/payload.ts`, `src/lib/queries/trips.ts`, `src/app/(frontend)/trips/[slug]/page.tsx` | ⬜ Not started |
-| 6 | Remaining collections | Pages, Posts, Destinations, Reviews, Enquiries, Categories, Authors; globals; blocks; plugins | ⬜ Not started |
+| 6 | Remaining collections | Pages, Posts, Destinations, Reviews, Enquiries, Categories, Authors; globals; blocks | ✅ **Done** (pulled into step 4) |
 
-`/admin` boots, authenticates, and accepts uploads as of step 3. Verified against a real
-PostgreSQL 18 instance, not just a typecheck — see the verification table below.
+`/admin` boots, authenticates, and accepts uploads as of step 3. The full content model —
+11 collections, 3 globals, 19 blocks — is live as of step 4. Everything below was verified
+against a real PostgreSQL 18 instance over HTTP, not just a typecheck.
+
+**Step 6 was merged into step 4 deliberately.** The Trips schema in §8.5 of the plan has a
+*required* `destination` relationship plus `leadGuide` → authors, `relatedPosts` → posts and a
+`reviews` join. Payload validates relationship targets at boot, so shipping Trips without those
+collections meant either an `InvalidFieldRelationship` crash (the exact failure that broke step 3)
+or shipping a trip that cannot say where it goes. The plan's own §20 roadmap orders the
+supporting collections *before* Trips for this reason. Only the redirects and search plugins
+remain outstanding from the original step 6 list.
 
 ---
 
@@ -228,21 +237,142 @@ That is Next asserting its own requirement; the value was kept and Vite is unaff
 
 ---
 
-## Next step — 4. Core content
+## Step 4 — Core content (and the rest of the model) ✅
 
-- `src/collections/Trips/index.ts` — the core collection: pricing, itinerary blocks, gallery, SEO
-- `src/collections/Departures.ts` — real booking inventory, replacing `buildDepartures()`
-- `src/hooks/revalidate.ts` — on-demand revalidation with the `EDITORIAL` / `CRITICAL` split
+### Files created
+
+**Hooks and utilities**
+
+| Path | Purpose |
+|------|---------|
+| `src/hooks/revalidate.ts` | Every on-demand revalidation hook, with the `EDITORIAL` / `CRITICAL` split |
+| `src/hooks/populatePublishedAt.ts` | Stamps `publishedAt` the first time a document is *published*, not created |
+| `src/hooks/populateReadingTime.ts` | Lexical → plain text → minutes; `lexicalToPlainText` exported for later reuse |
+| `src/lib/utils/generatePreviewPath.ts` | Builds the `/next/preview?path=…` url for the Preview button and live preview |
+| `src/fields/options.ts` | Shared season / difficulty / currency / trip-type / meal vocabularies |
+
+**Collections** — `Trips/index.ts`, `Departures.ts`, `Destinations.ts`, `Posts/index.ts`,
+`Pages/index.ts`, `Categories.ts`, `Authors.ts`, `Reviews.ts`, `Enquiries.ts`
+(joining `Media.ts` and `Users.ts` from step 3).
+
+**Globals** — `Header.ts`, `Footer.ts`, `SiteSettings.ts`.
+
+**Blocks** — all 19 under `src/blocks/*/config.ts`: the 17 page blocks from the plan's table
+plus `Callout` and `TripCard`, which the Posts rich-text editor needs. `Gallery` is shared
+between the page builder and the article editor.
+
+**Admin RowLabels** — `createRowLabel.tsx` (shared factory) plus `TextRowLabel`,
+`TitleRowLabel`, `QuestionRowLabel`, `ItineraryRowLabel`, `LinkRowLabel`.
+
+**Also:** `scripts/dev-postgres.mjs` — throwaway PostgreSQL for verification. Not wired into any
+npm script and `embedded-postgres` is deliberately **not** in `devDependencies` (it downloads a
+database binary). Run `npm i --no-save embedded-postgres` first if you need it.
+
+### Ten corrections made to the plan
+
+Each of these is a real defect in the §8 / §11 code as drafted, not a style preference.
+
+1. **`context.disableRevalidate` is mandatory, not an optimisation.** §11.3 describes it as
+   avoiding pointless work. In fact a Local API write without it **throws** —
+   `Invariant: static generation store missing in revalidatePath /trips/…` — because
+   `revalidatePath` requires a Next request scope and a seed script has none. The step-7 seed
+   script cannot work without passing it. Verified both ways.
+2. **Departures silently resurrected cancelled dates.** The plan guards status derivation with
+   `data?.status !== 'cancelled'`. On a partial update `data.status` is `undefined`, so editing
+   only the `note` on a cancelled departure flipped it back to `available` — i.e. put a
+   cancelled trek back on sale. Now reads `data?.status ?? originalDoc?.status`. There is a
+   regression test for exactly this.
+3. **`endDate` went stale on partial updates.** The plan skips derivation unless `data.startDate`
+   is present, which a `PATCH` of `spotsRemaining` never is. Now falls back to
+   `originalDoc.startDate`.
+4. **`Departures.defaultPopulate` listed a `currency` field that does not exist.** Removed —
+   `price` is an override of the trip's base price and must inherit the trip's currency.
+5. **Posts used `defaultFeatures` instead of `rootFeatures`.** Verified in
+   `@payloadcms/richtext-lexical@3.90.2`: `defaultFeatures` is Payload's own built-in set, while
+   `rootFeatures` is what `editor:` in `payload.config.ts` configures. The plan's version would
+   have silently discarded the curated toolbar in `defaultLexical.ts` and handed writers back H1.
+6. **`generatePreviewPath` duplicated the collection → URL map.** It now calls `documentHref()`,
+   which step 2 created precisely to be the single source of that mapping.
+7. **Season and difficulty lists were written out three times** — Trips, Destinations and the
+   TripGrid filter — and must match exactly or the filter returns nothing. Now one
+   `src/fields/options.ts`. In Postgres these are real enum types, so drift is a migration.
+8. **No inventory validation.** `spotsRemaining` could exceed `spotsTotal`. Added a cross-field
+   `validate`.
+9. **`Destinations` had no way to see its own trips.** Added the reciprocal `trips` join.
+10. **`RowLabel` row numbering is a trap.** `useRowLabel().rowNumber` is **0-based**
+    (`ArrayRow.js:121` → `rowNumber: rowIndex`) while server props are **1-based**
+    (`renderField.js:107` → `rowIndex + 1`). Reading the wrong one numbers the itinerary from
+    day two. Documented at the top of `createRowLabel.tsx`.
+
+### Two deliberate design choices
+
+- **RowLabel components adapt to the data, not the reverse.** An earlier pass renamed
+  `label` → `title` and `caption` → `text` across several arrays so one component could read
+  them. That was backwards, and it was reverted: the field names now follow the plan, and
+  `TextRowLabel` / `TitleRowLabel` read `text ?? caption ?? label` and `title ?? label ?? name`.
+- **`spotsRemainingField` is extracted from the `fields` array.** A field literal nested inside
+  `tabs` → `row` → `fields` is contextually typed as the whole `Field` union, so TypeScript
+  cannot infer the `validate` signature and `siblingData` arrives as an implicit `any` under
+  `strict`. Annotating it `NumberField` fixes inference without a cast.
+
+### Verification — executed against PostgreSQL 18.4 over HTTP
+
+| Check | Result |
+|-------|--------|
+| `npm run generate:types` | ✅ config loads; no `InvalidFieldRelationship` |
+| `npm run generate:importmap` | ✅ all five RowLabels resolved into the import map |
+| `npx tsc --noEmit` | ✅ **0 errors** |
+| `npx eslint .` | ✅ clean |
+| Schema push from an empty database | ✅ **148 tables, 86 enums** |
+| Longest table / enum name | 44 / 51 chars — clear of the Postgres 63-char limit |
+| camelCase column mangling (pitfall 21) | ✅ none introduced; the only hit is Payload's own internal `media.thumbnail_u_r_l` |
+| Compound unique index on `(trip, startDate)` | ✅ `CREATE UNIQUE INDEX` confirmed, and enforced — duplicate insert rejected by Postgres |
+| Join fields store no column | ✅ `trips.departures` / `trips.reviews` resolve, no stored column |
+| Drafts wiring | ✅ `_status` on trips, 15 version tables |
+| **Functional suite (25 checks)** | ✅ **25/25** — see below |
+| `npm run build:next` | ✅ succeeds; route table unchanged (frontend routes are step 5) |
+| `npm run build` (Vite) | ✅ succeeds |
+| `npm test` (legacy smoke suite) | ✅ all pass |
+| `GET /admin` | ✅ HTTP 200, renders with every new collection in the sidebar |
+
+The 25 functional checks, run over the REST API against the dev server, cover: slug derivation,
+`publishedAt` stamping on publish, the derived `endDate` (15 Mar + 16 days → 30 Mar), the
+`available` → `limited` → `sold-out` status ladder, the cancelled-status regression, inventory
+validation, the unique-index rejection, both join directions, draft non-leakage to anonymous
+readers, departures being publicly readable, the anonymous-create / authenticated-read split on
+Enquiries, and both globals accepting a polymorphic link.
+
+Revalidation was confirmed from the server log rather than assumed —
+`Revalidated /destinations/khumbu`, `Revalidated /trips/everest-base-camp`, and
+`Revalidated departures for /trips/everest-base-camp` on every departure write. That last one
+exercises the depth-0 branch of `revalidateDepartureDoc`, where `doc.trip` is a bare ID and the
+slug has to be looked up.
+
+---
+
+## Next step — 5. First rendered route
+
+- `src/lib/payload.ts` — cached `getPayload()` client
+- `src/lib/queries/trips.ts` — typed query helpers, written as standalone functions so the
+  Cache Components migration in §11.4 stays a ten-line diff
+- `src/app/(frontend)/trips/[slug]/page.tsx` — the first real page
+- `src/app/(frontend)/next/preview/route.ts` + `exit-preview/route.ts` — `generatePreviewPath`
+  already points at these; until they exist the Preview button 404s
+- **Flip the npm scripts.** `dev` / `build` / `preview` should become Next, and the Vite ones
+  retired, once `/` renders something. This was promised at step 3 and is still outstanding.
 
 ---
 
 ## Deferred, promised in the plan
 
-To be generated on request, after step 6:
-
-- The 14 remaining layout block configs
-- The `Footer` global
-- Admin `RowLabel` components: `@/components/admin/{ItineraryRowLabel,TextRowLabel,TitleRowLabel,QuestionRowLabel,LinkRowLabel}`
+- `redirectsPlugin` and `searchPlugin` — the last items from the original step 6 list. Pitfall 5
+  wants redirects installed before the first slug rename reaches production.
+- The frontend React components for all 19 blocks (`RenderBlocks` and friends) — this step
+  delivered the CMS-side configs only.
+- The initial migration. Still **not** generated, for the reason given under step 3: the schema
+  is not deployed anywhere and `push: true` covers development. Generate it once, immediately
+  before the first deploy. Note that step 4 renamed several fields during development — exactly
+  the pitfall-20 rename prompt — which was handled by dropping and re-pushing the dev schema.
 
 ## Environment reminder
 
