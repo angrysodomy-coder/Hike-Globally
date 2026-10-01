@@ -95,7 +95,11 @@ export const Pages: CollectionConfig<'pages'> = {
         seoTab,
       ],
     },
-    slugField(),
+    /**
+     * Pages live at the URL root, so their slugs compete with every top-level
+     * route the app defines. See the `reserved` argument in fields/slug.ts.
+     */
+    slugField('title', {}, ['admin', 'api', 'blog', 'destinations', 'next', 'trips']),
     {
       name: 'publishedAt',
       type: 'date',

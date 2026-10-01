@@ -5,7 +5,7 @@ Companion to [`payload-integration-plan.md`](./payload-integration-plan.md). The
 
 **Branch:** `arena/01a0f7cb-hike-globally` (steps 1–3 landed on `arena/01a0f76c-hike-globally`)
 **Approach:** embedded Payload 3 inside Next.js App Router, one repo, one deploy, Local API.
-**Last updated:** 2026-10-01 (step 4)
+**Last updated:** 2026-10-01 (step 5)
 
 ---
 
@@ -17,12 +17,14 @@ Companion to [`payload-integration-plan.md`](./payload-integration-plan.md). The
 | 2 | Shared primitives | `src/access/*`, `src/fields/{slug,seo,link,artDirectedImage,defaultLexical}.ts`, `src/lib/utils/*` | ✅ **Done** |
 | 3 | First boot | `src/collections/{Media,Users}.ts` + `src/payload.config.ts` → `/admin` loads | ✅ **Done** |
 | 4 | Core content | `src/collections/Trips/index.ts`, `src/collections/Departures.ts`, `src/hooks/revalidate.ts` | ✅ **Done** |
-| 5 | First rendered route | `src/lib/payload.ts`, `src/lib/queries/trips.ts`, `src/app/(frontend)/trips/[slug]/page.tsx` | ⬜ Not started |
+| 5 | First rendered route | `src/lib/payload.ts`, `src/lib/queries/trips.ts`, `src/app/(frontend)/trips/[slug]/page.tsx` | ✅ **Done** |
 | 6 | Remaining collections | Pages, Posts, Destinations, Reviews, Enquiries, Categories, Authors; globals; blocks | ✅ **Done** (pulled into step 4) |
 
 `/admin` boots, authenticates, and accepts uploads as of step 3. The full content model —
-11 collections, 3 globals, 19 blocks — is live as of step 4. Everything below was verified
-against a real PostgreSQL 18 instance over HTTP, not just a typecheck.
+11 collections, 3 globals, 19 blocks — is live as of step 4. As of step 5 the first public
+route, `/trips/[slug]`, renders from Postgres with draft preview and structured data, and the
+npm scripts point at Next rather than Vite. Everything below was verified against a real
+PostgreSQL 18 instance over HTTP, not just a typecheck.
 
 **Step 6 was merged into step 4 deliberately.** The Trips schema in §8.5 of the plan has a
 *required* `destination` relationship plus `leadGuide` → authors, `relatedPosts` → posts and a
@@ -128,9 +130,15 @@ The plan originally recommended pnpm because the Payload install docs warn that 
 2. Create `.env` from `.env.example`. Minimum to boot: `DATABASE_URL`, `PAYLOAD_SECRET`,
    `NEXT_PUBLIC_SERVER_URL`. Any Postgres 14+ works; no S3 bucket is needed (uploads fall
    back to `/media` on disk, which is gitignored).
-3. `npm run dev:next` → http://localhost:3000/admin and create the first user.
+3. `npm run dev` → http://localhost:3000/admin and create the first user.
+4. `http://localhost:3000/trips/<slug>` renders a published trip.
 
-`npm run dev` still runs **Vite**, not Next — see the script table above.
+As of step 5, `npm run dev` / `build` / `start` are **Next**. The old Vite app is still there
+under `npm run legacy:dev` / `legacy:build` / `legacy:preview`, and `npm test` still covers it.
+
+**If preview 403s:** `NEXT_PUBLIC_SERVER_URL` must equal the origin the browser is actually on.
+Payload's `csrf` allowlist is built from it, and a cookie-authenticated request from any other
+origin is rejected — including a tunnelled or proxied dev host.
 
 ---
 
@@ -350,16 +358,108 @@ slug has to be looked up.
 
 ---
 
-## Next step — 5. First rendered route
+## Step 5 — First rendered route ✅
 
-- `src/lib/payload.ts` — cached `getPayload()` client
-- `src/lib/queries/trips.ts` — typed query helpers, written as standalone functions so the
-  Cache Components migration in §11.4 stays a ten-line diff
-- `src/app/(frontend)/trips/[slug]/page.tsx` — the first real page
-- `src/app/(frontend)/next/preview/route.ts` + `exit-preview/route.ts` — `generatePreviewPath`
-  already points at these; until they exist the Preview button 404s
-- **Flip the npm scripts.** `dev` / `build` / `preview` should become Next, and the Vite ones
-  retired, once `/` renders something. This was promised at step 3 and is still outstanding.
+`/trips/[slug]` renders from Postgres through the Local API, as a server component, with
+draft preview, structured data and canonical metadata. The npm scripts now point at Next.
+
+### Files created
+
+| File | What it is |
+| --- | --- |
+| `src/lib/payload.ts` | Cached `getPayload()` client, guarded with `import 'server-only'` |
+| `src/lib/queries/trips.ts` | `getTripBySlug`, `getTripDepartures`, `getTrips`, `getAllTripSlugs` |
+| `src/lib/seo/generateMeta.ts` | Title/description/OG/canonical builder |
+| `src/lib/seo/jsonLd.ts` | `tripJsonLd`, `breadcrumbJsonLd`, `faqJsonLd` |
+| `src/components/JsonLd.tsx` | `<script type="application/ld+json">` emitter |
+| `src/components/CMSImage/index.tsx` | `next/image` + focal point + stored blur placeholder |
+| `src/components/CMSImage/ArtDirected.tsx` | Raw `<picture>`, bypasses the Next optimizer on purpose |
+| `src/components/RichText/index.tsx` | Server-side Lexical → JSX with link resolution |
+| `src/components/LivePreviewListener/index.tsx` | `RefreshRouteOnSave`, draft mode only |
+| `src/app/(frontend)/layout.tsx` | Second root layout — isolates site CSS from the admin |
+| `src/app/(frontend)/not-found.tsx` | 404 page |
+| `src/app/(frontend)/trips/[slug]/page.tsx` | The page: 10 sections, SSG + on-demand |
+| `src/app/(frontend)/next/preview/route.ts` | Draft-mode gateway (3 checks) |
+| `src/app/(frontend)/next/exit-preview/route.ts` | Clears the draft cookie |
+| `src/components/TripPage/*.tsx` | 6 section components + `format.ts` |
+| `src/styles/trip-single-next.css` | `details[open]` equivalents of the JS `.is-open` states |
+
+### Corrections and findings
+
+1. **`blurDataURL` → `blurDataUrl`.** Plan §12.1 reads `resource.blurDataURL`; the real field
+   is `blurDataUrl`, renamed back in step 3 so Postgres does not mangle the column into
+   `blur_data_u_r_l`. The plan's component would have silently never shown a placeholder.
+2. **`DefaultNodeTypes` is not exported from `@payloadcms/richtext-lexical/react`,** and
+   parameterising `JSXConvertersFunction<DefaultNodeTypes>` does not compile anyway — the
+   `blocks` key in `defaultConverters` is a map of block slugs, not a converter, so it fails
+   assignment. Left unparameterised; the default type argument is already correct.
+3. **Block converters deferred, deliberately.** Only the Posts `content` field enables
+   `BlocksFeature`, and the blog route has not landed. `callout` / `tripCard` / `gallery`
+   converters arrive with it.
+4. **`<details>` instead of a `useState` accordion.** The itinerary and FAQ lists are pure
+   server components with zero client JS. Beyond bundle size this is an SEO requirement: an
+   FAQ rich result is only awarded when the answer text is in the HTML, which a click-to-render
+   accordion cannot satisfy no matter how correct the JSON-LD is.
+5. **Name collision with the Vite app.** `src/components/trip/` already held
+   `TripPriceRail.jsx` and `TripFaqs.jsx`; adding `.tsx` files of the same name silently
+   shadowed them, because esbuild resolves `.tsx` first. The legacy smoke suite caught it.
+   New server components live in `src/components/TripPage/`.
+6. **Reserved slugs implemented (§10.1).** `slugField()` takes a third `reserved` argument;
+   Pages passes `['admin','api','blog','destinations','next','trips']`. Without it a page
+   slugged `trips` does not 404 — Next resolves the static segment first, so the page just
+   never renders while the editor insists they published it.
+7. **Availability text is derived, never typed.** The rail's "N departures open" and the
+   per-row seat counts come from live `departures` rows.
+8. **`csrf: [getServerSideURL()]` gates cookie auth.** Payload rejects a cookie-authenticated
+   request whose `Origin` is not in the allowlist. Browsers always send `Origin`, so the admin
+   and the live-preview iframe are fine — but `NEXT_PUBLIC_SERVER_URL` must match the real
+   origin or preview will 403. This cost an hour of debugging a "broken" preview route that
+   was working correctly.
+
+### npm scripts flipped
+
+`dev`, `build` and `start` are now Next. `dev:next` / `build:next` / `start:next` remain as
+aliases so `ci` and existing docs keep working. The Vite app moved to `legacy:dev`,
+`legacy:build`, `legacy:preview` — it still builds, and `npm test` still covers it.
+
+### Verification — executed against PostgreSQL, not assumed
+
+A fully-populated trip (3 itinerary days, 2 FAQs, permits, route map, packing list, 3
+departures across `available` / `limited` / `sold-out`) plus one unpublished trip were seeded
+through the Local API, then the rendered HTML was asserted on.
+
+| Check | Result |
+| --- | --- |
+| `npx tsc --noEmit` | clean |
+| `npx eslint .` | clean |
+| `npm run build` (Next, production) | ✅ `/trips/everest-base-camp-classic` emitted as ● SSG |
+| `npm test` (legacy Vite smoke suite) | ✅ `NO RED OK` |
+| `npm run legacy:build` (Vite) | ✅ built in 4.42s |
+| 33 content assertions on the rendered HTML | ✅ all pass |
+| JSON-LD `TouristTrip` + `BreadcrumbList` + `FAQPage` | ✅ present |
+| JSON-LD offers exclude the sold-out departure | ✅ 2 of 3 emitted |
+| Published trip | 200 |
+| **Unpublished trip, anonymous** | **404** — `overrideAccess: false` holds |
+| Unknown slug | 404 |
+| Preview: no secret / wrong secret | 403 / 403 |
+| Preview: `?path=https://evil.com` and `//evil.com` | 400 / 400 — open redirect closed |
+| Preview: valid secret, not logged in | 403 |
+| Preview: valid secret + session | 307 → sets `__prerender_bypass`, draft renders 200 |
+| `LivePreviewListener` chunk | loaded on draft, absent from published |
+| `/next/exit-preview` then reload | 404 again |
+| `/admin` | 200, still boots |
+
+---
+
+## Next step — 6 (remainder). Blocks, routes and plugins
+
+- `RenderBlocks` + the 19 frontend block components, and the `callout` / `tripCard` /
+  `gallery` Lexical converters that go with them
+- The remaining routes: `/` and the Pages catch-all, `/trips` index (the `getTrips` helper is
+  already written and tagged), `/blog/[slug]`, `/destinations/[slug]`
+- `redirectsPlugin` and `searchPlugin`
+- A real enquiry form posting to the `enquiries` collection — the trip page's `#enquire`
+  anchor and the departure "Reserve" links are placeholders pointing at it
 
 ---
 
@@ -367,7 +467,7 @@ slug has to be looked up.
 
 - `redirectsPlugin` and `searchPlugin` — the last items from the original step 6 list. Pitfall 5
   wants redirects installed before the first slug rename reaches production.
-- The frontend React components for all 19 blocks (`RenderBlocks` and friends) — this step
+- The frontend React components for all 19 blocks (`RenderBlocks` and friends) — step 4
   delivered the CMS-side configs only.
 - The initial migration. Still **not** generated, for the reason given under step 3: the schema
   is not deployed anywhere and `push: true` covers development. Generate it once, immediately

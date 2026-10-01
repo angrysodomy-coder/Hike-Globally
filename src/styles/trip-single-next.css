@@ -1,0 +1,224 @@
+/* ------------------------------------------------------------------
+   Server-rendered trip page: deltas on top of trip-single.css.
+
+   The Vite page toggled an `.is-open` class from React state. The Next page
+   uses native <details>, so the same visual states have to hang off
+   `details[open]` instead. Everything else — colours, spacing, radii — comes
+   from trip-single.css unchanged.
+   ------------------------------------------------------------------ */
+
+/* ---------- <details> accordion ---------- */
+
+.tsp-acc__item > details > summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.tsp-acc__item > details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.tsp-acc__item:has(details[open]) {
+  border-color: rgba(29, 53, 87, 0.3);
+  box-shadow: var(--tsp-shadow);
+}
+
+.tsp-acc__item:has(details[open]) .tsp-acc__index {
+  background: linear-gradient(150deg, var(--tsp-clay), var(--tsp-clay-deep));
+  color: #fff;
+}
+
+.tsp-acc__item details[open] .tsp-acc__chev {
+  transform: rotate(180deg);
+  border-color: var(--tsp-ink);
+  background: var(--tsp-ink);
+  color: #fff;
+}
+
+.tsp-faq__item details[open] .tsp-acc__chev {
+  transform: rotate(180deg);
+}
+
+.tsp-faq__item > details > summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.tsp-faq__item > details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* The FAQ trigger has no index chip, so it needs its own column count. */
+.tsp-faq__item .tsp-acc__trigger {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.tsp-acc__shots {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.tsp-acc__shots figure {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  border-radius: calc(var(--tsp-radius) * 0.6);
+  aspect-ratio: 4 / 3;
+}
+
+/* ---------- Departure list ---------- */
+
+.tsp-depList {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  gap: 8px;
+  list-style: none;
+}
+
+.tsp-depRow {
+  display: grid;
+  align-items: center;
+  padding: clamp(11px, 1vw, 17px) clamp(13px, 1.2vw, 20px);
+  border: 1px solid var(--tsp-line);
+  border-radius: calc(var(--tsp-radius) * 0.7);
+  background: var(--tsp-surface);
+  gap: 10px clamp(12px, 1.4vw, 24px);
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.2fr) auto auto;
+}
+
+@media (max-width: 720px) {
+  .tsp-depRow {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
+
+.tsp-depRow.is-sold-out {
+  background: var(--tsp-surface-2);
+  opacity: 0.66;
+}
+
+.tsp-depRow__dates {
+  display: grid;
+  gap: 2px;
+}
+
+.tsp-depRow__dates strong {
+  color: var(--tsp-ink);
+  font-size: 1.02rem;
+  font-weight: 600;
+}
+
+.tsp-depRow__dates span {
+  color: var(--tsp-ink-soft);
+  font-size: var(--tsp-micro);
+}
+
+.tsp-depRow__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+}
+
+.tsp-pill {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: var(--tsp-micro);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.tsp-pill--available {
+  background: rgba(45, 125, 90, 0.12);
+  color: #1f6b4c;
+}
+
+.tsp-pill--limited {
+  background: rgba(196, 118, 42, 0.14);
+  color: #9a5a17;
+}
+
+.tsp-pill--sold-out {
+  background: rgba(29, 53, 87, 0.1);
+  color: var(--tsp-ink-soft);
+}
+
+.tsp-depRow__guaranteed,
+.tsp-depRow__seats {
+  display: inline-flex;
+  align-items: center;
+  color: var(--tsp-ink-soft);
+  font-size: var(--tsp-micro);
+  gap: 4px;
+}
+
+.tsp-depRow__price {
+  color: var(--tsp-ink);
+  font-size: 1.05rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tsp-depRow__note {
+  margin: 0;
+  color: var(--tsp-ink-soft);
+  font-size: var(--tsp-micro);
+  grid-column: 1 / -1;
+}
+
+.tsp-ghost.is-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.tsp-calendar__month + .tsp-calendar__month {
+  margin-top: clamp(16px, 1.6vw, 26px);
+}
+
+.tsp-calendar__head {
+  margin: 0 0 9px;
+  font-size: var(--tsp-micro);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ---------- Misc ---------- */
+
+.tsp-pull {
+  margin: clamp(16px, 1.6vw, 26px) 0 0;
+  padding-left: clamp(14px, 1.4vw, 22px);
+  border-left: 3px solid var(--tsp-clay);
+  color: var(--tsp-ink);
+  font-family: var(--display);
+  font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+  line-height: 1.45;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+
+.skip-link:focus {
+  position: fixed;
+  z-index: 999;
+  top: 10px;
+  left: 10px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--ink, #1d3557);
+  color: #fff;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
