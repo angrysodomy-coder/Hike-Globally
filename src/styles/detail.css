@@ -68,9 +68,9 @@
 .trip-detail__hero h1 {
   margin: 14px 0 0;
   font-family: var(--display);
-  font-size: var(--font-size-h1, 35px);
+  font-size: clamp(40px, 6.4vw, 84px);
   font-weight: 400;
-  line-height: 1.15;
+  line-height: 1.02;
   letter-spacing: -0.015em;
   color: var(--white);
 }
@@ -130,9 +130,9 @@
 .trip-detail__overview h2 {
   margin: 14px 0 0;
   font-family: var(--display);
-  font-size: var(--font-size-h2, 28px);
+  font-size: clamp(28px, 3.2vw, 44px);
   font-weight: 400;
-  line-height: 1.15;
+  line-height: 1.08;
   letter-spacing: -0.01em;
 }
 
@@ -222,7 +222,7 @@
 .trip-detail__itinerary h3 {
   margin: 4px 0 6px;
   font-family: var(--display);
-  font-size: var(--font-size-h3, 23px);
+  font-size: 19px;
   font-weight: 400;
 }
 
@@ -353,9 +353,9 @@
 .trip-detail__inclusions h2 {
   margin: 14px 0 clamp(28px, 3.6vw, 48px);
   font-family: var(--display);
-  font-size: var(--font-size-h2, 28px);
+  font-size: clamp(28px, 3.2vw, 44px);
   font-weight: 400;
-  line-height: 1.15;
+  line-height: 1.08;
 }
 
 .trip-detail__inclusion-grid {
@@ -369,7 +369,7 @@
   padding-top: 16px;
   border-top: 1px solid var(--line);
   font-family: var(--display);
-  font-size: var(--font-size-h3, 23px);
+  font-size: 18px;
   font-weight: 400;
 }
 
@@ -392,9 +392,9 @@
 .trip-detail__cta h2 {
   margin: 0;
   font-family: var(--display);
-  font-size: var(--font-size-h2, 28px);
+  font-size: clamp(30px, 3.6vw, 50px);
   font-weight: 400;
-  line-height: 1.15;
+  line-height: 1.08;
 }
 
 .trip-detail__cta p {
@@ -424,9 +424,9 @@
 .article-page--missing h1 {
   margin: 16px 0 12px;
   font-family: var(--display);
-  font-size: var(--font-size-h1, 35px);
+  font-size: clamp(32px, 4.4vw, 58px);
   font-weight: 400;
-  line-height: 1.15;
+  line-height: 1.05;
 }
 
 .trip-detail--missing p,
@@ -483,9 +483,9 @@
   max-width: 22ch;
   margin: 14px 0 0;
   font-family: var(--display);
-  font-size: var(--font-size-h1, 35px);
+  font-size: clamp(32px, 4.8vw, 64px);
   font-weight: 400;
-  line-height: 1.15;
+  line-height: 1.06;
   letter-spacing: -0.012em;
   color: var(--white);
 }
@@ -588,9 +588,9 @@
   margin-bottom: 16px;
   padding-top: clamp(24px, 3vw, 32px);
   border-top: 1px solid var(--line);
-  font-size: var(--font-size-h2, 28px);
+  font-size: clamp(26px, 3vw, 39px);
   letter-spacing: -0.015em;
-  line-height: 1.15;
+  line-height: 1.12;
   scroll-margin-top: calc(var(--header-height) + 24px);
 }
 
@@ -601,7 +601,7 @@
 .article-page--markdown .blog-article h3 {
   margin-top: clamp(14px, 2.4vw, 28px);
   margin-bottom: 10px;
-  font-size: var(--font-size-h3, 23px);
+  font-size: clamp(21px, 2.2vw, 28px);
   letter-spacing: -0.01em;
   line-height: 1.18;
 }
@@ -611,7 +611,7 @@
 .article-page--markdown .blog-article h6 {
   margin-top: 12px;
   margin-bottom: 8px;
-  font-size: var(--font-size-h4, 18px);
+  font-size: 20px;
   line-height: 1.3;
 }
 
@@ -620,7 +620,7 @@
   margin: 0 0 20px;
   color: var(--ink);
   font-family: var(--sans);
-  font-size: var(--font-size-body, 16px);
+  font-size: 16.5px;
   font-weight: 400;
   letter-spacing: 0;
   line-height: 1.8;
