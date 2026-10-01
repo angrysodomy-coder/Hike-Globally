@@ -142,6 +142,18 @@ export const Enquiries: CollectionConfig<'enquiries'> = {
       type: 'checkbox',
       required: true,
       admin: { description: 'Explicit consent to be contacted. Required for GDPR.' },
+      /**
+       * `required: true` is NOT enough on a checkbox.
+       *
+       * Payload treats a checkbox as "present" when it is `false`, so
+       * `required` only rejects `undefined` — a POST of
+       * `{"consent": false}`, or one omitting the field entirely, was being
+       * accepted with a 201. For a lawful-basis field that is the whole
+       * point of the control, so it is enforced explicitly here rather than
+       * only in the form that happens to sit in front of it.
+       */
+      validate: (value: boolean | null | undefined) =>
+        value === true || 'Consent is required before we can store an enquiry.',
     },
     {
       name: 'source',

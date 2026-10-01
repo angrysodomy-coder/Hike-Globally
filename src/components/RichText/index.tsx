@@ -4,6 +4,11 @@ import type { JSXConvertersFunction } from '@payloadcms/richtext-lexical/react'
 import { LinkJSXConverter, RichText as PayloadRichText } from '@payloadcms/richtext-lexical/react'
 import React from 'react'
 
+import type { CalloutBlock, GalleryBlock, TripCardBlock } from '@/payload-types'
+
+import { CalloutBlockComponent } from '@/blocks/Callout/Component'
+import { GalleryBlockComponent } from '@/blocks/Gallery/Component'
+import { TripCardBlockComponent } from '@/blocks/TripCard/Component'
 import { documentHref } from '@/lib/utils/documentHref'
 
 /**
@@ -36,15 +41,30 @@ const internalDocToHref: Parameters<typeof LinkJSXConverter>[0]['internalDocToHr
 const converters: JSXConvertersFunction = ({ defaultConverters }) => ({
   ...defaultConverters,
   ...LinkJSXConverter({ internalDocToHref }),
+  /**
+   * Block converters for the three blocks enabled inside Lexical.
+   *
+   * The `node` parameter has to be annotated explicitly: with the default
+   * (wide) type argument on `JSXConvertersFunction`, the `blocks` map cannot
+   * infer which block slug maps to which fields shape, so `node` falls back
+   * to implicit `any` under `noImplicitAny`.
+   */
+  blocks: {
+    callout: ({ node }: { node: { fields: CalloutBlock } }) => (
+      <CalloutBlockComponent {...node.fields} />
+    ),
+    gallery: ({ node }: { node: { fields: GalleryBlock } }) => (
+      <GalleryBlockComponent {...node.fields} />
+    ),
+    tripCard: ({ node }: { node: { fields: TripCardBlock } }) => (
+      <TripCardBlockComponent {...node.fields} />
+    ),
+  },
 })
 
 /**
  * Renders Lexical JSON to React on the SERVER — no editor bundle reaches the
  * browser, which keeps ~300 KB of Lexical out of the client payload.
- *
- * Block converters (callout / tripCard / gallery) are intentionally absent:
- * only the Posts `content` field enables BlocksFeature, and the blog route has
- * not landed yet. They get added alongside it.
  */
 export function RichText({
   className,

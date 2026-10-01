@@ -5,7 +5,7 @@ Companion to [`payload-integration-plan.md`](./payload-integration-plan.md). The
 
 **Branch:** `arena/01a0f7cb-hike-globally` (steps 1–3 landed on `arena/01a0f76c-hike-globally`)
 **Approach:** embedded Payload 3 inside Next.js App Router, one repo, one deploy, Local API.
-**Last updated:** 2026-10-01 (step 5)
+**Last updated:** 2026-10-01 (step 6)
 
 ---
 
@@ -18,12 +18,14 @@ Companion to [`payload-integration-plan.md`](./payload-integration-plan.md). The
 | 3 | First boot | `src/collections/{Media,Users}.ts` + `src/payload.config.ts` → `/admin` loads | ✅ **Done** |
 | 4 | Core content | `src/collections/Trips/index.ts`, `src/collections/Departures.ts`, `src/hooks/revalidate.ts` | ✅ **Done** |
 | 5 | First rendered route | `src/lib/payload.ts`, `src/lib/queries/trips.ts`, `src/app/(frontend)/trips/[slug]/page.tsx` | ✅ **Done** |
-| 6 | Remaining collections | Pages, Posts, Destinations, Reviews, Enquiries, Categories, Authors; globals; blocks | ✅ **Done** (pulled into step 4) |
+| 6 | Remaining collections | Pages, Posts, Destinations, Reviews, Enquiries, Categories, Authors; globals; blocks | ✅ **Done** (model in step 4, frontend + plugins after step 5) |
 
 `/admin` boots, authenticates, and accepts uploads as of step 3. The full content model —
 11 collections, 3 globals, 19 blocks — is live as of step 4. As of step 5 the first public
 route, `/trips/[slug]`, renders from Postgres with draft preview and structured data, and the
-npm scripts point at Next rather than Vite. Everything below was verified against a real
+npm scripts point at Next rather than Vite. The remainder of step 6 then landed the 19 block
+components, the redirects and search plugins, the enquiry form, and every remaining public
+route — the site is now fully CMS-driven. Everything below was verified against a real
 PostgreSQL 18 instance over HTTP, not just a typecheck.
 
 **Step 6 was merged into step 4 deliberately.** The Trips schema in §8.5 of the plan has a
@@ -451,24 +453,99 @@ through the Local API, then the rendered HTML was asserted on.
 
 ---
 
-## Next step — 6 (remainder). Blocks, routes and plugins
+## Step 6 (remainder) — Blocks, routes and plugins ✅
 
-- `RenderBlocks` + the 19 frontend block components, and the `callout` / `tripCard` /
-  `gallery` Lexical converters that go with them
-- The remaining routes: `/` and the Pages catch-all, `/trips` index (the `getTrips` helper is
-  already written and tagged), `/blog/[slug]`, `/destinations/[slug]`
-- `redirectsPlugin` and `searchPlugin`
-- A real enquiry form posting to the `enquiries` collection — the trip page's `#enquire`
-  anchor and the departure "Reserve" links are placeholders pointing at it
+The site is now fully CMS-driven: every public route renders from Postgres, all 19 blocks
+have frontend components, and redirects and search are installed.
+
+### Files created
+
+| Area | Files |
+| --- | --- |
+| Block renderer | `src/blocks/RenderBlocks.tsx` |
+| Block components | `src/blocks/<Name>/Component.tsx` × 19 |
+| Cards | `src/components/cards/{TripCard,PostCard,ReviewCard}.tsx` |
+| Links | `src/lib/utils/resolveLinkHref.ts`, `src/components/CMSLink/index.tsx` |
+| Chrome | `src/components/chrome/{SiteHeader,SiteFooter}.tsx` |
+| Redirects | `src/components/PayloadRedirects/index.tsx` |
+| Queries | `src/lib/queries/{pages,posts,destinations,globals}.ts` |
+| Routes | `(frontend)/page.tsx`, `[...slug]/page.tsx`, `trips/page.tsx`, `blog/page.tsx`, `blog/[slug]/page.tsx`, `destinations/page.tsx`, `destinations/[slug]/page.tsx` |
+| Enquiry | `src/blocks/EnquiryForm/{Component,Form,actions}.tsx` |
+| Styles | `src/styles/blocks.css` |
+
+### Corrections and findings
+
+1. **`required: true` on a checkbox does not require `true`.** Payload treats a checkbox as
+   present when it is `false`, so `POST /api/enquiries` with `consent: false` — or omitting
+   the field — returned **201**. For the field that carries the GDPR lawful basis this is a
+   real defect, not a nicety. Fixed with an explicit `validate`; now 400/400/201.
+2. **The search plugin only indexes on save.** Installing it does not backfill. The trip and
+   destination created in step 5 were invisible to search until re-saved. Any deploy that
+   adds the plugin to a populated database needs a one-off re-save pass — worth a seed-script
+   task before launch.
+3. **`ComponentType<never>` in the plan's `RenderBlocks` does not compile.** `never` makes
+   every props type unassignable, so the registry lookup cannot be used as a JSX element at
+   all. A heterogeneous registry of 17 components has no sound shared signature; `any` plus a
+   narrow eslint exception is the honest answer.
+4. **Lexical block converters need an explicit `node` annotation.** With the default (wide)
+   type argument the `blocks` map cannot infer slug → fields, so `node` falls back to implicit
+   `any` and `noImplicitAny` fails the build.
+5. **Card props are `Pick<>`, not the full document.** List queries use `select` to avoid
+   pulling 17 itinerary days into a grid of cards, so they return partial docs. Typing the
+   cards against the subset they read makes the compiler enforce the contract the right way
+   round: add a field to a card and the query stops compiling until its `select` includes it.
+6. **`depth: 3` on Pages, not 2.** A layout block holds a relationship whose own uploads are a
+   third hop away (page → tripGrid → trip → cardImage). At depth 2 every card image is a bare
+   ID and the grid renders blank.
+7. **Globals cache tags must match the hook.** `revalidateGlobal(tag)` is called with the bare
+   slug (`header`), so a prefixed tag here would register a cache entry nothing invalidates
+   and the nav would stay stale for the full hour.
+8. **The brand has no red.** `scripts/check-no-red.mjs` rejected the `#a33` form-error colour;
+   negative states use the ochre `--tsp-amber` that replaced the old red accent.
+9. **Accordions and menus are `<details>` throughout** — FAQ blocks, the nav dropdown, the
+   itinerary. Zero client JS, and an FAQ rich result requires the answer text in the HTML.
+10. **Testimonials schema is gated.** `AggregateRating` is only emitted when the block is
+    scoped to one trip. A wall of mixed testimonials emitting ratings against the organisation
+    is self-serving review markup, which is disallowed and risks a manual action.
+
+### Verification — executed against PostgreSQL
+
+Seeded a homepage with 11 blocks, a post exercising all three Lexical block converters, a
+second page, a redirect and a category/author, then asserted on the rendered HTML.
+
+| Check | Result |
+| --- | --- |
+| `npx tsc --noEmit` / `npx eslint .` | clean |
+| `npm run build` | ✅ 14 static pages; `/`, `/about-us`, `/blog/<slug>`, `/destinations/khumbu`, `/trips/<slug>` prerendered |
+| `npm test` (legacy Vite suite) | ✅ `NO RED OK` |
+| 41 content assertions across 4 rendered pages | ✅ all pass |
+| `/` (was 404 before this step) | 200 |
+| `/about` → `/about-us` via redirects collection | 307 |
+| Reserved slug `trips` on Pages | rejected |
+| Search index after re-save | 5 docs, priorities trips 10 > destinations 8 > pages 5 > posts 3 |
+| Anonymous `POST /api/enquiries` | 201, notification email hook fires |
+| Anonymous `GET /api/enquiries` | 403 — pipeline not readable |
+| Enquiry without consent | 400 (was 201 before fix 1) |
+| Filtered `/trips?difficulty=…&season=…` canonical | points at clean `/trips` |
+| `/admin` | 200, still boots with both new plugins |
+
+---
+
+## Next step — launch prep
+
+- **Generate the initial migration** immediately before the first deploy (see below).
+- Backfill the search index for any content that predates the plugin (fix 2).
+- `/trips` and `/blog` are dynamic (`ƒ`) because they read `searchParams`; the underlying
+  queries are still `unstable_cache`d. Worth revisiting with a static shell if TTFB matters.
+- Sitemap and `robots.txt` (plan §13.3) — the `sitemap` revalidation tag is already being
+  invalidated by the hooks, but nothing consumes it yet.
+- The enquiry server action's rate limit is in-memory, so it is per-instance and resets on
+  deploy. Fine for the crude flood; needs Redis or a WAF rule for anything targeted.
 
 ---
 
 ## Deferred, promised in the plan
 
-- `redirectsPlugin` and `searchPlugin` — the last items from the original step 6 list. Pitfall 5
-  wants redirects installed before the first slug rename reaches production.
-- The frontend React components for all 19 blocks (`RenderBlocks` and friends) — step 4
-  delivered the CMS-side configs only.
 - The initial migration. Still **not** generated, for the reason given under step 3: the schema
   is not deployed anywhere and `push: true` covers development. Generate it once, immediately
   before the first deploy. Note that step 4 renamed several fields during development — exactly

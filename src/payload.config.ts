@@ -6,11 +6,14 @@ import sharp from 'sharp'
 
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { resendAdapter } from '@payloadcms/email-resend'
+import { redirectsPlugin } from '@payloadcms/plugin-redirects'
+import { searchPlugin } from '@payloadcms/plugin-search'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { s3Storage } from '@payloadcms/storage-s3'
 import type { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 
 import { defaultLexical } from '@/fields/defaultLexical'
+import { revalidateRedirects } from '@/hooks/revalidate'
 import { documentHref } from '@/lib/utils/documentHref'
 import { getServerSideURL } from '@/lib/utils/getURL'
 
@@ -110,7 +113,8 @@ export default buildConfig({
    * throws `InvalidFieldRelationship` at boot, which is what broke the admin
    * during step 3.
    *
-   * Still to come: the redirects and search plugins (step 6 leftovers).
+   * The redirects and search plugins register their own collections
+   * (`redirects`, `search`) on top of these eleven.
    */
   collections: [
     // Catalogue
@@ -151,6 +155,48 @@ export default buildConfig({
     // composed by hand in `src/fields/seo.ts` so we control tab placement.
     // The plugin is still needed to supply the "generate" buttons' behaviour.
     seoPlugin({ generateTitle, generateURL }),
+
+    /**
+     * Redirects. Pitfall 5: the first time an editor renames a published
+     * slug, every inbound link and every ranking for the old URL dies. This
+     * has to be installed BEFORE that happens, not after someone notices.
+     *
+     * `overrides` adds the revalidation hook so a new redirect takes effect
+     * on the next request rather than up to an hour later.
+     */
+    redirectsPlugin({
+      collections: ['pages', 'posts', 'trips', 'destinations'],
+      overrides: {
+        admin: { group: 'Site' },
+        hooks: { afterChange: [revalidateRedirects] },
+      },
+    }),
+
+    /**
+     * Search. Maintains a flattened `search` collection via hooks, so queries
+     * hit one small indexed table instead of fanning out across four
+     * collections with a `like` on rich text.
+     *
+     * `beforeSync` is where the priority ordering lives: trips are the
+     * commercial pages, so they outrank journal posts for the same term.
+     */
+    searchPlugin({
+      collections: ['trips', 'posts', 'destinations', 'pages'],
+      defaultPriorities: { trips: 10, destinations: 8, pages: 5, posts: 3 },
+      searchOverrides: {
+        admin: { group: 'Site' },
+        fields: ({ defaultFields }) => [
+          ...defaultFields,
+          { name: 'excerpt', type: 'textarea', admin: { readOnly: true } },
+          { name: 'slug', type: 'text', index: true, admin: { readOnly: true } },
+        ],
+      },
+      beforeSync: ({ originalDoc, searchDoc }) => ({
+        ...searchDoc,
+        excerpt: originalDoc.summary ?? originalDoc.excerpt ?? '',
+        slug: originalDoc.slug ?? '',
+      }),
+    }),
 
     s3Storage({
       // Not configured locally → files go to /media on disk, which is

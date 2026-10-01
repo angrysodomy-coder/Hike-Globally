@@ -18,7 +18,10 @@ import '@/styles/blog.css'
 import '@/styles/detail.css'
 import '@/styles/trip-single.css'
 import '@/styles/trip-single-next.css'
+import '@/styles/blocks.css'
 
+import { SiteFooter } from '@/components/chrome/SiteFooter'
+import { SiteHeader } from '@/components/chrome/SiteHeader'
 import { getServerSideURL } from '@/lib/utils/getURL'
 
 /**
@@ -48,7 +51,9 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
         <a className="skip-link" href="#main-content">
           Skip to content
         </a>
+        <SiteHeader />
         {children}
+        <SiteFooter />
       </body>
     </html>
   )
