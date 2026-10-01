@@ -30,7 +30,7 @@
     "paths": {
       // Required: the generated (payload) files import this alias by name.
       "@payload-config": [
-        "./payload.config.ts"
+        "./src/payload.config.ts"
       ],
       "@/*": [
         "./src/*"
