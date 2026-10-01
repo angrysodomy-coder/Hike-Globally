@@ -6,16 +6,32 @@ import sharp from 'sharp'
 
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { resendAdapter } from '@payloadcms/email-resend'
+import { redirectsPlugin } from '@payloadcms/plugin-redirects'
+import { searchPlugin } from '@payloadcms/plugin-search'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { s3Storage } from '@payloadcms/storage-s3'
 import type { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 
 import { defaultLexical } from '@/fields/defaultLexical'
+import { revalidateRedirects } from '@/hooks/revalidate'
 import { documentHref } from '@/lib/utils/documentHref'
 import { getServerSideURL } from '@/lib/utils/getURL'
 
+import { Authors } from '@/collections/Authors'
+import { Categories } from '@/collections/Categories'
+import { Departures } from '@/collections/Departures'
+import { Destinations } from '@/collections/Destinations'
+import { Enquiries } from '@/collections/Enquiries'
 import { Media } from '@/collections/Media'
+import { Pages } from '@/collections/Pages'
+import { Posts } from '@/collections/Posts'
+import { Reviews } from '@/collections/Reviews'
+import { Trips } from '@/collections/Trips'
 import { Users } from '@/collections/Users'
+
+import { Footer } from '@/globals/Footer'
+import { Header } from '@/globals/Header'
+import { SiteSettings } from '@/globals/SiteSettings'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -87,14 +103,39 @@ export default buildConfig({
   }),
 
   /**
-   * Collections are added as each step of the integration lands, so the admin
-   * always boots. Remaining, in order:
-   *   step 4 — Trips, Departures
-   *   step 6 — Pages, Posts, Destinations, Reviews, Enquiries, Categories,
-   *            Authors, plus the Header / Footer / SiteSettings globals and
-   *            the redirects + search plugins.
+   * Order here drives the admin sidebar within each `admin.group`, so it is
+   * roughly "what an editor opens most often" rather than alphabetical.
+   *
+   * Registration order does NOT matter for relationships — Payload resolves
+   * every `relationTo` against the finished config, so Trips may point at
+   * Destinations regardless of which is listed first. What matters is that
+   * each referenced slug is present SOMEWHERE in this array; a missing one
+   * throws `InvalidFieldRelationship` at boot, which is what broke the admin
+   * during step 3.
+   *
+   * The redirects and search plugins register their own collections
+   * (`redirects`, `search`) on top of these eleven.
    */
-  collections: [Media, Users],
+  collections: [
+    // Catalogue
+    Trips,
+    Destinations,
+    Departures,
+    // Journal
+    Posts,
+    Categories,
+    // Site
+    Pages,
+    // People and operations
+    Authors,
+    Reviews,
+    Enquiries,
+    // Library and settings
+    Media,
+    Users,
+  ],
+
+  globals: [Header, Footer, SiteSettings],
 
   cors: [getServerSideURL()].filter(Boolean),
   csrf: [getServerSideURL()].filter(Boolean),
@@ -114,6 +155,48 @@ export default buildConfig({
     // composed by hand in `src/fields/seo.ts` so we control tab placement.
     // The plugin is still needed to supply the "generate" buttons' behaviour.
     seoPlugin({ generateTitle, generateURL }),
+
+    /**
+     * Redirects. Pitfall 5: the first time an editor renames a published
+     * slug, every inbound link and every ranking for the old URL dies. This
+     * has to be installed BEFORE that happens, not after someone notices.
+     *
+     * `overrides` adds the revalidation hook so a new redirect takes effect
+     * on the next request rather than up to an hour later.
+     */
+    redirectsPlugin({
+      collections: ['pages', 'posts', 'trips', 'destinations'],
+      overrides: {
+        admin: { group: 'Site' },
+        hooks: { afterChange: [revalidateRedirects] },
+      },
+    }),
+
+    /**
+     * Search. Maintains a flattened `search` collection via hooks, so queries
+     * hit one small indexed table instead of fanning out across four
+     * collections with a `like` on rich text.
+     *
+     * `beforeSync` is where the priority ordering lives: trips are the
+     * commercial pages, so they outrank journal posts for the same term.
+     */
+    searchPlugin({
+      collections: ['trips', 'posts', 'destinations', 'pages'],
+      defaultPriorities: { trips: 10, destinations: 8, pages: 5, posts: 3 },
+      searchOverrides: {
+        admin: { group: 'Site' },
+        fields: ({ defaultFields }) => [
+          ...defaultFields,
+          { name: 'excerpt', type: 'textarea', admin: { readOnly: true } },
+          { name: 'slug', type: 'text', index: true, admin: { readOnly: true } },
+        ],
+      },
+      beforeSync: ({ originalDoc, searchDoc }) => ({
+        ...searchDoc,
+        excerpt: originalDoc.summary ?? originalDoc.excerpt ?? '',
+        slug: originalDoc.slug ?? '',
+      }),
+    }),
 
     s3Storage({
       // Not configured locally → files go to /media on disk, which is

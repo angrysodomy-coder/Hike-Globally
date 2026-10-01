@@ -53,6 +53,17 @@ type SlugFieldOverrides = Partial<
 export const slugField = (
   sourceField = 'title',
   overrides: SlugFieldOverrides = {},
+  /**
+   * Slugs this collection may not claim.
+   *
+   * Only meaningful for Pages, which is mounted at the URL ROOT. A page
+   * slugged `trips` would collide with the /trips route — and Next resolves a
+   * static segment before a catch-all, so the page would not 404, it would
+   * just silently never render while the editor swears it published it.
+   * Rejecting at validation time turns a baffling support ticket into an
+   * inline error message.
+   */
+  reserved: string[] = [],
 ): TextField => ({
   name: 'slug',
   type: 'text',
@@ -65,5 +76,15 @@ export const slugField = (
       'The URL segment for this document. Auto-filled from the title. Changing it after publishing breaks existing links — add a redirect if you do.',
   },
   hooks: { beforeValidate: [slugHook(sourceField)] },
+  ...(reserved.length
+    ? {
+        validate: (value: null | string | undefined) => {
+          if (typeof value === 'string' && reserved.includes(value)) {
+            return `"${value}" is reserved by a built-in route. Choose a different slug.`
+          }
+          return true
+        },
+      }
+    : {}),
   ...overrides,
 })
