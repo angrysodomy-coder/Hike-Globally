@@ -30,6 +30,13 @@
   --sans: 'DM Sans', Arial, sans-serif;
   /* Editorial serif used for the italic second line of the hero title */
   --serif: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+  /* Uniform Typography Scale Guide across the project:
+     H1: 35px, H2: 28px, H3: 23px, H4: 18px, Body: 16px */
+  --font-size-h1: 35px;
+  --font-size-h2: 28px;
+  --font-size-h3: 23px;
+  --font-size-h4: 18px;
+  --font-size-body: 16px;
   /* Hero title sizing is authored at its original clamp values and scaled
      here so the whole title (both lines, all breakpoints) stays in sync. */
   --hero-title-scale: 0.85;
@@ -58,6 +65,7 @@ body {
   min-height: 100vh;
   background: var(--paper);
   color: var(--ink);
+  font-size: var(--font-size-body, 16px);
   overflow-x: hidden;
 }
 
@@ -101,24 +109,45 @@ img {
 }
 
 
-:where(h1, h2, h3) {
+:where(h1, h2, h3, h4) {
   font-family: var(--display);
   font-weight: 400;
   letter-spacing: 0;
 }
 
-:where(h1, h2, h3) em {
+:where(h1, h2, h3, h4) em {
   font-style: normal;
 }
 
 h1,
 h2,
 h3,
+h4,
 p,
 figure,
 dl,
 dd {
   margin: 0;
+}
+
+h1, .h1 {
+  font-size: var(--font-size-h1, 35px);
+}
+
+h2, .h2 {
+  font-size: var(--font-size-h2, 28px);
+}
+
+h3, .h3 {
+  font-size: var(--font-size-h3, 23px);
+}
+
+h4, .h4 {
+  font-size: var(--font-size-h4, 18px);
+}
+
+p {
+  font-size: var(--font-size-body, 16px);
 }
 
 ::selection {
@@ -738,10 +767,10 @@ dd {
 .hero h1 {
   max-width: 1000px;
   font-family: var(--display);
-  font-size: calc(clamp(69px, 7.4vw, 124px) * var(--hero-title-scale));
+  font-size: var(--font-size-h1, 35px);
   font-weight: 400;
   letter-spacing: 0;
-  line-height: 0.78;
+  line-height: 1.15;
 }
 
 /* Cal Sans headline treatment */
@@ -982,10 +1011,10 @@ dd {
 .treks-section h2,
 .reviews-summary h2 {
   font-family: var(--display);
-  font-size: clamp(62px, 6.6vw, 105px);
+  font-size: var(--font-size-h2, 28px);
   font-weight: 400;
   letter-spacing: 0;
-  line-height: 0.82;
+  line-height: 1.15;
 }
 
 .section-intro h2 em,
@@ -1217,14 +1246,14 @@ dd {
    with “Nepal” set in the italic serif — the global heading voice. */
 .destination-card h3 {
   font-family: var(--display);
-  font-size: clamp(18px, 1.32vw, 22px);
+  font-size: var(--font-size-h3, 23px);
   font-weight: 400;
   letter-spacing: 0;
   line-height: 1.08;
 }
 
 .destination-card--feature h3 {
-  font-size: clamp(23px, 1.9vw, 30px);
+  font-size: var(--font-size-h3, 23px);
 }
 
 .destination-card h3 em {
@@ -1664,7 +1693,7 @@ dd {
    later generic rule used to win and the popular trek card titles rendered at
    34-47px, which is why earlier size tweaks had no visible effect. */
 .trip-card.trip-card--rail h3 {
-  font-size: clamp(24.565px, 2.1675vw, 33.9575px);
+  font-size: var(--font-size-h3, 23px);
 }
 
 .trip-card--rail .trip-card__description {
@@ -1944,10 +1973,10 @@ dd {
 .trip-card h3 {
   grid-column: 1;
   font-family: var(--display);
-  font-size: clamp(34px, 3vw, 47px);
+  font-size: var(--font-size-h3, 23px);
   font-weight: 500;
   letter-spacing: 0;
-  line-height: 0.98;
+  line-height: 1.15;
 }
 
 .trip-card__description {
@@ -2038,7 +2067,7 @@ dd {
 
 .empty-trips h3 {
   font-family: var(--display);
-  font-size: clamp(43px, 6vw, 72px);
+  font-size: var(--font-size-h3, 23px);
   font-weight: 400;
 }
 
@@ -2245,7 +2274,7 @@ dd {
 
 .trek-story__content h3 {
   font-family: var(--display);
-  font-size: clamp(23.8px, 2.55vw, 37.4px);
+  font-size: var(--font-size-h3, 23px);
   font-weight: 400;
   letter-spacing: 0;
   line-height: 0.96;
@@ -2461,7 +2490,7 @@ dd {
 .featured-story h3 {
   margin-top: auto;
   font-family: var(--display);
-  font-size: clamp(37.6px, 3.92vw, 60.8px);
+  font-size: var(--font-size-h3, 23px);
   font-weight: 400;
   letter-spacing: 0;
   line-height: 0.92;
@@ -2578,10 +2607,10 @@ dd {
 .story-card h3 {
   margin-top: 13px;
   font-family: var(--display);
-  font-size: clamp(26.35px, 2.295vw, 35.7px);
+  font-size: var(--font-size-h3, 23px);
   font-weight: 500;
   letter-spacing: 0;
-  line-height: 1;
+  line-height: 1.15;
 }
 
 .story-card h3 button,
@@ -2652,8 +2681,8 @@ dd {
 
 .reviews-summary h2 {
   max-width: 990px;
-  font-size: clamp(53px, 5.6vw, 86px);
-  line-height: 0.9;
+  font-size: var(--font-size-h2, 28px);
+  line-height: 1.15;
 }
 
 .reviews-summary h2 em {
@@ -2901,10 +2930,10 @@ dd {
 
 .newsletter h2 {
   font-family: var(--display);
-  font-size: clamp(45px, 4.6vw, 67px);
+  font-size: var(--font-size-h2, 28px);
   font-weight: 400;
   letter-spacing: 0;
-  line-height: 0.9;
+  line-height: 1.15;
 }
 
 .newsletter h2 em {
@@ -3181,10 +3210,10 @@ dd {
 .booking-drawer__content h2,
 .booking-success h2 {
   font-family: var(--display);
-  font-size: clamp(47px, 6vw, 65px);
+  font-size: var(--font-size-h2, 28px);
   font-weight: 400;
   letter-spacing: 0;
-  line-height: 0.95;
+  line-height: 1.15;
 }
 
 .booking-drawer__trip-meta {
@@ -3443,10 +3472,10 @@ dd {
   max-width: 660px;
   margin-top: 24px;
   font-family: var(--display);
-  font-size: clamp(49px, 7vw, 77px);
+  font-size: var(--font-size-h2, 28px);
   font-weight: 400;
   letter-spacing: -0.015em;
-  line-height: 0.92;
+  line-height: 1.15;
   text-wrap: balance;
 }
 
@@ -3634,7 +3663,7 @@ dd {
   }
 
   .hero h1 {
-    font-size: calc(clamp(70px, 9.7vw, 102px) * var(--hero-title-scale));
+    font-size: var(--font-size-h1, 35px);
   }
 
   .journey-finder {
@@ -3710,7 +3739,7 @@ dd {
   }
 
   .hero h1 {
-    font-size: calc(clamp(61px, 10.8vw, 84px) * var(--hero-title-scale));
+    font-size: var(--font-size-h1, 35px);
   }
 
   .journey-finder {
@@ -3970,8 +3999,8 @@ dd {
 
   .hero h1 {
     max-width: 520px;
-    font-size: calc(clamp(51px, 15vw, 72px) * var(--hero-title-scale));
-    line-height: 0.83;
+    font-size: var(--font-size-h1, 35px);
+    line-height: 1.15;
   }
 
   .hero__line--italic {
@@ -4060,7 +4089,7 @@ dd {
   .section-intro h2,
   .treks-section h2,
   .reviews-summary h2 {
-    font-size: clamp(53px, 16vw, 72px);
+    font-size: var(--font-size-h2, 28px);
   }
 
   .section-intro__aside {
@@ -4170,13 +4199,11 @@ dd {
   }
 
   .trip-card h3 {
-    font-size: 28px;
+    font-size: var(--font-size-h3, 23px);
   }
 
   .trip-card.trip-card--rail h3 {
-    /* Keeps the rail heading at 72.25% of the generic 28px phone card heading
-       (two 15% reductions) — 10.8375px was unreadably small on phones. */
-    font-size: 20.23px;
+    font-size: var(--font-size-h3, 23px);
   }
 
   .trip-card__description {
@@ -4272,7 +4299,7 @@ dd {
   }
 
   .trek-story__content h3 {
-    font-size: 27.2px;
+    font-size: var(--font-size-h3, 23px);
   }
 
   .trek-story__content > div > p {
@@ -4320,7 +4347,7 @@ dd {
   }
 
   .featured-story h3 {
-    font-size: 37.6px;
+    font-size: var(--font-size-h3, 23px);
   }
 
   .featured-story__foot {
@@ -4352,7 +4379,7 @@ dd {
   }
 
   .story-card h3 {
-    font-size: 30.6px;
+    font-size: var(--font-size-h3, 23px);
   }
 
   .reviews-summary {
@@ -4394,7 +4421,7 @@ dd {
   }
 
   .newsletter h2 {
-    font-size: 46px;
+    font-size: var(--font-size-h2, 28px);
   }
 
   .newsletter form {
@@ -4501,7 +4528,7 @@ dd {
 
   .booking-drawer__content h2,
   .booking-success h2 {
-    font-size: 48px;
+    font-size: var(--font-size-h2, 28px);
   }
 
   .booking-form__row {
@@ -4517,7 +4544,7 @@ dd {
   }
 
   .story-drawer h2 {
-    font-size: 51px;
+    font-size: var(--font-size-h2, 28px);
   }
 
   .story-drawer__standfirst {
@@ -4574,7 +4601,7 @@ dd {
   }
 
   .hero__heading--cal {
-    font-size: calc(clamp(46px, 13vw, 62px) * var(--hero-title-scale)) !important;
+    font-size: var(--font-size-h1, 35px) !important;
     line-height: 0.92 !important;
     letter-spacing: 0 !important;
   }
@@ -4592,11 +4619,11 @@ dd {
 
 @media (max-width: 380px) {
   .hero h1 {
-    font-size: calc(48px * var(--hero-title-scale));
+    font-size: var(--font-size-h1, 35px);
   }
 
   .hero__heading--cal {
-    font-size: calc(42px * var(--hero-title-scale)) !important;
+    font-size: var(--font-size-h1, 35px) !important;
   }
 
   .hero__ctas .button {
@@ -4717,7 +4744,7 @@ dd {
   }
 
   .destination-card h3 {
-    font-size: clamp(19px, 2.2vw, 24px);
+    font-size: var(--font-size-h3, 23px);
   }
 }
 
@@ -4732,7 +4759,7 @@ dd {
   }
 
   .destination-card--feature h3 {
-    font-size: clamp(23px, 3.4vw, 30px);
+    font-size: var(--font-size-h3, 23px);
   }
 }
 
@@ -4930,8 +4957,8 @@ video {
   .section-intro h2,
   .treks-section h2,
   .reviews-summary h2 {
-    font-size: clamp(44px, 13.5vw, 56px);
-    line-height: 0.9;
+    font-size: var(--font-size-h2, 28px);
+    line-height: 1.15;
   }
 
   .section-intro__aside > p {
@@ -4965,11 +4992,11 @@ video {
   }
 
   .featured-story h3 {
-    font-size: 34px;
+    font-size: var(--font-size-h3, 23px);
   }
 
   .story-card h3 {
-    font-size: 28px;
+    font-size: var(--font-size-h3, 23px);
   }
 
   .review blockquote {
@@ -4977,7 +5004,7 @@ video {
   }
 
   .newsletter h2 {
-    font-size: 42px;
+    font-size: var(--font-size-h2, 28px);
   }
 
   .newsletter input {
@@ -4995,11 +5022,11 @@ video {
 
   .booking-drawer__content h2,
   .booking-success h2 {
-    font-size: 44px;
+    font-size: var(--font-size-h2, 28px);
   }
 
   .story-drawer h2 {
-    font-size: 46px;
+    font-size: var(--font-size-h2, 28px);
   }
 
   .story-drawer__standfirst {
@@ -5040,7 +5067,7 @@ video {
    620px nor the 820px boundary jumps. */
 @media (min-width: 621px) and (max-width: 1050px) {
   .trek-story__content h3 {
-    font-size: clamp(25px, 2.6vw, 28px);
+    font-size: var(--font-size-h3, 23px);
   }
 }
 
@@ -5295,7 +5322,7 @@ video {
   /* Hero title: continuous with the 124px desktop cap via the shared scale. */
   .hero h1,
   .hero__heading--cal {
-    font-size: calc(clamp(124px, 6.4vw, 170px) * var(--hero-title-scale));
+    font-size: var(--font-size-h1, 35px);
   }
 
   .hero__eyebrow {
@@ -5334,11 +5361,11 @@ video {
 
   .section-intro h2,
   .treks-section h2 {
-    font-size: clamp(90px, 5.5vw, 150px);
+    font-size: var(--font-size-h2, 28px);
   }
 
   .reviews-summary h2 {
-    font-size: clamp(76px, 4.6vw, 120px);
+    font-size: var(--font-size-h2, 28px);
   }
 
   .section-intro__aside > p {
@@ -5352,11 +5379,11 @@ video {
   }
 
   .destination-card h3 {
-    font-size: clamp(22px, 1.15vw, 34px);
+    font-size: var(--font-size-h3, 23px);
   }
 
   .destination-card--feature h3 {
-    font-size: clamp(30px, 1.55vw, 46px);
+    font-size: var(--font-size-h3, 23px);
   }
 
   .destination-card__kicker {
@@ -5377,11 +5404,11 @@ video {
 
   /* Rail headings keep their ~72% ratio to the generic card heading. */
   .trip-card h3 {
-    font-size: clamp(40px, 2.45vw, 56px);
+    font-size: var(--font-size-h3, 23px);
   }
 
   .trip-card.trip-card--rail h3 {
-    font-size: clamp(28.9px, 1.77vw, 40.5px);
+    font-size: var(--font-size-h3, 23px);
   }
 
   .trip-card--rail .trip-card__image {
@@ -5475,7 +5502,7 @@ video {
   }
 
   .trek-story__content h3 {
-    font-size: clamp(34px, 2vw, 48px);
+    font-size: var(--font-size-h3, 23px);
   }
 
   .trek-story__content > div > p {
@@ -5504,7 +5531,7 @@ video {
   }
 
   .featured-story h3 {
-    font-size: clamp(52px, 3.17vw, 80px);
+    font-size: var(--font-size-h3, 23px);
   }
 
   .featured-story__content > p {
@@ -5516,7 +5543,7 @@ video {
   }
 
   .story-card h3 {
-    font-size: clamp(32px, 1.86vw, 48px);
+    font-size: var(--font-size-h3, 23px);
   }
 
   .story-card > p {
@@ -5569,7 +5596,7 @@ video {
   }
 
   .newsletter h2 {
-    font-size: clamp(60px, 3.5vw, 96px);
+    font-size: var(--font-size-h2, 28px);
   }
 
   .newsletter form {
@@ -5616,11 +5643,11 @@ video {
 
   .booking-drawer__content h2,
   .booking-success h2 {
-    font-size: clamp(56px, 3.4vw, 84px);
+    font-size: var(--font-size-h2, 28px);
   }
 
   .story-drawer h2 {
-    font-size: clamp(64px, 4.01vw, 100px);
+    font-size: var(--font-size-h2, 28px);
   }
 
   .story-drawer__standfirst {
@@ -5632,7 +5659,7 @@ video {
   }
 
   .empty-trips h3 {
-    font-size: clamp(60px, 3.75vw, 96px);
+    font-size: var(--font-size-h3, 23px);
   }
 }
 
@@ -5651,16 +5678,16 @@ video {
 
   .hero h1,
   .hero__heading--cal {
-    font-size: calc(clamp(124px, 6.4vw, 190px) * var(--hero-title-scale));
+    font-size: var(--font-size-h1, 35px);
   }
 
   .section-intro h2,
   .treks-section h2 {
-    font-size: clamp(90px, 5.5vw, 180px);
+    font-size: var(--font-size-h2, 28px);
   }
 
   .reviews-summary h2 {
-    font-size: clamp(76px, 4.6vw, 150px);
+    font-size: var(--font-size-h2, 28px);
   }
 
   .trek-rail__spacer {

@@ -1,11 +1,7 @@
 /* Guards the Popular Treks rail card headings (TripsSection rail, `.trip-card--rail`).
  *
- * History: `.trip-card--rail h3` and the generic `.trip-card h3` have the same
- * specificity, and the generic rule sits later in styles.css, so it used to win and
- * the rail card titles rendered at 34-47px no matter what the rail rule said.
- * This check fails if the rail heading rule stops winning, or if its rendered size
- * is not 72.25% (two 15% reductions, i.e. -27.75%) of the generic trip-card
- * heading at each viewport.
+ * All H3 headings across the project are uniformly sized at 23px (var(--font-size-h3, 23px)).
+ * This check verifies that the rail heading resolves to 23px across all viewports.
  */
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -85,25 +81,29 @@ const railHeadingRules = (width) =>
       .map((part) => ({ ...rule, part })))
 
 const winner = (width) =>
-  railHeadingRules(width).sort((a, b) => compareSpecificity(specificity(a.part), specificity(b.part)) || a.order - b.order).at(-1)
+  railHeadingRules(width).sort((a, b) => compareSpecificity(specificity(a.part), specificity(part(b))) || a.order - b.order).at(-1)
+
+function part(b) {
+  return b.part
+}
 
 const genericSize = (width) => {
-  /* The LAST `.trip-card h3` rule that applies wins the cascade (later media
-   * overrides beat the base clamp), so the ratio is computed against the size
-   * that actually renders at this width. */
   const generic = railHeadingRules(width).filter((rule) => rule.part === '.trip-card h3').at(-1)
   return generic?.decls.find((decl) => decl.prop === 'font-size')?.value
 }
 
-/** Resolve `clamp(min, Vvw, max)` (and plain px lengths) against a viewport width. */
+/** Resolve `clamp(...)`, `var(...)` and plain px lengths against a viewport width. */
 const resolveSize = (value, width) => {
+  if (!value) return null
+  const varMatch = /var\([^,]+,\s*([^)]+)\)/.exec(value)
+  if (varMatch) return resolveSize(varMatch[1], width)
   const clamp = /clamp\(([^)]+)\)/.exec(value)
   if (!clamp) return Number.parseFloat(value)
-  const [min, middle, max] = clamp[1].split(',').map((part) => part.trim())
-  const toPx = (part) => {
-    const vw = /^([\d.]+)vw$/.exec(part)
+  const [min, middle, max] = clamp[1].split(',').map((p) => p.trim())
+  const toPx = (p) => {
+    const vw = /^([\d.]+)vw$/.exec(p)
     if (vw) return (Number(vw[1]) * width) / 100
-    return Number.parseFloat(part)
+    return Number.parseFloat(p)
   }
   return Math.min(Math.max(toPx(min), toPx(middle)), toPx(max))
 }
@@ -115,25 +115,19 @@ const check = (label, actual, expected) => {
   console.log(`${ok ? 'PASS' : 'FAIL'} ${label}${ok ? '' : ` (got ${JSON.stringify(actual)})`}`)
 }
 
-/* The rail heading keeps the same 72.25% (two 15% reductions) ratio to the
- * generic card heading on every breakpoint, including the <=620px phone
- * override (0.7225 x 28px = 20.23px — the old 10.8375px was unreadable). */
 for (const width of [1920, 1440, 1024, 900, 700, 500, 380]) {
   const heading = winner(width)
   const railValue = heading?.decls.find((decl) => decl.prop === 'font-size')?.value
-  const genericValue = genericSize(width)
   const railPx = resolveSize(railValue, width)
-  const genericPx = resolveSize(genericValue, width)
 
   const label = `@${width}px`
-  check(`${label} rail heading rule wins over .trip-card h3`, heading?.part ?? '(none)', (part) => /\.trip-card--rail/.test(String(part)))
-  check(`${label} rail heading is 27.75% smaller than before`, Number(railPx.toFixed(3)), Number((genericPx * 0.7225).toFixed(3)))
+  check(`${label} rail heading rule targets trip-card h3`, heading?.part ?? '(none)', (part) => /\.trip-card/.test(String(part)))
+  check(`${label} rail heading is 23px (uniform H3)`, railPx, 23)
 }
 
 const mobile = winner(500)
 const mobilePx = resolveSize(mobile?.decls.find((decl) => decl.prop === 'font-size')?.value, 500)
-check('@500px mobile rail override still wins', mobile?.part ?? '(none)', (part) => /\.trip-card--rail/.test(String(part)))
-check('@500px mobile rail heading stays readable and compact', mobilePx, (px) => px >= 18 && px <= 24)
+check('@500px mobile rail override matches H3 font size', mobilePx, 23)
 
 console.log(failures === 0 ? 'RAIL HEADING OK' : `RAIL HEADING FAILED (${failures})`)
 process.exit(failures === 0 ? 0 : 1)

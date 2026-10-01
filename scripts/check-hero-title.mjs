@@ -97,6 +97,17 @@ const splitImportant = (value) => ({
 
 /** Resolve `calc(<length|clamp(...)> * <number>)` against a viewport width. */
 function resolveLength(value, width) {
+  if (!value) return null
+  const varMatch = /var\((--[\w-]+)(?:,\s*([^)]+))?\)/.exec(value.trim())
+  if (varMatch) {
+    if (rootVars.has(varMatch[1])) {
+      return resolveLength(rootVars.get(varMatch[1]), width)
+    }
+    if (varMatch[2]) {
+      return resolveLength(varMatch[2], width)
+    }
+  }
+
   const calc = /^calc\(([\s\S]+)\)$/.exec(value.trim())
   if (calc) return resolveLength(calc[1], width)
 
@@ -156,30 +167,15 @@ const check = (label, actual, expected) => {
   console.log(`${ok ? 'PASS' : 'FAIL'} ${label}${ok ? '' : ` (got ${JSON.stringify(actual)})`}`)
 }
 
-/* Sizes authored for the hero title before the 15% shrink, as the winning rule
- * per breakpoint (`.hero__heading--cal` is `!important`, so it beats `.hero h1`
- * below 620px and the 380px override beats it below 380px). */
 const H1 = ['.hero h1', '.hero__heading--cal']
-const AUTHORED = [
-  [1920, 'clamp(69px, 7.4vw, 124px)'],
-  [1440, 'clamp(69px, 7.4vw, 124px)'],
-  [1024, 'clamp(70px, 9.7vw, 102px)'],
-  [900, 'clamp(70px, 9.7vw, 102px)'],
-  [760, 'clamp(61px, 10.8vw, 84px)'],
-  [600, 'clamp(46px, 13vw, 62px)'],
-  [420, 'clamp(46px, 13vw, 62px)'],
-  [375, '42px'],
-  [360, '42px'],
-]
+const VIEWPORTS = [1920, 1440, 1024, 900, 760, 600, 420, 375, 360]
 
-check('--hero-title-scale is 0.85 (-15%)', rootVars.get('--hero-title-scale'), '0.85')
+check('--font-size-h1 is defined as 35px', rootVars.get('--font-size-h1'), '35px')
 
-for (const [width, authored] of AUTHORED) {
+for (const width of VIEWPORTS) {
   const applied = winningDecl(H1, 'font-size', width)
   const px = Number(resolveLength(applied.value, width).toFixed(3))
-  const expected = Number((resolveLength(authored, width) * 0.85).toFixed(3))
-  check(`@${width}px hero title is 15% smaller than ${authored}`, px, expected)
-  check(`@${width}px shrink comes from the --hero-title-scale factor`, /var\(--hero-title-scale\)/.test(applied.value), true)
+  check(`@${width}px hero title is 35px (uniform H1)`, px, 35)
 }
 
 /* Typefaces: the `--cal` rules force family/style on the inner <i> of each line.
