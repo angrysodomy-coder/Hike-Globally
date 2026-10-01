@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { destinations } from '../data/content'
+import { Link } from '../lib/router'
 import Reveal from './Reveal'
 
 /* Pointer parallax only where a precise hover exists, and never against
@@ -90,10 +91,10 @@ function DestinationCard({ item, index }) {
           <p className="destination-card__kicker">{item.kicker}</p>
           <h3>{item.title} <em>Nepal</em></h3>
           <p className="destination-card__text">{item.description}</p>
-          <a className="destination-card__cta" href="#trips" aria-label={`Explore ${item.title} Nepal`}>
+          <Link className="destination-card__cta" href="/destinations" aria-label={`Explore ${item.title} Nepal`}>
             <span>Explore</span>
             <i aria-hidden="true"><ArrowRight size={14} /></i>
-          </a>
+          </Link>
         </div>
       </div>
     </Reveal>

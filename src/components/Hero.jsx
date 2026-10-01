@@ -61,7 +61,7 @@ export default function Hero({ onFind }) {
   const handleSubmit = (event) => {
     event.preventDefault()
     onFind(finder)
-    document.querySelector('#trips')?.scrollIntoView({ behavior: 'smooth' })
+    document.querySelector('#treks')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
@@ -126,7 +126,7 @@ export default function Hero({ onFind }) {
         </h1>
         <p className="hero__copy">Thoughtfully crafted journeys, unforgettable landscapes, and local stories for travellers who choose to go beyond.</p>
         <div className="hero__ctas">
-          <a className="button button--light" href="#trips">
+          <a className="button button--light" href="/trips">
             <span>Explore trips</span><ArrowRight size={17} aria-hidden="true" />
           </a>
           <a className="button button--ghost" href="#treks">
@@ -184,7 +184,7 @@ export default function Hero({ onFind }) {
         </button>
       </form>
 
-      <a className="hero__scroll" href="#trips" aria-label="Scroll to curated journeys">
+      <a className="hero__scroll" href="#destinations" aria-label="Scroll to explore destinations">
         <span>Scroll to explore</span>
         <ArrowDown size={15} aria-hidden="true" />
       </a>

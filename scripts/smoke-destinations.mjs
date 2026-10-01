@@ -111,7 +111,7 @@ window.dispatchEvent(new window.Event('popstate'))
 await sleep(500)
 check('home hero renders after navigation', !!$('.hero'), true)
 check('destinations hero unmounted', !!$('.dp-hero'), false)
-check('home trips rail present', !!$('.trips-scroll'), true)
+check('home treks section present', !!$('.treks-section'), true)
 
 console.log(failures === 0 ? 'DESTINATIONS OK' : `DESTINATIONS FAILED (${failures})`)
 process.exit(failures === 0 ? 0 : 1)
