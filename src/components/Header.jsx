@@ -6,6 +6,7 @@ import { Link, useRouter } from '../lib/router'
 
 export default function Header({ onBook }) {
   const { path } = useRouter()
+  const isBlogPage = path.startsWith('/blog/')
   const [scrolled, setScrolled] = useState(() => window.scrollY > 40)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef(null)
@@ -66,9 +67,9 @@ export default function Header({ onBook }) {
 
   return (
     <>
-      <header className={`site-header ${scrolled || menuOpen ? 'site-header--solid' : ''} ${menuOpen ? 'site-header--menu-open' : ''}`}>
+      <header className={`site-header ${scrolled || menuOpen || isBlogPage ? 'site-header--solid' : ''} ${menuOpen ? 'site-header--menu-open' : ''}`}>
         <Link className="site-header__logo" href="/" aria-label="Hike Globally home" onClick={() => setMenuOpen(false)}>
-          <Logo light={!scrolled && !menuOpen} />
+          <Logo light={!scrolled && !menuOpen && !isBlogPage} />
         </Link>
 
         <nav className="desktop-nav" aria-label="Primary navigation">

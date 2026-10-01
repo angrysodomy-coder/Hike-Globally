@@ -1,6 +1,6 @@
 import { ArrowLeft, ArrowRight, ArrowUpRight, Clock3 } from 'lucide-react'
 import { articles } from '../data/content'
-import { Link, useRouter, usePageMeta } from '../lib/router'
+import { Link, usePageMeta } from '../lib/router'
 import SummerFamilyTreksBlog from '../components/SummerFamilyTreksBlog'
 import Reveal from '../components/Reveal'
 
@@ -28,7 +28,6 @@ function NotFound() {
 }
 
 export default function BlogArticlePage({ slug, onBook }) {
-  const { navigate } = useRouter()
   const article = articles.find((item) => item.id === slug)
 
   usePageMeta({
@@ -41,10 +40,7 @@ export default function BlogArticlePage({ slug, onBook }) {
   /* The premium guide is rendered verbatim from its markdown source. */
   if (article.premium) {
     return (
-      <SummerFamilyTreksBlog
-        onClose={() => navigate('/#journal')}
-        onBook={() => onBook()}
-      />
+      <SummerFamilyTreksBlog onBook={onBook} />
     )
   }
 

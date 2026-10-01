@@ -1,7 +1,7 @@
 /* ============================================================
-   Blog — the single article design for every Hike Globally post
+   Blog — the long-form article design for Hike Globally posts
    ------------------------------------------------------------
-   One layout, one type system, shared by all blog content:
+   One layout and type system can be shared by multiple standalone blog URLs:
      SummerFamilyTreksBlog.jsx (full markdown article) and any
      future post rendered through src/components/BlogPage.jsx.
 
@@ -53,13 +53,15 @@
    ============================================================ */
 
 /* ---------- Page shell ---------- */
+/* Blog articles are part of the document flow. They are deliberately not a
+   fixed, scroll-locked layer: every /blog/<slug> route is a real page that
+   keeps the site's header and footer around the article. */
 .blog-page {
-  position: fixed;
-  z-index: 1500;
-  inset: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  position: relative;
+  min-height: 100vh;
+  /* Blog routes keep the header in its solid, compact state. */
+  padding-top: max(72px, calc(var(--header-height) - 14px));
+  overflow-x: clip;
   background: var(--paper);
   color: var(--ink);
   animation: blog-page-in 0.45s var(--ease-out) both;
@@ -88,7 +90,9 @@
 .blog-bar {
   position: sticky;
   z-index: 2;
-  top: 0;
+  /* The site header is fixed. Stay just below its compact scrolled height
+     rather than disappearing underneath it. */
+  top: max(72px, calc(var(--header-height) - 14px));
   display: flex;
   align-items: center;
   justify-content: space-between;

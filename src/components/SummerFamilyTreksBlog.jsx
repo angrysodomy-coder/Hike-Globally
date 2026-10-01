@@ -6,13 +6,12 @@ import BlogPage from './BlogPage'
 import sourceMarkdown from '../../Best Summer Treks For Family in Nepal For Beginners.md?raw'
 import { ARTICLE_TITLE } from '../lib/articleMarkdown'
 
-export default function SummerFamilyTreksBlog({ onClose, onBook }) {
+export default function SummerFamilyTreksBlog({ onBook }) {
   return (
     <BlogPage
       title={ARTICLE_TITLE}
       markdown={sourceMarkdown}
       image="/images/blog-family-summer-hero.jpg"
-      onClose={onClose}
       onBook={onBook}
     />
   )
