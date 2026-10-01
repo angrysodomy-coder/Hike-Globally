@@ -529,6 +529,189 @@
   color: var(--ink);
 }
 
+/* The family-summer guide is longer than the other journal stories because its
+   body is rendered from markdown. These overrides keep that richer markdown
+   inside the same article-page visual system: identical hero/byline/rail/CTA,
+   with restrained section, list and table styling for the extra structures. */
+.article-page--markdown .blog-hero__inner {
+  max-width: none;
+}
+
+.article-page--markdown .blog-hero__inner h1 {
+  text-align: left;
+}
+
+.article-page--markdown .blog-article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 760px;
+}
+
+.article-page--markdown .blog-article > * {
+  max-width: 66ch;
+  margin: 0 0 20px;
+}
+
+.article-page--markdown .blog-article > :last-child {
+  margin-bottom: 0;
+}
+
+.article-page--markdown .blog-article .article-page__standfirst {
+  max-width: 64ch;
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(20px, 2.2vw, 27px);
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.article-page--markdown .blog-article .article-page__byline {
+  max-width: 66ch;
+  margin: clamp(20px, 2.6vw, 30px) 0;
+}
+
+.article-page--markdown .blog-article h2,
+.article-page--markdown .blog-article h3,
+.article-page--markdown .blog-article h4,
+.article-page--markdown .blog-article h5,
+.article-page--markdown .blog-article h6 {
+  color: var(--ink);
+  font-family: var(--display);
+  font-weight: 400;
+  text-wrap: balance;
+}
+
+.article-page--markdown .blog-article h2 {
+  margin-top: clamp(34px, 5vw, 56px);
+  margin-bottom: 16px;
+  padding-top: clamp(24px, 3vw, 32px);
+  border-top: 1px solid var(--line);
+  font-size: clamp(26px, 3vw, 39px);
+  letter-spacing: -0.015em;
+  line-height: 1.12;
+  scroll-margin-top: calc(var(--header-height) + 24px);
+}
+
+.article-page--markdown .blog-article h2:first-of-type {
+  margin-top: clamp(26px, 4vw, 42px);
+}
+
+.article-page--markdown .blog-article h3 {
+  margin-top: clamp(14px, 2.4vw, 28px);
+  margin-bottom: 10px;
+  font-size: clamp(21px, 2.2vw, 28px);
+  letter-spacing: -0.01em;
+  line-height: 1.18;
+}
+
+.article-page--markdown .blog-article h4,
+.article-page--markdown .blog-article h5,
+.article-page--markdown .blog-article h6 {
+  margin-top: 12px;
+  margin-bottom: 8px;
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.article-page--markdown .blog-article p {
+  max-width: 66ch;
+  margin: 0 0 20px;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16.5px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.8;
+}
+
+.article-page--markdown .blog-article strong {
+  color: var(--forest-deep);
+  font-weight: 600;
+}
+
+.article-page--markdown .blog-article :is(h2, h3, h4, h5, h6) strong {
+  color: inherit;
+  font-weight: 400;
+}
+
+.article-page--markdown .blog-article ul {
+  display: grid;
+  gap: 10px;
+  max-width: 66ch;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+}
+
+.article-page--markdown .blog-article li {
+  position: relative;
+  padding-left: 26px;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16.5px;
+  line-height: 1.72;
+}
+
+.article-page--markdown .blog-article li::before {
+  position: absolute;
+  top: 0.72em;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--clay);
+  content: '';
+}
+
+.article-page--markdown .blog-table-wrap {
+  max-width: min(100%, 860px);
+  margin: 8px 0 30px;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  background: var(--card-surface);
+}
+
+.article-page--markdown .blog-article table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+.article-page--markdown .blog-article th,
+.article-page--markdown .blog-article td {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.article-page--markdown .blog-article thead th {
+  background: var(--ink);
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.article-page--markdown .blog-article tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.article-page--markdown .blog-article tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.article-page--markdown .blog-article td:first-child {
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
 .article-page__cta {
   display: flex;
   align-items: center;

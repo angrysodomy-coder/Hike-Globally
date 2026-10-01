@@ -12,6 +12,12 @@ export default function SummerFamilyTreksBlog({ onBook }) {
       title={ARTICLE_TITLE}
       markdown={sourceMarkdown}
       image="/images/blog-family-summer-hero.jpg"
+      imageAlt="Happy family trekking in Nepal during summer monsoon season with lush green Himalayan backdrop"
+      kicker="Family Guides"
+      readTime="10 min read"
+      date="September 16, 2026"
+      author="Nima Sherpa"
+      articleId="best-summer-treks-family-nepal-beginners"
       onBook={onBook}
     />
   )
