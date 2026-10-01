@@ -38,8 +38,8 @@
 
   /* --- rhythm --- */
   --tsp-gutter: clamp(16px, 4.2vw, 72px);
-  --tsp-shell: min(1680px, calc(100vw - 2 * var(--tsp-gutter)));
-  --tsp-rail-w: clamp(288px, 24vw, 392px);
+  --tsp-shell: min(85%, calc(100vw - 2 * var(--tsp-gutter)));
+  --tsp-rail-w: clamp(288px, 24vw, 420px);
   --tsp-gap: clamp(24px, 2.6vw, 60px);
   --tsp-section-gap: clamp(56px, 6vw, 112px);
   --tsp-radius: clamp(14px, 1.2vw, 22px);
@@ -72,9 +72,9 @@
   overflow-x: clip;
 }
 
-/* Shell for the hero's inner content (crumbs, kicker, chips) only.
-   The content below the hero deliberately breaks from the shell and
-   runs at 85% of the viewport, centered — see .tsp-layout. */
+/* Shell for the hero's inner content (crumbs, kicker, chips).
+   All components and box sections across the single trip page
+   consistently run at 85% width, centered — see .tsp-layout. */
 .tsp-shell {
   width: var(--tsp-shell);
   margin-inline: auto;
@@ -736,7 +736,7 @@
 
 .tsp-highlights ul {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(clamp(240px, 24vw, 460px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(clamp(240px, 18vw, 360px), 1fr));
   gap: clamp(12px, 1.2vw, 22px) clamp(18px, 2vw, 46px);
   margin: 0;
   padding: 0;
@@ -792,7 +792,7 @@
 
 .tsp-prose--split {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(clamp(280px, 27vw, 520px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(clamp(260px, 18vw, 380px), 1fr));
   gap: clamp(18px, 1.8vw, 38px);
   max-width: none;
 }
@@ -1552,7 +1552,7 @@
 /* Fact box: altitude / trek duration / accommodation / meals */
 .tsp-factbox {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(clamp(150px, 15vw, 260px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(clamp(140px, 13vw, 230px), 1fr));
   gap: 1px;
   padding: 1px;
   border-radius: var(--tsp-radius);
@@ -2068,24 +2068,51 @@
    Responsive structure changes
    ============================================================ */
 
-/* --- Ultra-wide / TV: grow the hero shell and the rail, not the reading
-   type. The body layout stays at 85% of the viewport at every width; the
-   article column is additionally capped so prose and grids keep an
-   editorial scale even when there is more physical screen space. */
-@media (min-width: 2200px) {
-  .tsp {
-    --tsp-shell: min(2320px, calc(100vw - 2 * var(--tsp-gutter)));
-    --tsp-rail-w: clamp(392px, 20vw, 520px);
+/* --- Monitor screens (20" to 100" displays: 1440px to 7680px)
+   All components and box sections maintain 85% width, centered.
+   Box sections (inclusions, packing, highlights, outline, calendar)
+   flow into responsive multi-column internal grids so they never
+   stretch excessively across wide displays. */
+@media (min-width: 1440px) {
+  .tsp-inex__col ul {
+    grid-template-columns: repeat(auto-fit, minmax(clamp(200px, 15vw, 300px), 1fr));
+    gap: clamp(10px, 0.85vw, 16px) clamp(16px, 1.4vw, 28px);
   }
 
-  /* When the cap bites, center the article inside its wider grid column. */
-  .tsp-article { max-width: 1680px; margin-inline: auto; }
+  .tsp-packing__box ul {
+    grid-template-columns: repeat(auto-fit, minmax(clamp(160px, 13vw, 240px), 1fr));
+    gap: clamp(8px, 0.7vw, 13px) clamp(14px, 1.2vw, 24px);
+  }
+}
+
+@media (min-width: 1680px) {
+  .tsp {
+    --tsp-rail-w: clamp(340px, 22vw, 460px);
+    --tsp-gap: clamp(30px, 2.8vw, 68px);
+  }
+}
+
+@media (min-width: 2200px) {
+  .tsp {
+    --tsp-shell: min(85%, calc(100vw - 2 * var(--tsp-gutter)));
+    --tsp-rail-w: clamp(420px, 20vw, 560px);
+    --tsp-gap: clamp(36px, 3vw, 80px);
+  }
 }
 
 @media (min-width: 3400px) {
   .tsp {
-    --tsp-shell: min(3000px, calc(100vw - 2 * var(--tsp-gutter)));
-    --tsp-rail-w: 620px;
+    --tsp-shell: min(85%, calc(100vw - 2 * var(--tsp-gutter)));
+    --tsp-rail-w: clamp(540px, 18vw, 720px);
+    --tsp-gap: clamp(44px, 3.2vw, 96px);
+  }
+}
+
+@media (min-width: 5120px) {
+  .tsp {
+    --tsp-shell: min(85%, calc(100vw - 2 * var(--tsp-gutter)));
+    --tsp-rail-w: clamp(680px, 16vw, 960px);
+    --tsp-gap: clamp(56px, 3.5vw, 120px);
   }
 }
 
