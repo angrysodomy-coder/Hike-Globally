@@ -86,10 +86,10 @@ export default buildConfig({
   editor: defaultLexical,
 
  db: postgresAdapter({
-  pool: {
-    connectionString: process.env.DATABASE_URL || '',
-  },
-}),
+    pool: {
+      connectionString: isMigrating
+        ? process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL || ''
+        : process.env.DATABASE_URL || '',
       // Neon's pooler already fronts the database. A large client-side pool on
       // top of it just multiplies idle connections across serverless instances.
       max: process.env.VERCEL ? 1 : 10,
