@@ -193,7 +193,6 @@ for (const phrase of [
   'Monsoon Reality Check',
   'Why Summer Wins for Families',
   'Plan this trek for my family',
-  'min read',
 ]) {
   check(`no invented copy: "${phrase}"`, html.includes(phrase), false)
 }

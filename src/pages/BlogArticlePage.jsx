@@ -6,9 +6,9 @@ import Reveal from '../components/Reveal'
 
 /* ------------------------------------------------------------------
    BlogArticlePage — the standalone page every journal story resolves
-   to (`/blog/<slug>`). The premium markdown guide keeps its dedicated
-   long-form renderer; every other article gets the editorial page
-   layout below.
+   to (`/blog/<slug>`). The premium markdown guide still renders its
+   full source markdown, but now shares the same editorial page design
+   as the rest of the journal stories.
    ------------------------------------------------------------------ */
 
 function NotFound() {
