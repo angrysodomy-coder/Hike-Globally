@@ -7,18 +7,9 @@ import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { JsonLd } from '@/components/JsonLd'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
-import { getAllPageSlugs, getPageBySlug } from '@/lib/queries/pages'
+import { getPageBySlug } from '@/lib/queries/pages'
 import { breadcrumbJsonLd } from '@/lib/seo/jsonLd'
 import { generateMeta } from '@/lib/seo/generateMeta'
-
-export async function generateStaticParams() {
-  const slugs = await getAllPageSlugs()
-  // 'home' is rendered by app/(frontend)/page.tsx at `/`, not here.
-  return slugs.filter((slug) => slug !== 'home').map((slug) => ({ slug: [slug] }))
-}
-
-export const dynamicParams = true
-export const revalidate = 3600
 
 type Params = Promise<{ slug?: string[] }>
 

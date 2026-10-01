@@ -12,17 +12,9 @@ import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { RichText } from '@/components/RichText'
 import { titleCase } from '@/components/TripPage/format'
 import { getPayloadClient } from '@/lib/payload'
-import { getAllDestinationSlugs, getDestinationBySlug } from '@/lib/queries/destinations'
+import { getDestinationBySlug } from '@/lib/queries/destinations'
 import { breadcrumbJsonLd } from '@/lib/seo/jsonLd'
 import { generateMeta } from '@/lib/seo/generateMeta'
-
-export async function generateStaticParams() {
-  const slugs = await getAllDestinationSlugs()
-  return slugs.map((slug) => ({ slug }))
-}
-
-export const dynamicParams = true
-export const revalidate = 3600
 
 type Params = Promise<{ slug: string }>
 

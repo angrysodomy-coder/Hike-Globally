@@ -10,18 +10,10 @@ import { JsonLd } from '@/components/JsonLd'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { RichText } from '@/components/RichText'
 import { longDate } from '@/components/TripPage/format'
-import { getAllPostSlugs, getPostBySlug } from '@/lib/queries/posts'
+import { getPostBySlug } from '@/lib/queries/posts'
 import { breadcrumbJsonLd } from '@/lib/seo/jsonLd'
 import { generateMeta } from '@/lib/seo/generateMeta'
 import { getServerSideURL } from '@/lib/utils/getURL'
-
-export async function generateStaticParams() {
-  const slugs = await getAllPostSlugs()
-  return slugs.map((slug) => ({ slug }))
-}
-
-export const dynamicParams = true
-export const revalidate = 3600
 
 type Params = Promise<{ slug: string }>
 
