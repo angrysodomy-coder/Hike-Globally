@@ -17,9 +17,34 @@ import { TripHero } from '@/components/TripPage/TripHero'
 import { TripItinerary } from '@/components/TripPage/TripItinerary'
 import { TripPriceRail } from '@/components/TripPage/TripPriceRail'
 import { lexicalToPlainText } from '@/hooks/populateReadingTime'
-import { getTripBySlug, getTripDepartures } from '@/lib/queries/trips'
+import { getAllTripSlugs, getTripBySlug, getTripDepartures } from '@/lib/queries/trips'
 import { breadcrumbJsonLd, faqJsonLd, tripJsonLd } from '@/lib/seo/jsonLd'
 import { generateMeta } from '@/lib/seo/generateMeta'
+
+/**
+ * Pre-render every published trip at build time. There are tens of these, not
+ * thousands, and they are the highest-intent pages on the site — none of them
+ * should ever cost a visitor a cold render.
+ */
+export async function generateStaticParams() {
+  const slugs = await getAllTripSlugs()
+  return slugs.map((slug) => ({ slug }))
+}
+
+/**
+ * `true` lets a trip published after the last build render on demand and then
+ * stay cached, instead of 404ing until someone redeploys. The revalidation
+ * hooks keep it fresh from there.
+ */
+export const dynamicParams = true
+
+/**
+ * A SAFETY NET, not the mechanism. Freshness comes from `revalidateTrip` /
+ * `revalidateDeparture` calling `revalidateTag` the instant an editor saves;
+ * this hour-long floor only catches changes that bypassed the hooks entirely
+ * (a direct SQL edit, a restored backup).
+ */
+export const revalidate = 3600
 
 type Params = Promise<{ slug: string }>
 
