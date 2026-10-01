@@ -644,8 +644,13 @@ export const defaultLexical = lexicalEditor({
         },
       },
     }),
+    // Do NOT pass `enabledCollections` here. Payload validates relationship
+    // targets at boot and throws `InvalidFieldRelationship` for any collection
+    // that is not registered yet, which makes /admin unbootable during an
+    // incremental rollout. Instead each collection opts itself out with
+    // `admin.enableRichTextLink: false` (see Media and Users in §8.1/§8.2) and
+    // Payload derives the set from what is actually registered.
     LinkFeature({
-      enabledCollections: ['pages', 'posts', 'trips', 'destinations'],
       fields: ({ defaultFields }) => [
         ...defaultFields.filter((f) => !('name' in f) || f.name !== 'url'),
         {
@@ -778,7 +783,7 @@ Trade-off: one less vendor, one less DNS record, and it is wired up by the Verce
 
 ```ts
 // src/access/index.ts
-import type { Access, FieldAccess } from 'payload'
+import type { Access, FieldAccess, PayloadRequest } from 'payload'
 import type { User } from '@/payload-types'
 
 export const anyone: Access = () => true
@@ -790,6 +795,15 @@ export const isAdmin: Access = ({ req: { user } }) =>
 
 export const isAdminField: FieldAccess = ({ req: { user } }) =>
   Boolean((user as User | null)?.roles?.includes('admin'))
+
+/**
+ * "May this person open /admin at all." This slot is narrower than `Access`:
+ * it must return a plain boolean, so passing `authenticated` here is a type
+ * error. That is a feature — it is a different question from "may this person
+ * read this document".
+ */
+export const canAccessAdminUI = ({ req: { user } }: { req: PayloadRequest }): boolean =>
+  Boolean(user)
 
 /**
  * Logged-in users see everything (including drafts).
@@ -829,7 +843,14 @@ const slugHook =
  * URL-safe, unique, indexed identifier. Auto-fills from `sourceField` on create,
  * then stops touching itself so a live URL never silently changes.
  */
-export const slugField = (sourceField = 'title', overrides: Partial<TextField> = {}): TextField => ({
+// `Partial<TextField>` does not work here: TextField is a discriminated union
+// on `hasMany`, so a partial widens `hasMany` to `true | undefined` and the
+// object stops being assignable. Omit the keys that select the variant.
+type SlugFieldOverrides = Partial<
+  Omit<TextField, 'hasMany' | 'maxRows' | 'minRows' | 'name' | 'type' | 'validate'>
+>
+
+export const slugField = (sourceField = 'title', overrides: SlugFieldOverrides = {}): TextField => ({
   name: 'slug',
   type: 'text',
   index: true,
@@ -910,12 +931,20 @@ export const artDirectedImage = (name = 'image', label = 'Image'): GroupField =>
 
 ```ts
 // src/fields/link.ts
-import type { Field } from 'payload'
+import type { CollectionSlug, Field } from 'payload'
 
-export const linkField = (overrides: { name?: string; label?: string } = {}): Field => ({
-  name: overrides.name ?? 'link',
+// `relationTo` is a required parameter, not a hardcoded default: `CollectionSlug`
+// is generated from the collections currently registered, so a baked-in
+// ['pages','posts','trips','destinations'] stops compiling until all four exist.
+// Call sites pass [...LINKABLE_COLLECTIONS] from src/collections/linkable.ts.
+export const linkField = (options: {
+  relationTo: CollectionSlug[]
+  name?: string
+  label?: string
+}): Field => ({
+  name: options.name ?? 'link',
   type: 'group',
-  label: overrides.label ?? 'Link',
+  label: options.label ?? 'Link',
   fields: [
     {
       type: 'row',
@@ -941,7 +970,7 @@ export const linkField = (overrides: { name?: string; label?: string } = {}): Fi
     {
       name: 'reference',
       type: 'relationship',
-      relationTo: ['pages', 'posts', 'trips', 'destinations'],
+      relationTo: options.relationTo,
       required: true,
       admin: { condition: (_, sibling) => sibling?.type === 'reference' },
     },
@@ -969,6 +998,8 @@ export const Media: CollectionConfig<'media'> = {
   folders: true, // Payload 3.90 media folders — essential once you pass ~200 assets
   admin: {
     group: 'Library',
+    // Keeps media out of the rich-text internal-link picker — see §5.7.
+    enableRichTextLink: false,
     defaultColumns: ['filename', 'alt', 'credit', 'updatedAt'],
     description: 'Every image and video on the site. Alt text is required — it is read aloud and it is SEO.',
   },
@@ -982,7 +1013,7 @@ export const Media: CollectionConfig<'media'> = {
   // Without this, every trip query drags the full media doc for every image.
   defaultPopulate: {
     url: true, alt: true, width: true, height: true, mimeType: true,
-    focalX: true, focalY: true, sizes: true, blurDataURL: true,
+    focalX: true, focalY: true, sizes: true, blurDataUrl: true,
   },
   fields: [
     {
@@ -1023,7 +1054,14 @@ export const Media: CollectionConfig<'media'> = {
       admin: { description: 'Where it was taken. Used for photo credits and internal search.' },
     },
     {
-      name: 'blurDataURL',
+      // `blurDataUrl`, not `blurDataURL`. Payload derives Postgres column names
+      // by splitting camelCase, and each capital in a run becomes its own
+      // underscore: `blurDataURL` lands as `blur_data_u_r_l`. `dbName` is not
+      // available on scalar fields, so the field name is the only lever — and
+      // renaming a column after the first production migration means writing
+      // the ALTER by hand. Map it to next/image's `blurDataURL` prop in
+      // CMSImage instead.
+      name: 'blurDataUrl',
       type: 'text',
       admin: { hidden: true, readOnly: true },
     },
@@ -1059,11 +1097,16 @@ export const Media: CollectionConfig<'media'> = {
 ```ts
 // src/collections/Users.ts
 import type { CollectionConfig } from 'payload'
-import { isAdmin, isAdminField, authenticated } from '@/access'
+import { authenticated, canAccessAdminUI, isAdmin, isAdminField } from '@/access'
 
 export const Users: CollectionConfig<'users'> = {
   slug: 'users',
-  admin: { useAsTitle: 'name', defaultColumns: ['name', 'email', 'roles'], group: 'Settings' },
+  admin: {
+    useAsTitle: 'name',
+    defaultColumns: ['name', 'email', 'roles'],
+    group: 'Settings',
+    enableRichTextLink: false, // never a valid internal link target — see §5.7
+  },
   auth: {
     tokenExpiration: 60 * 60 * 8,
     maxLoginAttempts: 5,
@@ -1079,7 +1122,7 @@ export const Users: CollectionConfig<'users'> = {
     update: ({ req: { user }, id }) =>
       Boolean(user?.roles?.includes('admin')) || user?.id === id,
     delete: isAdmin,
-    admin: authenticated, // who may open /admin at all
+    admin: canAccessAdminUI, // who may open /admin at all
   },
   fields: [
     { name: 'name', type: 'text', required: true },
@@ -2944,7 +2987,7 @@ export const generateBlurDataURL: CollectionBeforeChangeHook = async ({ data, re
   if (!file?.data || !file.mimetype?.startsWith('image/')) return data
   try {
     const buffer = await sharp(file.data).resize(16, 16, { fit: 'inside' }).webp({ quality: 40 }).toBuffer()
-    return { ...data, blurDataURL: `data:image/webp;base64,${buffer.toString('base64')}` }
+    return { ...data, blurDataUrl: `data:image/webp;base64,${buffer.toString('base64')}` }
   } catch {
     return data
   }
@@ -3634,6 +3677,12 @@ These are the ones that have actually cost me or a client money. Several already
 **17. Booking forms that lose data on error.** If the enquiry POST fails, the traveller who just typed a 400-word message loses it. *Fix:* optimistic local state, keep values on failure, and show a mailto fallback.
 
 **18. One giant "Trips" edit screen.** A 60-field flat form makes editors avoid the CMS. *Fix:* tabs, `initCollapsed` arrays, `RowLabel` components, field descriptions in plain language. The schemas in §8 do all four.
+
+**19. `src/pages/` collides with the Next.js Pages Router.** Your Vite app keeps its view components in `src/pages/`. The moment Next.js is installed with `src/` as the base directory, Next reads that folder as the **Pages Router** and turns every file in it into a route — so `src/pages/BlogArticlePage.jsx` starts serving at `/BlogArticlePage`, gets compiled into the production bundle, and drags its Vite-only `import '...md?raw'` into Turbopack, which fails the build with a bare `Unknown module type`. The error names the `.md` file and never mentions routing, so it is genuinely hard to diagnose. *Fix:* rename the directory — `src/views/` — before installing Next. Already done in step 2 of the rollout.
+
+**20. `push: true` can hang your dev server on a silent interactive prompt.** When a field rename produces a column rename, Drizzle cannot tell a rename from a drop-plus-add, so it asks. In a Next.js dev server that prompt is written to a log you are probably not watching, and the request that triggered it simply never returns — the admin hangs with no error. *Fix:* when you rename a field in dev, watch the dev-server output, or stop the server and let the next boot apply it. In CI this never happens because `push` is off and migrations are explicit.
+
+**21. Payload mangles camelCase column names.** `blurDataURL` becomes the Postgres column `blur_data_u_r_l`, because each capital in a run gets its own underscore. `dbName` is not available on scalar fields, so the field name is your only lever. *Fix:* avoid runs of capitals in field names — `blurDataUrl`, `ogImageUrl`, `gpxFileUrl`. Catch it before the first migration; afterwards it is a hand-written `ALTER`.
 
 ---
 

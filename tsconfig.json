@@ -2,16 +2,18 @@
   "compilerOptions": {
     "strict": true,
     "target": "ES2022",
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2022"
+    ],
     "module": "esnext",
     "moduleResolution": "bundler",
-    "jsx": "preserve",
-
+    "jsx": "react-jsx",
     // The existing components are still .jsx. Set to false once the
     // TypeScript conversion finishes (migration Phase E).
     "allowJs": true,
     "checkJs": false,
-
     "skipLibCheck": true,
     "noEmit": true,
     "incremental": true,
@@ -19,13 +21,20 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "forceConsistentCasingInFileNames": true,
-
     "baseUrl": ".",
-    "plugins": [{ "name": "next" }],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "paths": {
       // Required: the generated (payload) files import this alias by name.
-      "@payload-config": ["./src/payload.config.ts"],
-      "@/*": ["./src/*"]
+      "@payload-config": [
+        "./src/payload.config.ts"
+      ],
+      "@/*": [
+        "./src/*"
+      ]
     }
   },
   "include": [
@@ -36,5 +45,9 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "dist", ".next"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".next"
+  ]
 }
