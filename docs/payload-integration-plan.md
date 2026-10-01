@@ -276,7 +276,7 @@ pnpm add next@16.3.8 react@19.2.6 react-dom@19.2.6
 
 # Payload core
 pnpm add payload@3.90.2 @payloadcms/next@3.90.2 @payloadcms/ui@3.90.2 \
-  @payloadcms/richtext-lexical@3.90.2 @payloadcms/db-vercel-postgres@3.90.2 \
+  @payloadcms/richtext-lexical@3.90.2 @payloadcms/db-postgres@3.90.2 \
   @payloadcms/storage-s3@3.90.2 @payloadcms/email-resend@3.90.2 \
   @payloadcms/live-preview-react@3.90.2 @payloadcms/admin-bar@3.90.2 \
   graphql@^16.8.1 sharp@0.35.4
@@ -445,7 +445,7 @@ import { fileURLToPath } from 'url'
 import { buildConfig, type PayloadRequest } from 'payload'
 import sharp from 'sharp'
 
-import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres'
+import { postgresAdapter } from '@payloadcms/db-postgres'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { resendAdapter } from '@payloadcms/email-resend'
 import { seoPlugin } from '@payloadcms/plugin-seo'
@@ -476,6 +476,9 @@ import { SiteSettings } from '@/globals/SiteSettings'
 import type { Page, Post, Trip, Destination } from '@/payload-types'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
+
+/** `payload migrate` sets argv[2]; used to pick the direct DB endpoint. */
+const isMigrating = process.argv[2]?.startsWith('migrate') ?? false
 
 type SEOable = Page | Post | Trip | Destination
 
@@ -512,8 +515,19 @@ export default buildConfig({
 
   editor: defaultLexical,
 
-  db: vercelPostgresAdapter({
-    pool: { connectionString: process.env.POSTGRES_URL || '' },
+  db: postgresAdapter({
+    pool: {
+      // Migrations issue DDL, which is unreliable through PgBouncer's
+      // transaction pooling — route them at Neon's direct endpoint.
+      connectionString: isMigrating
+        ? process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL || ''
+        : process.env.DATABASE_URL || '',
+      // Neon's pooler already fronts the database. A large client-side pool on
+      // top of it just multiplies idle connections across serverless instances.
+      max: process.env.VERCEL ? 1 : 10,
+      idleTimeoutMillis: 30_000,
+      connectionTimeoutMillis: 10_000,
+    },
     // Dev convenience: auto-sync schema. MUST be false in production — see §6.
     push: process.env.NODE_ENV === 'development',
     migrationDir: path.resolve(dirname, 'migrations'),
@@ -661,11 +675,20 @@ export const defaultLexical = lexicalEditor({
 
 ## 6. Database: Neon Postgres, migrations, and the `push` trap
 
-**Choice: Neon Postgres via Vercel's Neon integration, using `@payloadcms/db-vercel-postgres`.**
+**Choice: Neon Postgres via Vercel's Neon integration, using `@payloadcms/db-postgres`.**
 
-Why this adapter rather than `@payloadcms/db-postgres`: `db-vercel-postgres` wraps `@vercel/postgres`, which speaks Neon's serverless driver over HTTP/WebSocket instead of holding a TCP connection. On a serverless platform where every request may be a new Lambda, TCP pooling is the number one cause of `too many connections` incidents. It also auto-detects Vercel's `POSTGRES_URL`.
+> **Corrected during implementation (step 1).** The first draft of this plan specified `@payloadcms/db-vercel-postgres`. Installing it emitted:
+> ```
+> npm warn deprecated @vercel/postgres@0.10.0: @vercel/postgres is deprecated…
+> it should have been migrated to Neon as a native Vercel integration
+> ```
+> `db-vercel-postgres` is built on `@vercel/postgres`, which Vercel has deprecated now that Vercel Postgres *is* Neon. Taking a new dependency on a deprecated driver for a project with a multi-year horizon is not defensible, so the adapter was swapped before any config was written. `npm ls @vercel/postgres` now returns empty.
 
-If you later self-host, switching is a three-line change to `payload.config.ts` (`postgresAdapter({ pool: { connectionString: process.env.DATABASE_URL } })`) — the schema and migrations are identical.
+`@payloadcms/db-postgres` uses `pg` (node-postgres), which is actively maintained and works identically on Vercel, Railway, or a VPS — so the "cost to change hosting later" drops to zero.
+
+**The serverless-pooling concern is handled at the database, not the client.** Neon exposes two endpoints: a *pooled* one (hostname contains `-pooler`, fronted by PgBouncer) and a *direct* one. Point the running app at the pooled endpoint with a small client pool (`max: 1` on Vercel) and PgBouncer absorbs the connection churn. The old `too many connections` failure mode comes from stacking a large client-side pool on top of that, which the config in §5.6 avoids.
+
+**Point migrations at the direct endpoint.** DDL through PgBouncer's transaction pooling is unreliable — this is the single most common Neon + Payload deployment failure. The `isMigrating` switch in §5.6 handles it automatically via `DATABASE_URL_UNPOOLED`.
 
 ### 6.1 Why Postgres and not Mongo for this project
 
@@ -3341,8 +3364,12 @@ PAYLOAD_SECRET=
 # No trailing slash. Used for CORS, canonical URLs, OG images, email links.
 NEXT_PUBLIC_SERVER_URL=http://localhost:3000
 
-# ─── Database (Neon via Vercel) ──────────────────────────────────────
-POSTGRES_URL=postgres://user:password@host/db?sslmode=require
+# ─── Database (Neon) ─────────────────────────────────────────────────
+# Pooled endpoint (`-pooler` in the hostname) — used by the running app.
+DATABASE_URL=postgres://user:password@ep-xxx-pooler.region.aws.neon.tech/db?sslmode=require
+# Direct endpoint — used by `npm run migrate`, because DDL through PgBouncer
+# transaction pooling is unreliable.
+DATABASE_URL_UNPOOLED=postgres://user:password@ep-xxx.region.aws.neon.tech/db?sslmode=require
 
 # ─── Media storage (Cloudflare R2 via the S3 API) ────────────────────
 S3_BUCKET=hikeglobally-media

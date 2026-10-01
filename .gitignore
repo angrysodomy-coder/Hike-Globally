@@ -10,3 +10,17 @@ scripts/.smoke-dest-bundle.cjs
 scripts/.blog-content-bundle.cjs
 scripts/.smoke-trips-page-bundle.cjs
 scripts/.smoke-trip-single-bundle.cjs
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# Vercel
+.vercel
+
+# Payload
+# NOTE: src/migrations/ and src/payload-types.ts are intentionally NOT
+# ignored — both are build inputs and must be committed.
+/media/
