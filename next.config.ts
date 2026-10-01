@@ -38,22 +38,7 @@ const nextConfig: NextConfig = {
 
   // Pin the workspace root. Without this, Turbopack can walk up past the repo
   // and pick the wrong root when a parent directory also has a lockfile.
-  turbopack: {
-    root: path.resolve(dirname),
-
-    // Make `@payload-config` resolution explicit. tsconfig.json also maps
-    // this alias, but Turbopack's import map can end up pointing at the
-    // Payload-template default location ('./src/payload.config.ts') in some
-    // environments, which fails with "Module not found: Can't resolve
-    // '@payload-config'" because our config lives at the repo root.
-    //
-    // IMPORTANT: this MUST stay a relative './' path. An absolute path (e.g.
-    // path.resolve(...)) is treated as "server relative" by Turbopack and
-    // breaks the build with the same module-not-found error.
-    resolveAlias: {
-      '@payload-config': './payload.config.ts',
-    },
-  },
+  turbopack: { root: path.resolve(dirname) },
 
   images: {
     // Payload serves uploads from /api/media/file/** when object storage is off.
