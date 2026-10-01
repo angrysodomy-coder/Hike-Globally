@@ -102,8 +102,8 @@
 }
 
 .tp-hero__title {
-  font-size: clamp(3rem, 9.5vw, 7.4rem);
-  line-height: 0.98;
+  font-size: var(--font-size-h1, 35px);
+  line-height: 1.15;
   letter-spacing: -0.015em;
   color: var(--white);
   text-shadow: 0 4px 40px rgba(10, 22, 38, 0.45);
@@ -265,8 +265,8 @@
 }
 
 .tp-signature__sticky h2 {
-  font-size: clamp(2.4rem, 4.6vw, 4rem);
-  line-height: 1.04;
+  font-size: var(--font-size-h2, 28px);
+  line-height: 1.15;
 }
 
 .tp-signature__sticky h2 em {
@@ -359,7 +359,7 @@
 }
 
 .tp-timeline__head h3 {
-  font-size: 1.1rem;
+  font-size: var(--font-size-h3, 23px);
   letter-spacing: 0.02em;
 }
 
@@ -426,7 +426,7 @@
   margin: 0;
   font-family: var(--display);
   font-weight: 400;
-  font-size: 1.35rem;
+  font-size: var(--font-size-h4, 18px);
 }
 
 .tp-timeline__title span {
@@ -871,7 +871,7 @@
 .tp-empty h3 {
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-size: var(--font-size-h3, 23px);
 }
 
 .tp-empty > p:last-of-type {
@@ -926,7 +926,7 @@
 
 .tp-stats__cell h3 {
   margin-top: 12px;
-  font-size: 1rem;
+  font-size: var(--font-size-h3, 23px);
   letter-spacing: 0.02em;
   color: var(--sand);
 }
@@ -981,7 +981,7 @@
   margin: 0;
   font-family: var(--display);
   font-weight: 400;
-  font-size: 1.08rem;
+  font-size: var(--font-size-h4, 18px);
 }
 
 .tp-matrix__name span {
@@ -1091,7 +1091,7 @@
 }
 
 .tp-include h3 {
-  font-size: 1.3rem;
+  font-size: var(--font-size-h3, 23px);
   line-height: 1.2;
 }
 
@@ -1119,7 +1119,7 @@
   margin: 0;
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(1.7rem, 3vw, 2.2rem);
+  font-size: var(--font-size-h3, 23px);
 }
 
 .tp-includes__private h3 em {
@@ -1149,7 +1149,7 @@
 }
 
 .tp-faq__intro h2 {
-  font-size: clamp(2.4rem, 4.6vw, 4rem);
+  font-size: var(--font-size-h2, 28px);
 }
 
 .tp-faq__intro h2 em {
@@ -1262,8 +1262,8 @@
 }
 
 .tp-cta__content h2 {
-  font-size: clamp(2.6rem, 6vw, 5.4rem);
-  line-height: 1.02;
+  font-size: var(--font-size-h2, 28px);
+  line-height: 1.15;
   color: var(--white);
 }
 
