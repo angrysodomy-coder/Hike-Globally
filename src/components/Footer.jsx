@@ -4,7 +4,7 @@ import Logo from './Logo'
 import { Link } from '../lib/router'
 
 const exploreLinks = [
-  ['Destinations', '/destinations'], ['Trips', '#trips'], ['Popular treks', '#treks'], ['Journal', '#journal'],
+  ['Destinations', '/destinations'], ['Trips', '/trips'], ['Popular treks', '#treks'], ['Journal', '#journal'],
 ]
 const companyLinks = [
   ['About us', '#footer'], ['Contact', 'mailto:hello@hikeglobally.com'], ['FAQs', '#footer'], ['Terms', '#footer'], ['Privacy', '#footer'],
