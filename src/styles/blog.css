@@ -240,10 +240,10 @@
   margin: 0;
   color: var(--white);
   font-family: var(--display);
-  font-size: var(--font-size-h1, 35px);
+  font-size: clamp(38px, 5.2vw, 72px);
   font-weight: 400;
   letter-spacing: -0.02em;
-  line-height: 1.15;
+  line-height: 1.06;
   text-align: center;
   text-wrap: balance;
 }
@@ -325,13 +325,12 @@
 
 /* ---------- Article typography (markdown output) ---------- */
 .blog-article {
-  /* Scale + rhythm tokens (Uniform Typography Scale: H1: 35px, H2: 28px, H3: 23px, H4: 18px, Body: 16px). */
-  --blog-h1: 35px;
-  --blog-h2: 28px;
-  --blog-h3: 23px;
-  --blog-h4: 18px;
-  --blog-h5: 18px;
-  --blog-h6: 16px;
+  /* Scale + rhythm tokens (see the table at the top of this file). */
+  --blog-h2: clamp(28px, 3.4vw, 42px);
+  --blog-h3: clamp(23px, 2.5vw, 29px);
+  --blog-h4: 21px;
+  --blog-h5: 18.5px;
+  --blog-h6: 16.5px;
   --blog-space: 13px;           /* a paragraph's own side: above AND below */
   --blog-space-list: 42px;      /* a bullet list's own side, above and below */
   --blog-space-table: 36px;     /* a table's own side, above and below */
@@ -448,7 +447,7 @@
   margin-inline: 0;
   color: var(--ink);
   font-family: var(--sans);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 400;
   letter-spacing: 0;
   line-height: 1.75;
@@ -693,7 +692,7 @@
   }
 
   .blog-hero__inner h1 {
-    font-size: var(--font-size-h1, 35px);
+    font-size: clamp(32px, 9vw, 44px);
   }
 
   .blog-hero__kicker {
@@ -701,11 +700,11 @@
   }
 
   .blog-article p {
-    font-size: 16px;
+    font-size: 17px;
   }
 
   .blog-article > p:first-of-type {
-    font-size: 18px;
+    font-size: 19px;
   }
 
   .blog-article li {

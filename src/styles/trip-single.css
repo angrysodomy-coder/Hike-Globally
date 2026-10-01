@@ -48,14 +48,15 @@
   --tsp-radius-lg: clamp(18px, 1.6vw, 30px);
 
   /* --- type ---
-     Uniform Typography Scale:
-     H1: 35px, H2: 28px, H3: 23px, H4: 18px, Body: 16px */
-  --tsp-h1: 35px;
-  --tsp-h2: 28px;
-  --tsp-h3: 23px;
-  --tsp-h4: 18px;
-  --tsp-lede: 18px;
-  --tsp-body-size: 16px;
+     Keep the reading scale close to editorial travel sites: headings retain a
+     clear hierarchy without becoming display-sized, and long-form copy stays
+     around the browser's comfortable 16px default. The low viewport factors
+     deliberately stop typography ballooning on large desktop screens. */
+  --tsp-h1: clamp(32px, 2.7vw, 44px);
+  --tsp-h2: clamp(25px, 1.8vw, 32px);
+  --tsp-h3: clamp(18px, 1.15vw, 21px);
+  --tsp-lede: clamp(16px, 1vw, 18px);
+  --tsp-body-size: clamp(15px, 0.9vw, 16px);
   --tsp-small: clamp(13px, 0.78vw, 14px);
   --tsp-micro: clamp(11px, 0.65vw, 12px);
 
@@ -2237,7 +2238,7 @@
 /* --- 5" phones and folded devices (320px and narrower) --- */
 @media (max-width: 380px) {
   .tsp { --tsp-gutter: 12px; }
-  .tsp-lede h1 { font-size: var(--tsp-h1, 35px); }
+  .tsp-lede h1 { font-size: 27px; }
   .tsp-calendar__weekdays span { font-size: 9.5px; }
   .tsp-calendar,
   .tsp-calendar__form { padding: 12px; }
