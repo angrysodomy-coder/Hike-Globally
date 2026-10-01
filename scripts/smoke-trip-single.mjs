@@ -269,7 +269,7 @@ check('glow uses a conic gradient border', /\.tsp-priceCard__glow::before[\s\S]{
 check('rail is sticky on desktop', /\.tsp-rail__sticky\s*\{[\s\S]*?position:\s*sticky/.test(stripped), true)
 check('rail folds above the article below 1080px', /@media \(max-width: 1080px\)[\s\S]*?\.tsp-rail\s*\{\s*order:\s*-1/.test(stripped), true)
 check('includes column is green', /\.tsp-inex__col--in li i\s*\{\s*background:\s*var\(--tsp-green\)/.test(stripped), true)
-check('excludes column is red', /\.tsp-inex__col--ex li i\s*\{\s*background:\s*var\(--tsp-red\)/.test(stripped), true)
+check('excludes column is ochre (never red)', /\.tsp-inex__col--ex li i\s*\{\s*background:\s*var\(--tsp-amber\)/.test(stripped), true)
 check('packing grid is two per row', /\.tsp-packing\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,/.test(stripped), true)
 check('includes/excludes grid is two across', /\.tsp-inex\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,/.test(stripped), true)
 check('a 5" phone breakpoint exists', /@media \(max-width: 380px\)/.test(stripped), true)

@@ -90,7 +90,7 @@ export default function JournalSection() {
           right: 16px !important;
           left: auto !important;
           bottom: auto !important;
-          background: #E63946 !important;
+          background: #0F8378 !important;
           color: #fff !important;
           padding: 6px 12px !important;
           font-size: 10px !important;

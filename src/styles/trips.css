@@ -237,7 +237,7 @@
 }
 
 .tp-marquee__item svg {
-  color: var(--clay);
+  color: var(--clay-bright);
   flex: none;
 }
 
@@ -920,7 +920,7 @@
 }
 
 .tp-stats__suffix {
-  color: var(--clay);
+  color: var(--clay-bright);
   font-size: 0.6em;
 }
 

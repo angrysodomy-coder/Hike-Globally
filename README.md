@@ -16,7 +16,7 @@ A premium, editorial travel-booking homepage for locally led Himalayan journeys.
   title/excerpt/byline, a highlights box, trek overview, day-to-day outline, a paginated
   booking calendar (name, email, country, travellers, Book now), a full-itinerary
   accordion with an altitude/duration/accommodation/meals fact box and auto-sliding
-  photography, green/red includes & excludes columns, essential information, an
+  photography, green/ochre includes & excludes columns, essential information, an
   illustrated route map, a four-box packing list, an FAQ accordion, and a sticky
   left price rail with an animated glowing border
 - Functional trip discovery, search, filters, sorting and results
@@ -36,11 +36,28 @@ npm run dev
 
 The Vite development server runs on `http://localhost:5173` by default.
 
+## Palette
+
+The accent is an ocean teal — there is no red anywhere in the interface.
+
+| Token | Value | Used for |
+| --- | --- | --- |
+| `--clay` | `#0f8378` | the accent on light surfaces: CTAs, links, hovers, rules |
+| `--clay-deep` | `#0a5f57` | the darker end of accent gradients |
+| `--clay-bright` | `#3fc0ab` | the same accent lifted for dark bands (marquees, stats, hero) |
+| `--gold` | `#c9962d` | review stars and other earned marks |
+| `--tsp-green` | `#1f7a4d` | "included" / confirmed states |
+| `--tsp-amber` | `#9c6414` | "not included", sold-out departures, form errors |
+
+`scripts/check-no-red.mjs` (part of `npm test`) scans every colour literal in
+`src/` and fails the build if a red one ever comes back.
+
 ## Validation
 
 ```bash
 npm run lint
 npm run build
+npm test
 ```
 
 ## Structure

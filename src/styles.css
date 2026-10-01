@@ -16,8 +16,14 @@
   --forest-deep: #1d3557;
   --sage: #457b9d;
   --sand: #a8dadc;
-  --clay: #e63946;
-  --gold: #e63946;
+  /* Accent: ocean teal — the brand's action colour on light surfaces.
+     `--clay-bright` is the same hue lifted for dark backgrounds (hero
+     bands, marquees, stat blocks) where the deep teal would sink in. */
+  --clay: #0f8378;
+  --clay-deep: #0a5f57;
+  --clay-bright: #3fc0ab;
+  /* Warm sun gold — review stars and other "earned" marks. */
+  --gold: #c9962d;
   --line: rgba(29, 53, 87, 0.17);
   --line-light: rgba(241, 250, 238, 0.28);
   --display: 'Cal Sans', 'DM Sans', Arial, sans-serif;
@@ -1197,7 +1203,8 @@ dd {
   flex: 0 0 auto;
   width: 10px;
   height: 1px;
-  background: var(--clay);
+  /* Sits on the card photography — the lifted teal keeps it readable. */
+  background: var(--clay-bright);
   transition: width 0.55s var(--ease-out);
 }
 
