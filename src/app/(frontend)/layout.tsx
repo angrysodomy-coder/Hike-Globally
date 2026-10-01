@@ -36,17 +36,7 @@ import { getServerSideURL } from '@/lib/utils/getURL'
  * stack stays byte-identical to the Vite build during the migration — the
  * `--display` / `--sans` custom properties in styles.css name these families
  * directly.
- *
- * Payload is the source of truth for every public route. Rendering this route
- * group dynamically keeps `next build` independent of Postgres: Vercel can
- * create a deployment even when Neon is waking up or temporarily refuses a
- * build-worker connection. The pages still query Payload at request time.
- *
- * Do not replace this with build-time static generation unless the deployment
- * pipeline is deliberately allowed to depend on database availability.
  */
-export const dynamic = 'force-dynamic'
-
 export const metadata: Metadata = {
   description:
     'Locally led Himalayan journeys — small groups, two leaders, every permit handled.',
