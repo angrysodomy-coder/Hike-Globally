@@ -3,16 +3,16 @@ import { ArrowRight } from 'lucide-react'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import BookingDrawer from './components/BookingDrawer'
-import HomePage from './pages/HomePage'
-import BlogArticlePage from './pages/BlogArticlePage'
-import TripDetailPage from './pages/TripDetailPage'
+import HomePage from './views/HomePage'
+import BlogArticlePage from './views/BlogArticlePage'
+import TripDetailPage from './views/TripDetailPage'
 import { getArticleSlug, getTripSlug } from './data/tripDetails'
 import { useRouter } from './lib/router'
 
 /* The destinations and trips pages pull in framer-motion + GSAP;
    load them only when visited. */
-const DestinationsPage = lazy(() => import('./pages/DestinationsPage'))
-const TripsPage = lazy(() => import('./pages/TripsPage'))
+const DestinationsPage = lazy(() => import('./views/DestinationsPage'))
+const TripsPage = lazy(() => import('./views/TripsPage'))
 
 export default function App() {
   const { path, navigate } = useRouter()
