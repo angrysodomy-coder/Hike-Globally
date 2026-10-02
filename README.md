@@ -26,7 +26,8 @@ A premium, editorial travel-booking homepage for locally led Himalayan journeys.
 - Responsive fullscreen navigation and mobile booking CTA
 - Newsletter interaction, semantic landmarks, visible focus states and reduced-motion support
 - Local responsive WebP assets and self-hosted font packages
-- **Payload 3 CMS embedded in the same Next.js app**: branded `/admin`, trips with
+- **Payload 3 CMS embedded in the same Next.js app**: branded `/admin` with a custom
+  analytics dashboard (live KPIs, inquiry chart, pipeline, departures), trips with
   itineraries/pricing/departures, blog, block-built pages, destinations, testimonials,
   header/footer globals, booking inquiries with a status workflow, draft + live
   preview, editor-managed redirects, on-demand revalidation, SEO fields, JSON-LD and
@@ -170,6 +171,15 @@ The palette reaches the CMS surfaces too:
   success ramps, primary buttons, links, focus rings and status pills, and
   `src/components/admin/{Logo,Icon}.tsx` put the ridgeline mark on the login screen
   and in the nav. The favicon is `public/favicon.svg`.
+- **Custom dashboard** — `/admin` renders a mission-control home
+  (`src/components/admin/CustomDashboard.tsx`, a server component reading the
+  Local API, plus the animated `DashboardClient.tsx`): live KPI cards with
+  count-up numbers and sparklines, a 30-day inquiry-flow chart with hover
+  tooltips, the inquiry pipeline by stage, latest leads, upcoming departures
+  with seat fills, and quick actions. Theming lives in
+  `src/app/(payload)/admin-dashboard.scss` and flips between light/dark via CSS
+  variables. `npm run seed:inquiries` sprinkles demo inquiries across the last
+  60 days so the dashboard has something to chart (safe to delete anytime).
 
 ## Validation
 

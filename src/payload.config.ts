@@ -49,6 +49,13 @@ export default buildConfig({
         Logo: '@/components/admin/Logo#AdminLogo',
         Icon: '@/components/admin/Icon#AdminIcon',
       },
+      views: {
+        // Custom /admin home — live KPIs, inquiry chart, pipeline and
+        // departures, rendered as a server component (see CustomDashboard.tsx).
+        dashboard: {
+          Component: '@/components/admin/CustomDashboard#CustomDashboard',
+        },
+      },
     },
     meta: {
       titleSuffix: '— Hike Globally',
