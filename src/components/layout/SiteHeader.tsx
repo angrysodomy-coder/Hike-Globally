@@ -19,7 +19,7 @@ export const SiteHeader: React.FC = async () => {
           <Logo />
         </Link>
         <nav className="flex items-center gap-6">
-          {(header.navItems ?? []).map((item) => (
+          {(header?.navItems ?? []).map((item) => (
             <Link
               key={item.id}
               href={item.href}

@@ -12,14 +12,19 @@ import type { Redirect } from '@/payload-types'
  */
 const getRedirects = unstable_cache(
   async (): Promise<Redirect[]> => {
-    const payload = await getPayload({ config })
-    const result = await payload.find({
-      collection: 'redirects',
-      depth: 1, // resolve document references so we can build their URLs
-      limit: 1000,
-      pagination: false,
-    })
-    return result.docs
+    try {
+      const payload = await getPayload({ config })
+      const result = await payload.find({
+        collection: 'redirects',
+        depth: 1, // resolve document references so we can build their URLs
+        limit: 1000,
+        pagination: false,
+      })
+      return result.docs
+    } catch (error) {
+      console.warn('[getRedirects] Error fetching redirects:', error)
+      return []
+    }
   },
   ['redirects-list'],
   { tags: ['redirects'] },
