@@ -110,7 +110,8 @@ deploying:
 | --- | --- | --- |
 | `PAYLOAD_SECRET` | Yes | Any long random string, e.g. `openssl rand -hex 32`. Build fails immediately with "missing secret key" if unset. |
 | `POSTGRES_URL` | Yes | A real, reachable Postgres connection string (Neon, Vercel Postgres, etc.) — `?sslmode=require` for managed providers. The placeholder in `.env.example` will not work. |
-| `NEXT_PUBLIC_SERVER_URL` | Yes | The deployed URL with no trailing slash, e.g. `https://your-site.vercel.app`. |
+| `NEXT_PUBLIC_SERVER_URL` | Yes | The deployed URL with no trailing slash, e.g. `https://your-site.vercel.app`. Must be the origin you actually open `/admin` on — see below. |
+| `PAYLOAD_CSRF_ORIGINS` | Only for extra domains | Comma-separated extra origins allowed to make authenticated admin requests (`www.` alias, staging/custom domain, tunnel, cloud dev sandbox). Vercel's production/preview/branch URLs are trusted automatically. |
 | `BLOB_READ_WRITE_TOKEN` | Only if using the Blob storage plugin | From the Vercel Blob store. |
 | `PREVIEW_SECRET` | Recommended | Shared secret for `/admin` live preview. |
 
@@ -118,6 +119,24 @@ Set the project's **Build Command** to `npm run build:prod` (not the default
 `npm run build`) so committed migrations run before `next build` — otherwise
 the first deploy will fail with "relation does not exist" once the schema is
 queried.
+
+#### "You are not allowed to perform this action." when publishing
+
+If `/admin` loads and shows you as signed in, but **Publish/Save** returns that
+error, it is almost never a permissions problem — it is an origin mismatch.
+
+Payload adds `serverURL` to its **CSRF allowlist**. Admin writes are `fetch()`
+`POST`/`PATCH` calls, and browsers always attach an `Origin` header to those; if
+that origin is not on the allowlist Payload discards the `payload-token` cookie
+*before* access control runs, so the write executes as an anonymous user and
+every `authenticated` access rule returns `false`. Page navigations are plain
+`GET`s with no `Origin` header, which is why the panel still looks logged in.
+
+Fix it by making the allowlist match reality — set `NEXT_PUBLIC_SERVER_URL` to
+the exact origin you browse (protocol, host **and** port, no trailing slash),
+and add any other origin to `PAYLOAD_CSRF_ORIGINS`. The resolution logic lives
+in `src/lib/serverURL.ts`; a rejected origin is logged with the full allowlist
+by `src/hooks/explainRejectedOrigin.ts`.
 
 Build-time data fetches for `generateStaticParams()` and `sitemap.ts` are
 wrapped so a transient database hiccup degrades to on-demand rendering
