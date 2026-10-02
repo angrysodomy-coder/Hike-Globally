@@ -1,11 +1,29 @@
 /* ---------------------------------------------------------------------------
-   Hike Globally — Payload admin theme
+   Hike Globally — Payload admin theme · "Summit" edition
    ---------------------------------------------------------------------------
    Keeps the CMS visually part of the brand: ocean-teal accent (--clay),
-   deep-navy ink (--ink) for text and chrome, warm sun gold for "earned" marks.
-   No red is introduced anywhere; Payload's own error red is left alone so
-   destructive states stay legible.
+   deep-navy ink (--ink), warm sun gold for "earned" marks. No red is
+   introduced anywhere; Payload's own error red is left alone so destructive
+   states stay legible.
+
+   Layers, top to bottom:
+     1. Tokens        — colour ramps Payload derives its chrome from
+     2. Typography    — DM Sans for UI, Cal Sans for display headings
+     3. Chrome        — app frame, sidebar, header, breadcrumbs
+     4. Controls      — buttons (gradient + shine), inputs, focus rings
+     5. Surfaces      — tables, cards, pills, popups, toasts
+     6. Login         — animated aurora + glass card
+     7. Texture       — scrollbar, selection, scroll-shadows
+     8. Motion safety — prefers-reduced-motion
+
+   All rules are unlayered on purpose: Payload ships its base styles inside
+   `@layer payload-default`, and unlayered CSS always wins the cascade, so
+   every override here is guaranteed to apply.
 --------------------------------------------------------------------------- */
+
+/* ===========================================================================
+   1 · TOKENS
+   ======================================================================== */
 
 :root {
   --hg-clay: #0f8378;
@@ -16,25 +34,26 @@
   --hg-sand: #a8dadc;
   --hg-ivory: #f1faee;
   --hg-gold: #c9962d;
+  --hg-gold-bright: #d9ad4e;
 
   /* Payload derives most of its chrome from this ramp. Tinting it towards the
      brand navy makes every panel, border and muted label feel on-brand. */
   --color-base-0: #ffffff;
-  --color-base-50: #f6f8f8;
-  --color-base-100: #eaeff1;
-  --color-base-150: #dde5ea;
-  --color-base-200: #cfdae1;
-  --color-base-250: #c0ced8;
-  --color-base-300: #aec0cd;
-  --color-base-350: #9bb0c0;
-  --color-base-400: #86a0b3;
-  --color-base-450: #7190a5;
-  --color-base-500: #5d7f97;
-  --color-base-550: #4f6f87;
-  --color-base-600: #425f76;
-  --color-base-650: #375065;
-  --color-base-700: #2c4155;
-  --color-base-750: #243547;
+  --color-base-50: #f6f9f9;
+  --color-base-100: #edf2f3;
+  --color-base-150: #e0e8eb;
+  --color-base-200: #d2dde2;
+  --color-base-250: #c2d1d8;
+  --color-base-300: #b0c3cd;
+  --color-base-350: #9db4c1;
+  --color-base-400: #89a5b4;
+  --color-base-450: #7595a7;
+  --color-base-500: #628599;
+  --color-base-550: #537589;
+  --color-base-600: #456577;
+  --color-base-650: #3a5666;
+  --color-base-700: #2f4758;
+  --color-base-750: #263c4c;
   --color-base-800: #1d3557; /* --ink */
   --color-base-850: #182a44;
   --color-base-900: #142334;
@@ -66,9 +85,568 @@
   --color-warning-500: #c9962d;
   --color-warning-600: #a87c22;
   --color-warning-700: #9c6414;
+
+  /* Softer, more contemporary corners throughout the panel */
+  --style-radius-s: 8px;
+  --style-radius-m: 10px;
+  --style-radius-l: 14px;
+
+  /* Brand type stack (loaded in (payload)/layout.tsx via @fontsource) */
+  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --hg-font-display: 'Cal Sans', 'DM Sans', -apple-system, sans-serif;
+
+  /* Admin chrome accents */
+  --hg-nav-accent: rgba(63, 192, 171, 0.12);
+  --hg-glow-teal: 0 8px 24px -10px rgba(15, 131, 120, 0.55);
+  --hg-ring: 0 0 0 3px rgba(63, 192, 171, 0.22);
+
+  /* Ambient page wash — barely-there teal/ivory light */
+  --hg-page-wash:
+    radial-gradient(1100px 460px at 8% -6%, rgba(63, 192, 171, 0.07), transparent 60%),
+    radial-gradient(900px 420px at 100% 0%, rgba(29, 53, 87, 0.055), transparent 55%),
+    radial-gradient(700px 500px at 55% 110%, rgba(201, 150, 45, 0.035), transparent 60%);
 }
 
-/* ---- Brand lockup (admin.components.graphics.Logo / Icon) ---------------- */
+html[data-theme='dark'] {
+  --hg-nav-accent: rgba(63, 192, 171, 0.14);
+  --hg-glow-teal: 0 10px 28px -10px rgba(63, 192, 171, 0.35);
+  --hg-ring: 0 0 0 3px rgba(63, 192, 171, 0.28);
+
+  --hg-page-wash:
+    radial-gradient(1100px 480px at 8% -8%, rgba(15, 131, 120, 0.16), transparent 60%),
+    radial-gradient(900px 420px at 100% 0%, rgba(29, 53, 87, 0.35), transparent 55%),
+    radial-gradient(760px 520px at 55% 112%, rgba(201, 150, 45, 0.06), transparent 60%);
+}
+
+/* ===========================================================================
+   2 · TYPOGRAPHY
+   ======================================================================== */
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Display font on the big structural titles */
+.list-header__title,
+.doc-header__title,
+.login h1,
+h1 {
+  font-family: var(--hg-font-display);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+}
+
+code,
+pre,
+.mono {
+  font-variant-ligatures: none;
+}
+
+/* ===========================================================================
+   3 · CHROME — app frame, sidebar, header, breadcrumbs
+   ======================================================================== */
+
+/* Ambient wash behind every admin view */
+.template-default,
+.dashboard,
+.collection-list,
+.globals-list {
+  background: var(--hg-page-wash);
+  background-attachment: fixed;
+}
+
+/* ---- Sidebar / nav ------------------------------------------------------- */
+
+.nav {
+  background:
+    linear-gradient(180deg, rgba(63, 192, 171, 0.045), transparent 240px),
+    var(--theme-elevation-50);
+  border-right: 1px solid var(--theme-elevation-100);
+}
+
+html[data-theme='dark'] .nav {
+  background:
+    linear-gradient(180deg, rgba(15, 131, 120, 0.08), transparent 240px),
+    var(--theme-elevation-50);
+}
+
+.nav__header {
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--theme-elevation-100);
+}
+
+.nav-group__toggle {
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.66rem;
+  font-weight: 700;
+  transition: color 0.18s ease;
+}
+
+.nav__link {
+  position: relative;
+  border-radius: 9px;
+  transition:
+    color 0.18s ease,
+    background-color 0.18s ease,
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav__link:hover {
+  color: var(--hg-clay);
+  background-color: var(--hg-nav-accent);
+  transform: translateX(3px);
+}
+
+/* Active item: Payload marks it with a .nav__link-indicator child
+   (and, on older builds, a --nav__link--active class). */
+.nav__link:has(.nav__link-indicator),
+.nav__link--active {
+  color: var(--hg-clay-deep);
+  background: linear-gradient(90deg, rgba(63, 192, 171, 0.16), rgba(63, 192, 171, 0.05));
+  font-weight: 600;
+}
+
+.nav__link:has(.nav__link-indicator) .nav__link-label,
+.nav__link--active .nav__link-label {
+  color: inherit;
+}
+
+/* The little rail on the leading edge — restyled as a glowing brand accent */
+.nav__link-indicator {
+  width: 3px;
+  height: 60%;
+  top: 20%;
+  inset-inline-start: -14px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--hg-clay-bright), var(--hg-clay));
+  box-shadow: 0 0 12px 0 rgba(63, 192, 171, 0.65);
+  transition: height 0.25s cubic-bezier(0.22, 1, 0.36, 1), top 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav__link:has(.nav__link-indicator):hover .nav__link-indicator,
+.nav__link--active:hover .nav__link-indicator {
+  height: 76%;
+  top: 12%;
+}
+
+html[data-theme='dark'] .nav__link:has(.nav__link-indicator),
+html[data-theme='dark'] .nav__link--active {
+  color: var(--hg-clay-bright);
+}
+
+/* ---- App header ---------------------------------------------------------- */
+
+.app-header {
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  transition: box-shadow 0.25s ease;
+}
+
+.app-header--show-bg {
+  box-shadow: 0 1px 0 var(--theme-elevation-150), 0 12px 32px -20px rgba(13, 43, 67, 0.35);
+}
+
+/* ---- Breadcrumbs --------------------------------------------------------- */
+
+.step-nav__home svg {
+  color: var(--hg-clay);
+}
+
+.step-nav a {
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: var(--hg-clay);
+  }
+}
+
+/* ===========================================================================
+   4 · CONTROLS — buttons, inputs, focus
+   ======================================================================== */
+
+/* ---- Primary button: brand gradient + travelling shine + lift ------------ */
+
+.btn--style-primary {
+  --color: #ffffff;
+  --bg-color: var(--hg-clay);
+  --hover-bg: var(--hg-clay-deep);
+  --hover-color: #ffffff;
+
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid transparent;
+  background-image: linear-gradient(135deg, #12a08f 0%, var(--hg-clay) 55%, var(--hg-clay-deep) 100%);
+  box-shadow: var(--hg-glow-teal);
+  transition:
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+
+  /* the shine */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -40% -60%;
+    background: linear-gradient(
+      105deg,
+      transparent 42%,
+      rgba(255, 255, 255, 0.34) 50%,
+      transparent 58%
+    );
+    transform: translateX(-70%) rotate(0.001deg);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &:not(.btn--disabled):hover {
+    transform: translateY(-1px);
+    filter: saturate(1.08) brightness(1.04);
+    box-shadow: 0 12px 30px -10px rgba(15, 131, 120, 0.7);
+  }
+
+  &:not(.btn--disabled):hover::after {
+    animation: hg-btn-shine 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &:not(.btn--disabled):active {
+    transform: translateY(0) scale(0.985);
+    box-shadow: 0 4px 14px -8px rgba(15, 131, 120, 0.8);
+  }
+}
+
+@keyframes hg-btn-shine {
+  from {
+    transform: translateX(-70%);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(70%);
+    opacity: 0;
+  }
+}
+
+.btn--style-secondary:not(.btn--disabled) {
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: var(--hg-clay);
+    color: var(--hg-clay);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px -14px rgba(15, 131, 120, 0.7);
+  }
+}
+
+/* Icon-only buttons breathe a little */
+.btn--icon-style-without-border:not(.btn--disabled):hover {
+  transform: scale(1.08);
+  color: var(--hg-clay);
+}
+
+/* ---- Document controls (sticky save bar) --------------------------------- */
+
+.doc-controls__content {
+  backdrop-filter: blur(14px) saturate(1.35);
+  -webkit-backdrop-filter: blur(14px) saturate(1.35);
+  border-top: 1px solid var(--theme-elevation-150);
+}
+
+/* Save / publish bar in the document controls */
+.doc-controls__controls .btn--style-primary {
+  box-shadow: 0 6px 18px -10px rgba(15, 131, 120, 0.9);
+}
+
+/* ---- Form inputs: teal focus halo ---------------------------------------- */
+
+input,
+textarea,
+select {
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background-color 0.18s ease;
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    border-color: var(--hg-clay-bright);
+    box-shadow: var(--hg-ring);
+  }
+}
+
+/* ---- Links, focus and selection ------------------------------------------ */
+
+a {
+  color: var(--hg-clay);
+}
+
+*:focus-visible {
+  outline-color: var(--hg-clay) !important;
+}
+
+::selection {
+  background: rgba(63, 192, 171, 0.3);
+}
+
+/* ===========================================================================
+   5 · SURFACES — tables, cards, pills, popups, toasts
+   ======================================================================== */
+
+/* ---- Tables -------------------------------------------------------------- */
+
+.table {
+  /* row hover: soft teal wash + a bright rail on the leading edge */
+  tbody tr {
+    transition: background-color 0.16s ease, box-shadow 0.16s ease;
+
+    &:hover {
+      background-color: rgba(63, 192, 171, 0.055);
+      box-shadow: inset 3px 0 0 0 var(--hg-clay-bright);
+    }
+  }
+
+  /* gentle cascade when a list first paints */
+  tbody tr {
+    animation: hg-row-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  tbody tr:nth-child(1) { animation-delay: 0.02s; }
+  tbody tr:nth-child(2) { animation-delay: 0.06s; }
+  tbody tr:nth-child(3) { animation-delay: 0.1s; }
+  tbody tr:nth-child(4) { animation-delay: 0.14s; }
+  tbody tr:nth-child(5) { animation-delay: 0.18s; }
+  tbody tr:nth-child(6) { animation-delay: 0.22s; }
+  tbody tr:nth-child(7) { animation-delay: 0.26s; }
+  tbody tr:nth-child(8) { animation-delay: 0.3s; }
+}
+
+@keyframes hg-row-in {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- Cards (dashboard widget tiles, upload tiles…) ----------------------- */
+
+.card {
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: rgba(15, 131, 120, 0.35);
+    box-shadow: 0 18px 40px -22px rgba(15, 131, 120, 0.45);
+  }
+}
+
+/* ---- Popups, tooltips, modals -------------------------------------------- */
+
+.popup,
+.tooltip-content {
+  border-radius: 12px;
+  box-shadow:
+    0 2px 6px rgba(13, 43, 67, 0.08),
+    0 24px 64px -24px rgba(13, 43, 67, 0.4);
+  animation: hg-pop-in 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+html[data-theme='dark'] .popup,
+html[data-theme='dark'] .tooltip-content {
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    0 24px 64px -24px rgba(0, 0, 0, 0.8);
+}
+
+@keyframes hg-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ---- Toasts -------------------------------------------------------------- */
+
+.toastify {
+  border-radius: 12px;
+  box-shadow:
+    0 4px 12px rgba(13, 43, 67, 0.12),
+    0 24px 56px -20px rgba(13, 43, 67, 0.45);
+  animation: hg-toast-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+html[data-theme='dark'] .toastify {
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.5),
+    0 24px 56px -20px rgba(0, 0, 0, 0.85);
+}
+
+@keyframes hg-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ---- Status pills -------------------------------------------------------- */
+
+.pill {
+  transition: transform 0.16s ease;
+}
+
+.pill--style-success {
+  background-color: var(--hg-clay);
+  color: #fff;
+  border-radius: 999px;
+}
+
+.pill--style-warning {
+  background-color: var(--hg-gold);
+  color: #1d1403;
+  border-radius: 999px;
+}
+
+/* ===========================================================================
+   6 · LOGIN — aurora sky + glass card
+   ======================================================================== */
+
+.login {
+  position: relative;
+  overflow: hidden;
+  background: var(--theme-bg);
+
+  /* aurora field */
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::before {
+    width: 620px;
+    height: 620px;
+    top: -220px;
+    left: -160px;
+    background: radial-gradient(closest-side, rgba(63, 192, 171, 0.4), transparent);
+    animation: hg-aurora-a 16s ease-in-out infinite alternate;
+  }
+
+  &::after {
+    width: 560px;
+    height: 560px;
+    bottom: -220px;
+    right: -140px;
+    background: radial-gradient(closest-side, rgba(29, 53, 87, 0.45), transparent);
+    animation: hg-aurora-b 19s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes hg-aurora-a {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(120px, 60px) scale(1.15);
+  }
+}
+
+@keyframes hg-aurora-b {
+  from {
+    transform: translate(0, 0) scale(1.1);
+  }
+  to {
+    transform: translate(-110px, -70px) scale(0.95);
+  }
+}
+
+.login > * {
+  position: relative;
+  z-index: 1;
+}
+
+.login__brand {
+  margin-bottom: 1.75rem;
+  animation: hg-login-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.login__form {
+  animation: hg-login-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+}
+
+@keyframes hg-login-rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===========================================================================
+   7 · TEXTURE — scrollbar
+   ======================================================================== */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(93, 127, 151, 0.35) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(93, 127, 151, 0.3);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background 0.2s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 131, 120, 0.55);
+  background-clip: content-box;
+}
+
+/* ===========================================================================
+   8 · BRAND LOCKUP (admin.components.graphics.Logo / Icon) ==================
+   ======================================================================== */
 
 .hg-admin-logo {
   display: inline-flex;
@@ -106,6 +684,22 @@
   color: var(--hg-clay);
 }
 
+/* the ridgeline draws itself on the login screen */
+.hg-admin-logo__mark path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: hg-draw 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.25s both;
+}
+
+@keyframes hg-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 .hg-admin-icon {
   width: 30px;
   height: 30px;
@@ -124,78 +718,38 @@ html[data-theme='dark'] {
   }
 }
 
-/* ---- Primary actions ----------------------------------------------------- */
+/* ===========================================================================
+   9 · MOTION SAFETY
+   ======================================================================== */
 
-.btn--style-primary {
-  --color: var(--hg-clay);
-
-  background-color: var(--hg-clay);
-  border-color: var(--hg-clay);
-  color: #fff;
-
-  &:not(.btn--disabled):hover,
-  &:not(.btn--disabled):focus-visible {
-    background-color: var(--hg-clay-deep);
-    border-color: var(--hg-clay-deep);
-    color: #fff;
+@media (prefers-reduced-motion: reduce) {
+  .btn--style-primary,
+  .btn--style-secondary,
+  .nav__link,
+  .card,
+  .table tbody tr,
+  .popup,
+  .tooltip-content,
+  .toastify {
+    transition: none !important;
+    animation: none !important;
   }
-}
 
-.btn--style-secondary:not(.btn--disabled):hover {
-  border-color: var(--hg-clay);
-  color: var(--hg-clay);
-}
+  .btn--style-primary:hover {
+    transform: none;
+  }
 
-/* Save / publish bar in the document controls */
-.doc-controls__controls .btn--style-primary {
-  box-shadow: 0 6px 18px -10px rgba(15, 131, 120, 0.9);
-}
+  .login::before,
+  .login::after,
+  .hg-admin-logo__mark path {
+    animation: none !important;
+  }
 
-/* ---- Links, focus and selection ------------------------------------------ */
+  .hg-admin-logo__mark path {
+    stroke-dashoffset: 0 !important;
+  }
 
-a {
-  color: var(--hg-clay);
-}
-
-*:focus-visible {
-  outline-color: var(--hg-clay) !important;
-}
-
-::selection {
-  background: rgba(63, 192, 171, 0.3);
-}
-
-/* ---- Navigation ---------------------------------------------------------- */
-
-.nav__link:hover,
-.nav__link--active {
-  color: var(--hg-clay);
-}
-
-.nav-group__toggle {
-  letter-spacing: 0.08em;
-}
-
-/* ---- Login screen -------------------------------------------------------- */
-
-.login {
-  background:
-    radial-gradient(90% 70% at 50% 0%, rgba(63, 192, 171, 0.14), transparent 70%),
-    var(--theme-bg);
-}
-
-.login__brand {
-  margin-bottom: 1.75rem;
-}
-
-/* ---- Status pills -------------------------------------------------------- */
-
-.pill--style-success {
-  background-color: var(--hg-clay);
-  color: #fff;
-}
-
-.pill--style-warning {
-  background-color: var(--hg-gold);
-  color: #1d1403;
+  * {
+    scroll-behavior: auto !important;
+  }
 }

@@ -28,6 +28,7 @@ import { MetaImageComponent as MetaImageComponent_a8a977ebc872c5d5ea7ee689724c08
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { AdminIcon as AdminIcon_534076e2c753ea5d539a54b05f456b1b } from '@/components/admin/Icon'
 import { AdminLogo as AdminLogo_a44df17d0fc3dcd873dae43dc3bf66bd } from '@/components/admin/Logo'
+import { CustomDashboard as CustomDashboard_c72149161cf6fec538030bf0afce1a49 } from '@/components/admin/CustomDashboard'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 import { VercelBlobClientUploadHandler as VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e } from '@payloadcms/storage-vercel-blob/client'
 
@@ -63,6 +64,7 @@ export const importMap = {
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@/components/admin/Icon#AdminIcon": AdminIcon_534076e2c753ea5d539a54b05f456b1b,
   "@/components/admin/Logo#AdminLogo": AdminLogo_a44df17d0fc3dcd873dae43dc3bf66bd,
+  "@/components/admin/CustomDashboard#CustomDashboard": CustomDashboard_c72149161cf6fec538030bf0afce1a49,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
   "@payloadcms/storage-vercel-blob/client#VercelBlobClientUploadHandler": VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e
 }
