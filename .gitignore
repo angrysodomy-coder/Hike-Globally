@@ -1,5 +1,6 @@
 node_modules/
 dist/
+.next/
 scripts/.smoke-bundle.cjs
 scripts/.smoke-dest-bundle.cjs
 .DS_Store
@@ -10,3 +11,14 @@ scripts/.smoke-dest-bundle.cjs
 scripts/.blog-content-bundle.cjs
 scripts/.smoke-trips-page-bundle.cjs
 scripts/.smoke-trip-single-bundle.cjs
+
+# Next.js
+.next/
+next-env.d.ts
+
+# Payload
+/media/
+src/payload-types.ts.bak
+
+# Local development Postgres (scripts/dev-postgres.mjs)
+.pgdata/

@@ -16,7 +16,7 @@ import { dirname, resolve } from 'node:path'
 const here = dirname(fileURLToPath(import.meta.url))
 const css = readFileSync(resolve(here, '../src/styles.css'), 'utf8')
 const hero = readFileSync(resolve(here, '../src/components/Hero.jsx'), 'utf8')
-const main = readFileSync(resolve(here, '../src/main.jsx'), 'utf8')
+const main = readFileSync(resolve(here, '../src/app/(frontend)/layout.tsx'), 'utf8')
 
 const stripComments = (text) => text.replace(/\/\*[\s\S]*?\*\//g, '')
 

@@ -1,0 +1,201 @@
+/* ---------------------------------------------------------------------------
+   Hike Globally — Payload admin theme
+   ---------------------------------------------------------------------------
+   Keeps the CMS visually part of the brand: ocean-teal accent (--clay),
+   deep-navy ink (--ink) for text and chrome, warm sun gold for "earned" marks.
+   No red is introduced anywhere; Payload's own error red is left alone so
+   destructive states stay legible.
+--------------------------------------------------------------------------- */
+
+:root {
+  --hg-clay: #0f8378;
+  --hg-clay-deep: #0a5f57;
+  --hg-clay-bright: #3fc0ab;
+  --hg-ink: #1d3557;
+  --hg-ink-soft: #457b9d;
+  --hg-sand: #a8dadc;
+  --hg-ivory: #f1faee;
+  --hg-gold: #c9962d;
+
+  /* Payload derives most of its chrome from this ramp. Tinting it towards the
+     brand navy makes every panel, border and muted label feel on-brand. */
+  --color-base-0: #ffffff;
+  --color-base-50: #f6f8f8;
+  --color-base-100: #eaeff1;
+  --color-base-150: #dde5ea;
+  --color-base-200: #cfdae1;
+  --color-base-250: #c0ced8;
+  --color-base-300: #aec0cd;
+  --color-base-350: #9bb0c0;
+  --color-base-400: #86a0b3;
+  --color-base-450: #7190a5;
+  --color-base-500: #5d7f97;
+  --color-base-550: #4f6f87;
+  --color-base-600: #425f76;
+  --color-base-650: #375065;
+  --color-base-700: #2c4155;
+  --color-base-750: #243547;
+  --color-base-800: #1d3557; /* --ink */
+  --color-base-850: #182a44;
+  --color-base-900: #142334;
+  --color-base-950: #0e1a27;
+  --color-base-1000: #080f17;
+
+  /* Accent / success ramp → ocean teal */
+  --color-success-50: #eaf6f4;
+  --color-success-100: #d3ece8;
+  --color-success-150: #bee3dd;
+  --color-success-200: #a9dad2;
+  --color-success-250: #94d1c7;
+  --color-success-300: #7fc8bc;
+  --color-success-350: #66c2b4;
+  --color-success-400: #3fc0ab;
+  --color-success-450: #27ad99;
+  --color-success-500: #159b8d;
+  --color-success-550: #128f81;
+  --color-success-600: #0f8378;
+  --color-success-650: #0d776d;
+  --color-success-700: #0c6c63;
+  --color-success-750: #0b655d;
+  --color-success-800: #0a5f57;
+  --color-success-850: #09554e;
+  --color-success-900: #084b45;
+  --color-success-950: #06332f;
+
+  /* Warnings → the brand's warm amber rather than orange */
+  --color-warning-500: #c9962d;
+  --color-warning-600: #a87c22;
+  --color-warning-700: #9c6414;
+}
+
+/* ---- Brand lockup (admin.components.graphics.Logo / Icon) ---------------- */
+
+.hg-admin-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--hg-clay);
+}
+
+.hg-admin-logo__mark {
+  width: 46px;
+  height: 46px;
+  flex: none;
+}
+
+.hg-admin-logo__type {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  text-align: left;
+}
+
+.hg-admin-logo__hike {
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--hg-ink);
+}
+
+.hg-admin-logo__globally {
+  margin-top: 4px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--hg-clay);
+}
+
+.hg-admin-icon {
+  width: 30px;
+  height: 30px;
+  color: var(--hg-clay);
+}
+
+html[data-theme='dark'] {
+  .hg-admin-logo__hike {
+    color: var(--hg-ivory);
+  }
+
+  .hg-admin-logo,
+  .hg-admin-logo__globally,
+  .hg-admin-icon {
+    color: var(--hg-clay-bright);
+  }
+}
+
+/* ---- Primary actions ----------------------------------------------------- */
+
+.btn--style-primary {
+  --color: var(--hg-clay);
+
+  background-color: var(--hg-clay);
+  border-color: var(--hg-clay);
+  color: #fff;
+
+  &:not(.btn--disabled):hover,
+  &:not(.btn--disabled):focus-visible {
+    background-color: var(--hg-clay-deep);
+    border-color: var(--hg-clay-deep);
+    color: #fff;
+  }
+}
+
+.btn--style-secondary:not(.btn--disabled):hover {
+  border-color: var(--hg-clay);
+  color: var(--hg-clay);
+}
+
+/* Save / publish bar in the document controls */
+.doc-controls__controls .btn--style-primary {
+  box-shadow: 0 6px 18px -10px rgba(15, 131, 120, 0.9);
+}
+
+/* ---- Links, focus and selection ------------------------------------------ */
+
+a {
+  color: var(--hg-clay);
+}
+
+*:focus-visible {
+  outline-color: var(--hg-clay) !important;
+}
+
+::selection {
+  background: rgba(63, 192, 171, 0.3);
+}
+
+/* ---- Navigation ---------------------------------------------------------- */
+
+.nav__link:hover,
+.nav__link--active {
+  color: var(--hg-clay);
+}
+
+.nav-group__toggle {
+  letter-spacing: 0.08em;
+}
+
+/* ---- Login screen -------------------------------------------------------- */
+
+.login {
+  background:
+    radial-gradient(90% 70% at 50% 0%, rgba(63, 192, 171, 0.14), transparent 70%),
+    var(--theme-bg);
+}
+
+.login__brand {
+  margin-bottom: 1.75rem;
+}
+
+/* ---- Status pills -------------------------------------------------------- */
+
+.pill--style-success {
+  background-color: var(--hg-clay);
+  color: #fff;
+}
+
+.pill--style-warning {
+  background-color: var(--hg-gold);
+  color: #1d1403;
+}

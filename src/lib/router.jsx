@@ -20,7 +20,11 @@ import {
  * rest of the app anchor-based (`#trips`, `#journal`) exactly as before, while
  * giving full pages their own clean URLs. */
 
-const RouterContext = createContext(null)
+/* Exported so the Next.js bridge (`src/lib/next-router.jsx`) can feed the same
+   context from `next/navigation`. Everything downstream — `useRouter`, `Link`,
+   `usePageMeta` — keeps working untouched, which is what lets the existing
+   page/section components move into the App Router without edits. */
+export const RouterContext = createContext(null)
 
 export const ROUTES = ['/', '/destinations', '/trips']
 

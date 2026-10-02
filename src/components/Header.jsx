@@ -4,16 +4,22 @@ import { navigation } from '../data/content'
 import Logo from './Logo'
 import { Link, useRouter } from '../lib/router'
 
-export default function Header({ onBook }) {
+export default function Header({ onBook, navItems }) {
   const { path } = useRouter()
+  /* Nav comes from the Payload `header` global when an editor has filled it
+     in, and falls back to the hand-authored list in src/data/content.js. */
+  const items = navItems && navItems.length > 0 ? navItems : navigation
   const isBlogPage = path.startsWith('/blog/')
-  const [scrolled, setScrolled] = useState(() => window.scrollY > 40)
+  /* Starts `false` so the server-rendered markup matches the first client
+     paint; the effect below syncs it on mount (and for restored scroll). */
+  const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef(null)
   const toggleRef = useRef(null)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
+    onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
@@ -73,7 +79,7 @@ export default function Header({ onBook }) {
         </Link>
 
         <nav className="desktop-nav" aria-label="Primary navigation">
-          {navigation.map((item) => (
+          {items.map((item) => (
             <Link
               key={item.label}
               href={item.href}
@@ -112,7 +118,7 @@ export default function Header({ onBook }) {
         <div className="mobile-menu__content">
           <span className="mobile-menu__eyebrow">Explore Hike Globally</span>
           <nav aria-label="Mobile navigation">
-            {navigation.map((item, index) => (
+            {items.map((item, index) => (
               <Link
                 key={item.label}
                 href={item.href}

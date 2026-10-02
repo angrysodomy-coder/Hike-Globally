@@ -15,8 +15,8 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, extname } from 'node:path'
 
-const ROOTS = ['src', 'index.html']
-const EXTENSIONS = new Set(['.css', '.js', '.jsx', '.html'])
+const ROOTS = ['src']
+const EXTENSIONS = new Set(['.css', '.scss', '.js', '.jsx', '.ts', '.tsx', '.html'])
 
 const HUE_WINDOW = 28 /* degrees either side of pure red */
 const MIN_SATURATION = 0.12
@@ -70,6 +70,9 @@ const isRed = (r, g, b) => {
 const HEX = /#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b/g
 const RGB = /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/g
 const NAMED = /\b(red|crimson|firebrick|indianred|darkred|tomato|orangered|maroon|salmon|lightcoral)\b\s*(?=[;,)}]|$)/gi
+/* Tailwind utilities on the CMS surfaces resolve to colours that never appear as
+   literals in `src/`, so the red/rose/pink scales are banned by name too. */
+const TAILWIND_RED = /\b(?:bg|text|border|ring|from|via|to|outline|decoration|fill|stroke|shadow|accent|caret|divide|placeholder)-(?:red|rose|pink)-\d{2,3}\b/g
 
 const offenders = []
 
@@ -90,6 +93,9 @@ for (const root of ROOTS) {
         if (isRed(r, g, b)) offenders.push(`${at} ${match[0]})`)
       }
       for (const match of line.matchAll(NAMED)) {
+        offenders.push(`${at} ${match[0]}`)
+      }
+      for (const match of line.matchAll(TAILWIND_RED)) {
         offenders.push(`${at} ${match[0]}`)
       }
     })
