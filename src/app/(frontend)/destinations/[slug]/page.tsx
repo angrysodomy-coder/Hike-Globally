@@ -9,6 +9,7 @@ import {
 import { redirectOrNotFound } from '@/lib/redirects'
 import { PayloadImage } from '@/components/PayloadImage'
 import { TripCard } from '@/components/trips/TripCard'
+import { safeStaticParams } from '@/lib/safeStaticParams'
 import type { Media } from '@/payload-types'
 
 type Args = { params: Promise<{ slug: string }> }
@@ -17,14 +18,16 @@ export const revalidate = 86400
 export const dynamicParams = true
 
 export async function generateStaticParams() {
-  const payload = await getPayloadClient()
-  const destinations = await payload.find({
-    collection: 'destinations',
-    select: { slug: true },
-    limit: 1000,
-    pagination: false,
+  return safeStaticParams('destinations/[slug]', async () => {
+    const payload = await getPayloadClient()
+    const destinations = await payload.find({
+      collection: 'destinations',
+      select: { slug: true },
+      limit: 1000,
+      pagination: false,
+    })
+    return destinations.docs.map(({ slug }) => ({ slug }))
   })
-  return destinations.docs.map(({ slug }) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {

@@ -98,6 +98,33 @@ npx payload migrate:create  # after every schema change — commit src/migration
 Dev auto-syncs the schema; **production only ever runs committed migrations**
 (`npm run build:prod` = `payload migrate && next build`).
 
+## Deploying to Vercel
+
+This app needs a real Postgres database at **build time**, not just at runtime —
+several pages (`/`, `/blog`, `/trips`, `/destinations`, `/[slug]`, `sitemap.xml`,
+the header/footer globals) query Payload while Next.js prerenders them. Set
+these in the Vercel project's **Settings → Environment Variables** before
+deploying:
+
+| Variable | Required | Notes |
+| --- | --- | --- |
+| `PAYLOAD_SECRET` | Yes | Any long random string, e.g. `openssl rand -hex 32`. Build fails immediately with "missing secret key" if unset. |
+| `POSTGRES_URL` | Yes | A real, reachable Postgres connection string (Neon, Vercel Postgres, etc.) — `?sslmode=require` for managed providers. The placeholder in `.env.example` will not work. |
+| `NEXT_PUBLIC_SERVER_URL` | Yes | The deployed URL with no trailing slash, e.g. `https://your-site.vercel.app`. |
+| `BLOB_READ_WRITE_TOKEN` | Only if using the Blob storage plugin | From the Vercel Blob store. |
+| `PREVIEW_SECRET` | Recommended | Shared secret for `/admin` live preview. |
+
+Set the project's **Build Command** to `npm run build:prod` (not the default
+`npm run build`) so committed migrations run before `next build` — otherwise
+the first deploy will fail with "relation does not exist" once the schema is
+queried.
+
+Build-time data fetches for `generateStaticParams()` and `sitemap.ts` are
+wrapped so a transient database hiccup degrades to on-demand rendering
+instead of failing the whole build (see `src/lib/safeStaticParams.ts`), but
+the app still needs a reachable, migrated database to serve real content —
+there is no way around configuring the two required variables above.
+
 ## Palette
 
 The accent is an ocean teal — there is no red anywhere in the interface.
