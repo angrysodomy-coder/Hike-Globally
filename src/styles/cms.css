@@ -1,0 +1,263 @@
+/* ---------------------------------------------------------------------------
+   CMS surfaces (Payload-driven pages) — Tailwind utilities, Hike Globally brand
+   ---------------------------------------------------------------------------
+   Tailwind's Preflight is deliberately left out: `src/styles.css` already owns
+   the global reset for the hand-authored pages and Preflight would undo it.
+   Only the handful of resets Tailwind *utilities* depend on are re-added in the
+   `base` layer below.
+
+   The colour scales are remapped onto the brand palette documented in
+   README.md, so every stock utility the Payload starter ships with
+   (`text-emerald-700`, `bg-gray-50`, `border-gray-200`…) renders in brand
+   colours without touching the component markup.  There is no red anywhere —
+   `scripts/check-no-red.mjs` guards it.
+--------------------------------------------------------------------------- */
+
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@theme {
+  /* --- Typography ------------------------------------------------------- */
+  --font-sans: 'DM Sans', Arial, sans-serif;
+  --font-serif: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+  --font-display: 'Cal Sans', 'DM Sans', Arial, sans-serif;
+
+  /* --- Brand accent: ocean teal (--clay) -------------------------------- */
+  --color-brand-50: #eaf6f4;
+  --color-brand-100: #d3ece8;
+  --color-brand-200: #a9dad2;
+  --color-brand-300: #7fc8bc;
+  --color-brand-400: #3fc0ab; /* --clay-bright */
+  --color-brand-500: #159b8d;
+  --color-brand-600: #0f8378; /* --clay */
+  --color-brand-700: #0c6c63;
+  --color-brand-800: #0a5f57; /* --clay-deep */
+  --color-brand-900: #084b45;
+  --color-brand-950: #06332f;
+
+  /* The starter's components reach for `emerald-*`; alias it to the brand. */
+  --color-emerald-50: #eaf6f4;
+  --color-emerald-100: #d3ece8;
+  --color-emerald-200: #a9dad2;
+  --color-emerald-300: #7fc8bc;
+  --color-emerald-400: #3fc0ab;
+  --color-emerald-500: #159b8d;
+  --color-emerald-600: #0f8378;
+  --color-emerald-700: #0c6c63;
+  --color-emerald-800: #0a5f57;
+  --color-emerald-900: #084b45;
+  --color-emerald-950: #06332f;
+
+  /* Neutrals are built from the brand ink (#1d3557) rather than pure grey. */
+  --color-gray-50: #f6f8f5; /* --card-surface */
+  --color-gray-100: #eef2f1;
+  --color-gray-200: #dde5ea;
+  --color-gray-300: #c3ced7;
+  --color-gray-400: #94a6b5;
+  --color-gray-500: #6b8398;
+  --color-gray-600: #4f6880;
+  --color-gray-700: #3a5270;
+  --color-gray-800: #27405f;
+  --color-gray-900: #1d3557; /* --ink */
+  --color-gray-950: #142642;
+
+  --color-slate-50: #f6f8f5;
+  --color-slate-100: #eef2f1;
+  --color-slate-200: #dde5ea;
+  --color-slate-300: #c3ced7;
+  --color-slate-400: #94a6b5;
+  --color-slate-500: #6b8398;
+  --color-slate-600: #4f6880;
+  --color-slate-700: #3a5270;
+  --color-slate-800: #27405f;
+  --color-slate-900: #1d3557;
+  --color-slate-950: #142642;
+
+  /* Earned marks (review stars, highlights) use the warm sun gold. */
+  --color-amber-50: #fbf4e4;
+  --color-amber-100: #f6e7c4;
+  --color-amber-200: #ecd092;
+  --color-amber-300: #dfb75f;
+  --color-amber-400: #d4a540;
+  --color-amber-500: #c9962d; /* --gold */
+  --color-amber-600: #a87c22;
+  --color-amber-700: #9c6414; /* --tsp-amber */
+  --color-amber-800: #7a4e10;
+  --color-amber-900: #5d3b0c;
+
+  --color-ivory: #f1faee;
+  --color-sand: #a8dadc;
+  --color-ink: #1d3557;
+  --color-ink-soft: #457b9d;
+  --color-gold: #c9962d;
+  --color-included: #1f7a4d; /* --tsp-green */
+  --color-excluded: #9c6414; /* --tsp-amber */
+}
+
+@layer base {
+  /* The slice of Preflight the utilities genuinely need: `border-*` utilities
+     only set a width, so a default style/width has to exist. Scoped to the CMS
+     shell so the hand-authored pages are untouched. */
+  .cms-surface *,
+  .cms-surface *::before,
+  .cms-surface *::after {
+    border-width: 0;
+    border-style: solid;
+    border-color: var(--color-gray-200);
+  }
+
+  .cms-surface {
+    color: var(--ink);
+    font-family: var(--sans);
+  }
+
+  .cms-surface :where(h1, h2, h3, h4) {
+    font-family: var(--display);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .cms-surface :where(h1) {
+    letter-spacing: -0.02em;
+  }
+
+  .cms-surface :where(ul, ol) {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cms-surface :where(p) {
+    margin: 0;
+  }
+
+  .cms-surface :where(input, select, textarea, button) {
+    font: inherit;
+    color: inherit;
+  }
+
+  .cms-surface :where(input, select, textarea) {
+    background-color: var(--white);
+  }
+
+  .cms-surface :where(svg) {
+    display: block;
+  }
+
+  .cms-surface :where(a) {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .cms-surface :where(:focus-visible) {
+    outline: 2px solid var(--clay);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  /* CMS pages that open with type rather than a full-bleed hero need to clear
+     the fixed site header. */
+  .cms-page {
+    padding-top: calc(var(--header-height) + clamp(32px, 5vw, 72px));
+    padding-bottom: clamp(56px, 7vw, 96px);
+  }
+
+  /* Rich text coming out of Lexical — styled once, reused by posts, pages and
+     trip overviews. */
+  .cms-prose {
+    color: var(--ink);
+    font-size: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+    line-height: 1.75;
+  }
+
+  .cms-prose > * + * {
+    margin-top: 1.1em;
+  }
+
+  .cms-prose h2 {
+    font-family: var(--display);
+    font-size: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+    line-height: 1.2;
+    margin-top: 1.8em;
+  }
+
+  .cms-prose h3 {
+    font-family: var(--display);
+    font-size: clamp(1.2rem, 1.1rem + 0.5vw, 1.45rem);
+    line-height: 1.3;
+    margin-top: 1.5em;
+  }
+
+  .cms-prose a {
+    color: var(--clay);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  .cms-prose a:hover {
+    color: var(--clay-deep);
+  }
+
+  .cms-prose ul,
+  .cms-prose ol {
+    padding-left: 1.3em;
+    list-style: disc;
+  }
+
+  .cms-prose ol {
+    list-style: decimal;
+  }
+
+  .cms-prose li + li {
+    margin-top: 0.4em;
+  }
+
+  .cms-prose blockquote {
+    margin: 1.6em 0;
+    padding: 0.2em 0 0.2em 1.2em;
+    border-left: 2px solid var(--clay);
+    font-family: var(--serif);
+    font-size: 1.2em;
+    font-style: italic;
+    color: var(--ink);
+  }
+
+  .cms-prose strong {
+    font-weight: 600;
+  }
+
+  .cms-prose--sm {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+
+  .cms-prose--sm > * + * {
+    margin-top: 0.8em;
+  }
+
+  /* Small-caps eyebrow used above CMS section headings. */
+  .cms-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--clay);
+  }
+
+  .cms-eyebrow::before {
+    content: '';
+    width: 26px;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+}

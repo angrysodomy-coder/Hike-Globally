@@ -7,7 +7,7 @@ A premium, editorial travel-booking homepage for locally led Himalayan journeys.
 - Immersive, art-directed desktop and mobile hero imagery
 - A dedicated `/destinations` landing page with a pinned horizontal region showcase,
   animated stats, region explorer, sticky craft story, season guide, voices, and FAQ
-  (framer-motion + GSAP), routed with a tiny History-API router
+  (framer-motion + GSAP)
 - A dedicated `/trips` collection page with a cinematic parallax hero, a sticky
   signature-journey itinerary, live search + region/effort/season filtering with
   animated re-layout, an animated season matrix, inclusions, voices, FAQ and a
@@ -26,15 +26,77 @@ A premium, editorial travel-booking homepage for locally led Himalayan journeys.
 - Responsive fullscreen navigation and mobile booking CTA
 - Newsletter interaction, semantic landmarks, visible focus states and reduced-motion support
 - Local responsive WebP assets and self-hosted font packages
+- **Payload 3 CMS embedded in the same Next.js app**: branded `/admin`, trips with
+  itineraries/pricing/departures, blog, block-built pages, destinations, testimonials,
+  header/footer globals, booking inquiries with a status workflow, draft + live
+  preview, editor-managed redirects, on-demand revalidation, SEO fields, JSON-LD and
+  a generated sitemap
+
+## Architecture
+
+The site runs on **Next.js 15 (App Router)** with **Payload 3 embedded in the same
+app** — one deployment, one process, no separate CMS service.
+
+```
+src/app/(frontend)/   the public site  — every URL you already had, unchanged
+src/app/(payload)/    the admin panel at /admin + REST & GraphQL under /api
+```
+
+Payload's hooks run in the same process as Next, so publishing a document calls
+`revalidatePath`/`revalidateTag` directly — the frontend updates in about a second
+with no webhooks and no rebuild.
+
+### Hand-built pages vs. CMS pages
+
+The art-directed pages are untouched; the CMS sits alongside them and takes over
+a URL only once something is published there.
+
+| Route | Rendered by |
+| --- | --- |
+| `/` | hand-built `HomePage` (swap in `(frontend)/home-page.example.tsx` for the CMS `home` page) |
+| `/destinations` | hand-built page, plus a CMS region shelf once destinations exist |
+| `/destinations/<slug>` | Payload destination landing page |
+| `/trips` | hand-built page, plus a CMS strip of newly published journeys |
+| `/trips/<slug>` | **Payload trip if published**, otherwise the original hand-built page |
+| `/blog` | CMS posts first, then the journal archive from `src/data/content.js` |
+| `/blog/<slug>` | **Payload post if published**, otherwise the original article page |
+| `/contact` | Payload booking-inquiry form (structured leads → `/admin` → Bookings) |
+| `/<slug>` | CMS pages built from layout blocks (`/about` is seeded) |
+
+The site header's navigation is driven by the Payload `header` global and falls back
+to `src/data/content.js` if the CMS is empty or the database is unreachable.
 
 ## Development
 
 ```bash
 npm install
-npm run dev
+npm run db:dev     # terminal 1 — local Postgres (binaries come from npm, nothing to install)
+npm run dev        # terminal 2 — http://localhost:3000
 ```
 
-The Vite development server runs on `http://localhost:5173` by default.
+`.env.local` is already pointed at the dev database. Seed it once:
+
+```bash
+npm run seed           # 3 destinations + 3 trips (images from public/seed/)
+npm run seed:content   # categories, 2 posts, home + about pages, testimonials, globals
+```
+
+Then sign in at `http://localhost:3000/admin` with the credentials in `.env.local`
+(`SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD`).
+
+Any Postgres works — `npm run db:dev` is a convenience for sandboxes with no system
+Postgres. Point `POSTGRES_URL` at Neon/Vercel Postgres and nothing else changes.
+
+### Payload commands
+
+```bash
+npm run generate:types      # src/payload-types.ts — commit it
+npm run generate:importmap  # src/app/(payload)/admin/importMap.js — commit it
+npx payload migrate:create  # after every schema change — commit src/migrations/
+```
+
+Dev auto-syncs the schema; **production only ever runs committed migrations**
+(`npm run build:prod` = `payload migrate && next build`).
 
 ## Palette
 
@@ -52,21 +114,45 @@ The accent is an ocean teal — there is no red anywhere in the interface.
 `scripts/check-no-red.mjs` (part of `npm test`) scans every colour literal in
 `src/` and fails the build if a red one ever comes back.
 
+The palette reaches the CMS surfaces too:
+
+- **CMS pages** — `src/styles/cms.css` loads Tailwind *without* Preflight (the
+  hand-authored stylesheets own the global reset) and remaps the colour scales onto
+  the brand, so stock utilities like `text-emerald-700` or `bg-gray-50` render as
+  ocean teal and brand navy. `.cms-prose` styles Lexical rich text.
+- **Admin panel** — `src/app/(payload)/custom.scss` retints Payload's base and
+  success ramps, primary buttons, links, focus rings and status pills, and
+  `src/components/admin/{Logo,Icon}.tsx` put the ridgeline mark on the login screen
+  and in the nav. The favicon is `public/favicon.svg`.
+
 ## Validation
 
 ```bash
 npm run lint
+npm run typecheck
 npm run build
 npm test
 ```
 
 ## Structure
 
+- `src/payload.config.ts` — collections, globals, plugins, admin branding
+- `src/collections/` — Users, Media, Categories, Destinations, Posts, Trips, Pages,
+  Testimonials, Inquiries
+- `src/globals/` — Header and Footer singletons
+- `src/blocks/` + `src/components/blocks/` — the 7-block page builder
+- `src/lib/queries.ts` — cached, draft-aware data access (Payload Local API)
+- `src/hooks/revalidate.ts` — on-demand revalidation on publish
+- `src/scripts/seed*.ts` — seed data via the Local API
+- `src/styles/cms.css` — brand-mapped Tailwind for the CMS surfaces
+- `src/lib/next-router.jsx` — bridges the original SPA router API onto Next's router
+- `src/components/SiteShell.jsx` — persistent header/footer/booking drawer
+- `docs/payload-integration-plan.md` — the full integration reference
 - `src/data/content.js` — CMS-ready content structures
 - `src/components/` — reusable homepage and interaction components
 - `src/components/destinations/` — sections for the `/destinations` landing page
-- `src/pages/` — route-level pages (`HomePage`, `DestinationsPage`, `TripsPage`)
-- `src/lib/router.jsx` — tiny History-API router, `Link`, and page-meta hook
+- `src/views/` — page bodies (`HomePage`, `DestinationsPage`, `TripsPage`, …), mounted by thin route files in `src/app/(frontend)/`
+- `src/lib/router.jsx` — the original `Link`/`useRouter`/`usePageMeta` API (now fed by Next)
 - `src/styles.css` — visual system, motion and responsive layouts
 - `src/styles/destinations.css` — isolated `dp-` design system for the destinations page
 - `src/styles/trips.css` — isolated `tp-` design system for the trips page
