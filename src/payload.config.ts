@@ -22,13 +22,22 @@ import { Header } from '@/globals/Header'
 import { Footer } from '@/globals/Footer'
 import { migrations } from '@/migrations/index'
 import { generatePreviewPath } from '@/lib/generatePreviewPath'
+import { getServerURL, getTrustedOrigins } from '@/lib/serverURL'
 import { revalidateRedirects, revalidateRedirectsDelete } from '@/hooks/revalidateRedirects'
+import { explainRejectedOrigin } from '@/hooks/explainRejectedOrigin'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
-  serverURL: process.env.NEXT_PUBLIC_SERVER_URL,
+  serverURL: getServerURL(),
+  // Origins allowed to send the auth cookie. Payload auto-adds `serverURL` to
+  // this list; when the browser's real origin is missing from it the cookie is
+  // dropped, every admin write runs anonymously and Publish/Save fails with
+  // "You are not allowed to perform this action." Keep both lists in sync and
+  // extend them with PAYLOAD_CSRF_ORIGINS — see src/lib/serverURL.ts.
+  csrf: getTrustedOrigins(),
+  cors: getTrustedOrigins(),
   secret: process.env.PAYLOAD_SECRET || 'build-fallback-secret-for-static-prerender',
   admin: {
     user: Users.slug,
@@ -83,6 +92,9 @@ export default buildConfig({
     Inquiries,
   ],
   globals: [Header, Footer],
+  // Logs an actionable reason whenever a 403 is really a rejected-origin
+  // problem rather than a genuine permissions problem.
+  hooks: { afterError: [explainRejectedOrigin] },
   // Email: enabled only when SMTP env vars are set; without them Payload logs
   // emails to the console (fine for local dev). Used by the Inquiries
   // notification hook and Payload's own password-reset emails.
