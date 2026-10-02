@@ -20,6 +20,7 @@ import { Testimonials } from '@/collections/Testimonials'
 import { Inquiries } from '@/collections/Inquiries'
 import { Header } from '@/globals/Header'
 import { Footer } from '@/globals/Footer'
+import { migrations } from '@/migrations/index'
 import { generatePreviewPath } from '@/lib/generatePreviewPath'
 import { revalidateRedirects, revalidateRedirectsDelete } from '@/hooks/revalidateRedirects'
 
@@ -28,7 +29,7 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL,
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: process.env.PAYLOAD_SECRET || 'build-fallback-secret-for-static-prerender',
   admin: {
     user: Users.slug,
     importMap: { baseDir: path.resolve(dirname) },
@@ -103,6 +104,7 @@ export default buildConfig({
   // production AND any local or self-hosted Postgres in development.
   db: postgresAdapter({
     pool: { connectionString: process.env.POSTGRES_URL || '' },
+    prodMigrations: migrations,
   }),
   plugins: [
     vercelBlobStorage({

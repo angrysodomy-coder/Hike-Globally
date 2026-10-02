@@ -59,17 +59,17 @@ export default async function ContactPage({ searchParams }: Args) {
         <aside className="h-fit rounded-2xl border border-gray-200 bg-gray-50 p-6">
           <h2 className="font-bold text-gray-900">Prefer to talk?</h2>
           <ul className="mt-4 space-y-3 text-sm text-gray-700">
-            {footer.contact?.phone && (
+            {footer?.contact?.phone && (
               <li>
                 <span className="font-medium">Phone:</span> {footer.contact.phone}
               </li>
             )}
-            {footer.contact?.whatsapp && (
+            {footer?.contact?.whatsapp && (
               <li>
                 <span className="font-medium">WhatsApp:</span> {footer.contact.whatsapp}
               </li>
             )}
-            {footer.contact?.email && (
+            {footer?.contact?.email && (
               <li>
                 <span className="font-medium">Email:</span>{' '}
                 <a href={`mailto:${footer.contact.email}`} className="text-emerald-700 underline">
@@ -77,7 +77,7 @@ export default async function ContactPage({ searchParams }: Args) {
                 </a>
               </li>
             )}
-            {footer.contact?.address && (
+            {footer?.contact?.address && (
               <li className="whitespace-pre-line">
                 <span className="font-medium">Office:</span> {footer.contact.address}
               </li>

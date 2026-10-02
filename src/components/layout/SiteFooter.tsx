@@ -12,10 +12,10 @@ export const SiteFooter: React.FC = async () => {
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-4">
         <div>
           <Logo light />
-          {footer.aboutText && <p className="mt-3 text-sm text-gray-400">{footer.aboutText}</p>}
+          {footer?.aboutText && <p className="mt-3 text-sm text-gray-400">{footer.aboutText}</p>}
         </div>
 
-        {(footer.columns ?? []).map((col) => (
+        {(footer?.columns ?? []).map((col) => (
           <div key={col.id}>
             <p className="font-semibold text-white">{col.heading}</p>
             <ul className="mt-3 space-y-2 text-sm">
@@ -33,15 +33,15 @@ export const SiteFooter: React.FC = async () => {
         <div>
           <p className="font-semibold text-white">Contact</p>
           <ul className="mt-3 space-y-2 text-sm text-gray-400">
-            {footer.contact?.phone && <li>{footer.contact.phone}</li>}
-            {footer.contact?.email && (
+            {footer?.contact?.phone && <li>{footer.contact.phone}</li>}
+            {footer?.contact?.email && (
               <li>
                 <a href={`mailto:${footer.contact.email}`} className="hover:text-emerald-400">
                   {footer.contact.email}
                 </a>
               </li>
             )}
-            {footer.contact?.address && <li className="whitespace-pre-line">{footer.contact.address}</li>}
+            {footer?.contact?.address && <li className="whitespace-pre-line">{footer.contact.address}</li>}
           </ul>
         </div>
       </div>
