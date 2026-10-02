@@ -9,6 +9,7 @@ import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { TripDetail } from '@/components/trips/TripDetail'
 import TripDetailRoute from '@/views/routes/TripDetailRoute'
 import { getTripBySlug as getLegacyTrip } from '@/data/tripDetails'
+import { safeStaticParams } from '@/lib/safeStaticParams'
 
 type Args = { params: Promise<{ slug: string }> }
 
@@ -17,15 +18,17 @@ export const revalidate = 86400
 export const dynamicParams = true
 
 export async function generateStaticParams() {
-  const payload = await getPayloadClient()
-  const trips = await payload.find({
-    collection: 'trips',
-    where: { _status: { equals: 'published' } },
-    select: { slug: true },
-    limit: 1000,
-    pagination: false,
+  return safeStaticParams('trips/[slug]', async () => {
+    const payload = await getPayloadClient()
+    const trips = await payload.find({
+      collection: 'trips',
+      where: { _status: { equals: 'published' } },
+      select: { slug: true },
+      limit: 1000,
+      pagination: false,
+    })
+    return trips.docs.map(({ slug }) => ({ slug }))
   })
-  return trips.docs.map(({ slug }) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {

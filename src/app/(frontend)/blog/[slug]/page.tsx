@@ -12,6 +12,7 @@ import { PayloadImage } from '@/components/PayloadImage'
 import { TripCard } from '@/components/trips/TripCard'
 import BlogArticleRoute from '@/views/routes/BlogArticleRoute'
 import { articles } from '@/data/content'
+import { safeStaticParams } from '@/lib/safeStaticParams'
 import type { Category, Trip } from '@/payload-types'
 
 type Args = { params: Promise<{ slug: string }> }
@@ -25,15 +26,17 @@ const legacyArticle = (slug: string) =>
   )
 
 export async function generateStaticParams() {
-  const payload = await getPayloadClient()
-  const posts = await payload.find({
-    collection: 'posts',
-    where: { _status: { equals: 'published' } },
-    select: { slug: true },
-    limit: 1000,
-    pagination: false,
+  return safeStaticParams('posts/[slug]', async () => {
+    const payload = await getPayloadClient()
+    const posts = await payload.find({
+      collection: 'posts',
+      where: { _status: { equals: 'published' } },
+      select: { slug: true },
+      limit: 1000,
+      pagination: false,
+    })
+    return posts.docs.map(({ slug }) => ({ slug }))
   })
-  return posts.docs.map(({ slug }) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
