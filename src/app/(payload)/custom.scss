@@ -1,15 +1,15 @@
 /* ---------------------------------------------------------------------------
    Hike Globally — Payload admin theme · "Summit" edition
    ---------------------------------------------------------------------------
-   Keeps the CMS visually part of the brand: ocean-teal accent (--clay),
-   deep-navy ink (--ink), warm sun gold for "earned" marks. No red is
-   introduced anywhere; Payload's own error red is left alone so destructive
-   states stay legible.
+   Keeps the CMS visually part of the brand: the #05645B emerald family
+   (--hg-em-* ramp) as the accent, deep-navy ink (--ink), warm sun gold for
+   "earned" marks. No red is introduced anywhere; Payload's own error red is
+   left alone so destructive states stay legible.
 
    Layers, top to bottom:
      1. Tokens        — colour ramps Payload derives its chrome from
      2. Typography    — DM Sans for UI, Cal Sans for display headings
-     3. Chrome        — app frame, sidebar, header, breadcrumbs
+     3. Chrome        — app frame, sidebar (“Emerald Canopy”), header, crumbs
      4. Controls      — buttons (gradient + shine), inputs, focus rings
      5. Surfaces      — tables, cards, pills, popups, toasts
      6. Login         — animated aurora + glass card
@@ -26,15 +26,34 @@
    ======================================================================== */
 
 :root {
-  --hg-clay: #0f8378;
-  --hg-clay-deep: #0a5f57;
-  --hg-clay-bright: #3fc0ab;
+  /* ---- The #05645B emerald family ----------------------------------------
+     The brand green is the anchor (700); everything the admin paints in green
+     is derived from this ramp so the whole panel shares one hue (~175°):
+     deep rainforest canvas at the bottom, mint glints at the top. */
+  --hg-em-50: #d8f7f0;
+  --hg-em-100: #b8eee1;
+  --hg-em-150: #9febdd;
+  --hg-em-200: #63d8c4;
+  --hg-em-300: #2bc2ac;
+  --hg-em-400: #17a795;
+  --hg-em-500: #0f9183;
+  --hg-em-600: #0b7d71;
+  --hg-em-700: #05645b; /* ← the brand green */
+  --hg-em-800: #044f48;
+  --hg-em-900: #033b36;
+  --hg-em-950: #022b26;
+  --hg-em-1000: #011a17;
+
+  --hg-clay: var(--hg-em-600);
+  --hg-clay-deep: var(--hg-em-700);
+  --hg-clay-bright: var(--hg-em-300);
   --hg-ink: #1d3557;
   --hg-ink-soft: #457b9d;
   --hg-sand: #a8dadc;
   --hg-ivory: #f1faee;
   --hg-gold: #c9962d;
-  --hg-gold-bright: #d9ad4e;
+  --hg-gold-bright: #e3b959;
+
 
   /* Payload derives most of its chrome from this ramp. Tinting it towards the
      brand navy makes every panel, border and muted label feel on-brand. */
@@ -60,7 +79,7 @@
   --color-base-950: #0e1a27;
   --color-base-1000: #080f17;
 
-  /* Accent / success ramp → ocean teal */
+  /* Accent / success ramp → the #05645B emerald family */
   --color-success-50: #eaf6f4;
   --color-success-100: #d3ece8;
   --color-success-150: #bee3dd;
@@ -69,17 +88,17 @@
   --color-success-300: #7fc8bc;
   --color-success-350: #66c2b4;
   --color-success-400: #3fc0ab;
-  --color-success-450: #27ad99;
-  --color-success-500: #159b8d;
-  --color-success-550: #128f81;
-  --color-success-600: #0f8378;
-  --color-success-650: #0d776d;
-  --color-success-700: #0c6c63;
-  --color-success-750: #0b655d;
-  --color-success-800: #0a5f57;
-  --color-success-850: #09554e;
-  --color-success-900: #084b45;
-  --color-success-950: #06332f;
+  --color-success-450: #2bc2ac;
+  --color-success-500: #17a795;
+  --color-success-550: #0f9183;
+  --color-success-600: #0b7d71;
+  --color-success-650: #096e64;
+  --color-success-700: #05645b;
+  --color-success-750: #044f48;
+  --color-success-800: #033b36;
+  --color-success-850: #03332e;
+  --color-success-900: #022b26;
+  --color-success-950: #011a17;
 
   /* Warnings → the brand's warm amber rather than orange */
   --color-warning-500: #c9962d;
@@ -97,9 +116,14 @@
   --hg-font-display: 'Cal Sans', 'DM Sans', -apple-system, sans-serif;
 
   /* Admin chrome accents */
-  --hg-nav-accent: rgba(63, 192, 171, 0.12);
-  --hg-glow-teal: 0 8px 24px -10px rgba(15, 131, 120, 0.55);
-  --hg-ring: 0 0 0 3px rgba(63, 192, 171, 0.22);
+  --hg-nav-glass: rgba(159, 235, 221, 0.07);
+  --hg-nav-glass-strong: rgba(159, 235, 221, 0.12);
+  --hg-nav-hairline: rgba(159, 235, 221, 0.1);
+  --hg-nav-ink: #c9e6df;
+  --hg-nav-ink-strong: #f2fbf8;
+  --hg-nav-sage: #86b5ac;
+  --hg-glow-teal: 0 8px 24px -10px rgba(11, 125, 113, 0.55);
+  --hg-ring: 0 0 0 3px rgba(43, 194, 172, 0.22);
 
   /* Ambient page wash — barely-there teal/ivory light */
   --hg-page-wash:
@@ -109,9 +133,11 @@
 }
 
 html[data-theme='dark'] {
-  --hg-nav-accent: rgba(63, 192, 171, 0.14);
-  --hg-glow-teal: 0 10px 28px -10px rgba(63, 192, 171, 0.35);
-  --hg-ring: 0 0 0 3px rgba(63, 192, 171, 0.28);
+  --hg-nav-glass: rgba(159, 235, 221, 0.08);
+  --hg-nav-glass-strong: rgba(159, 235, 221, 0.13);
+  --hg-nav-hairline: rgba(159, 235, 221, 0.12);
+  --hg-glow-teal: 0 10px 28px -10px rgba(43, 194, 172, 0.35);
+  --hg-ring: 0 0 0 3px rgba(43, 194, 172, 0.28);
 
   --hg-page-wash:
     radial-gradient(1100px 480px at 8% -8%, rgba(15, 131, 120, 0.16), transparent 60%),
@@ -159,56 +185,324 @@ pre,
   background-attachment: fixed;
 }
 
-/* ---- Sidebar / nav ------------------------------------------------------- */
+/* ---- Sidebar / nav — the “Emerald Canopy” -------------------------------
+   A deep rainforest-emerald rail built from the #05645B family: layered
+   gradients for depth, faint topographic contour rings as texture, glass
+   pills for the tabs, a glowing mint rail for the active item and a whisper
+   of brand gold on the lockup. The sidebar stays dark in BOTH themes —
+   the premium contrast frame around the light workspace. */
 
 .nav {
+  --hg-nav-icon-size: 17px;
+
   background:
-    linear-gradient(180deg, rgba(63, 192, 171, 0.045), transparent 240px),
-    var(--theme-elevation-50);
-  border-right: 1px solid var(--theme-elevation-100);
+    /* aurora glint, top-left */
+    radial-gradient(520px 320px at -80px -60px, rgba(23, 167, 149, 0.22), transparent 65%),
+    /* deep emerald pool, bottom-right */
+    radial-gradient(680px 520px at 132% 114%, rgba(5, 100, 91, 0.32), transparent 62%),
+    /* a breath of brand gold, top-right */
+    radial-gradient(420px 300px at 118% -40px, rgba(201, 150, 45, 0.07), transparent 60%),
+    /* faint topographic contour rings — the cartographic texture */
+    repeating-radial-gradient(
+      circle at 88% 118%,
+      transparent 0 46px,
+      rgba(159, 235, 221, 0.028) 46px 47px
+    ),
+    repeating-radial-gradient(
+      circle at -12% -18%,
+      transparent 0 58px,
+      rgba(159, 235, 221, 0.02) 58px 59px
+    ),
+    /* the base descent — #05645B's deep end */
+    linear-gradient(177deg, #04302a 0%, #032722 44%, #02201c 78%, #011a17 100%);
+  border-right: 1px solid rgba(159, 235, 221, 0.09);
+  box-shadow:
+    inset -1px 0 0 rgba(216, 247, 240, 0.05),
+    inset 1px 0 0 rgba(0, 0, 0, 0.28);
 }
 
-html[data-theme='dark'] .nav {
-  background:
-    linear-gradient(180deg, rgba(15, 131, 120, 0.08), transparent 240px),
-    var(--theme-elevation-50);
-}
+/* ---- Brand lockup in the top strip --------------------------------------
+   Payload leaves the strip above the groups empty on desktop (the collapse
+   hamburger floats over its left edge) — the perfect home for the mark. */
 
 .nav__header {
-  padding-bottom: 0.65rem;
-  border-bottom: 1px solid var(--theme-elevation-100);
+  border-bottom: 1px solid rgba(159, 235, 221, 0.09);
+  background: linear-gradient(180deg, rgba(159, 235, 221, 0.035), transparent);
+}
+
+/* keep the rail pristine — no scrollbar inside the canopy */
+.nav__scroll {
+  scrollbar-width: none;
+}
+
+/* the ridgeline emblem, painted mint→emerald through a mask */
+.nav__header::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 48px;
+  top: 50%;
+  width: 28px;
+  height: 28px;
+  transform: translateY(-50%);
+  background: linear-gradient(155deg, #d8f7f0 8%, #63d8c4 52%, #17a795 100%);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 42' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='21' cy='21' r='19.5'/%3E%3Cpath d='M7.5 27.5L17.2 13l5.2 7.8 3.9-5.6 8.3 12.3'/%3E%3Cpath d='M10.4 29.6h21.2'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 42' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='21' cy='21' r='19.5'/%3E%3Cpath d='M7.5 27.5L17.2 13l5.2 7.8 3.9-5.6 8.3 12.3'/%3E%3Cpath d='M10.4 29.6h21.2'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  filter: drop-shadow(0 2px 9px rgba(23, 167, 149, 0.4));
+}
+
+/* “HIKE” — display caps */
+.nav__header::after {
+  content: 'HIKE';
+  position: absolute;
+  inset-inline-start: 86px;
+  top: 15px;
+  font-family: var(--hg-font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  line-height: 1;
+  color: #eaf7f2;
+}
+
+/* “GLOBALLY” — gold letterspaced micro-caps */
+.nav__header-content::after {
+  content: 'GLOBALLY';
+  position: absolute;
+  inset-inline-start: 86.5px;
+  top: 31px;
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  line-height: 1;
+  color: var(--hg-gold-bright);
+}
+
+/* mobile: keep the lockup clear of the drawer’s close button */
+@media (max-width: 768px) {
+  .nav__header::before {
+    inset-inline-start: 52px;
+  }
+
+  .nav__header::after {
+    inset-inline-start: 90px;
+  }
+
+  .nav__header-content::after {
+    inset-inline-start: 90.5px;
+  }
+}
+
+.nav__mobile-close {
+  opacity: 0.85;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.nav__mobile-close:hover {
+  opacity: 1;
+  transform: scale(1.06);
+}
+
+/* The collapse hamburger floats over the strip only while the nav is open —
+   give it the dark-glass treatment then (it stays light-on-light when the
+   sidebar is hidden). The toggler itself is portalled directly under <body>,
+   outside .template-default, so the open state is matched via :has(). */
+body:has(.template-default--nav-open) .hamburger {
+  background-color: var(--hg-nav-glass);
+  box-shadow: 0 0 0 1px var(--hg-nav-hairline);
+  color: #bdefe3;
+  transition:
+    background-color 0.18s ease,
+    box-shadow 0.18s ease,
+    color 0.18s ease;
+}
+
+body:has(.template-default--nav-open) .hamburger:hover {
+  background-color: var(--hg-nav-glass-strong);
+  box-shadow: 0 0 0 1px rgba(159, 235, 221, 0.26);
+  color: #d8f7f0;
+}
+
+/* ---- Group headers (“tabs”) ---------------------------------------------- */
+
+.nav-group {
+  margin-bottom: 14px;
 }
 
 .nav-group__toggle {
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-size: 0.66rem;
+  padding: 5px 2px 6px;
+  margin-bottom: 3px;
+  border-radius: 8px;
+  transition: background-color 0.18s ease;
+}
+
+.nav-group__toggle:hover {
+  background-color: rgba(159, 235, 221, 0.035);
+}
+
+.nav-group__label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
   font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--hg-nav-sage);
   transition: color 0.18s ease;
 }
 
+/* a hairline that runs from the label to the chevron */
+.nav-group__label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(159, 235, 221, 0.16), transparent 88%);
+  transition: background 0.18s ease;
+}
+
+.nav-group__toggle:hover .nav-group__label {
+  color: #bdefe3;
+}
+
+.nav-group__toggle:hover .nav-group__label::after {
+  background: linear-gradient(90deg, rgba(159, 235, 221, 0.3), transparent 88%);
+}
+
+/* the chevron, seated in a tiny glass chip */
+.nav-group__indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-top: -2px;
+  border-radius: 6px;
+  background: rgba(159, 235, 221, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(159, 235, 221, 0.08);
+  transition:
+    background-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.nav-group__indicator svg {
+  width: 12px;
+  height: 12px;
+}
+
+.nav-group__indicator svg .stroke {
+  stroke: rgba(159, 235, 221, 0.55);
+  transition: stroke 0.18s ease;
+}
+
+.nav-group__toggle:hover .nav-group__indicator {
+  background: rgba(159, 235, 221, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(159, 235, 221, 0.18);
+}
+
+.nav-group__toggle:hover .nav-group__indicator svg .stroke {
+  stroke: #9febdd;
+}
+
+/* ---- Collection links — the premium pills -------------------------------- */
+
 .nav__link {
+  --hg-nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.2'/%3E%3Cpath d='M15.6 8.4l-2.1 5.1-5.1 2.1 2.1-5.1z'/%3E%3C/svg%3E");
+
   position: relative;
-  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  box-sizing: border-box;
+  height: 34px;
+  margin: 1px 0;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--hg-nav-ink);
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.008em;
+  text-decoration: none;
   transition:
     color 0.18s ease,
     background-color 0.18s ease,
-    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.nav__link:hover {
-  color: var(--hg-clay);
-  background-color: var(--hg-nav-accent);
-  transform: translateX(3px);
+/* the icon — a masked glyph that inherits the link’s colour */
+.nav__link::before {
+  content: '';
+  flex: none;
+  width: var(--hg-nav-icon-size);
+  height: var(--hg-nav-icon-size);
+  background-color: currentColor;
+  opacity: 0.72;
+  -webkit-mask: var(--hg-nav-icon) center / contain no-repeat;
+  mask: var(--hg-nav-icon) center / contain no-repeat;
+  transition: opacity 0.18s ease, transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav__link-label {
+  position: relative;
+  top: 0.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav a.nav__link:hover,
+.nav a.nav__link:focus-visible {
+  color: var(--hg-nav-ink-strong);
+  background-color: var(--hg-nav-glass);
+  border-color: var(--hg-nav-hairline);
+  box-shadow: inset 0 1px 0 rgba(216, 247, 240, 0.05);
+  transform: translateX(2px);
+  text-decoration: none;
+}
+
+.nav a.nav__link:hover::before,
+.nav a.nav__link:focus-visible::before {
+  opacity: 1;
+  transform: scale(1.06);
+}
+
+.nav__link:focus-visible {
+  outline: 2px solid rgba(99, 216, 196, 0.55);
+  outline-offset: 1px;
 }
 
 /* Active item: Payload marks it with a .nav__link-indicator child
-   (and, on older builds, a --nav__link--active class). */
+   (and, on older builds, a .nav__link--active class). */
 .nav__link:has(.nav__link-indicator),
-.nav__link--active {
-  color: var(--hg-clay-deep);
-  background: linear-gradient(90deg, rgba(63, 192, 171, 0.16), rgba(63, 192, 171, 0.05));
+.nav__link--active,
+.nav__link.active {
+  color: var(--hg-nav-ink-strong);
   font-weight: 600;
+  background: linear-gradient(
+    92deg,
+    rgba(43, 194, 172, 0.2) 0%,
+    rgba(23, 167, 149, 0.1) 55%,
+    rgba(23, 167, 149, 0.04) 100%
+  );
+  border-color: rgba(99, 216, 196, 0.26);
+  box-shadow:
+    inset 0 1px 0 rgba(216, 247, 240, 0.1),
+    0 10px 24px -14px rgba(2, 32, 28, 0.8);
+}
+
+.nav__link:has(.nav__link-indicator)::before,
+.nav__link--active::before,
+.nav__link.active::before {
+  opacity: 1;
+  color: var(--hg-em-200);
+  filter: drop-shadow(0 0 6px rgba(99, 216, 196, 0.5));
 }
 
 .nav__link:has(.nav__link-indicator) .nav__link-label,
@@ -216,27 +510,208 @@ html[data-theme='dark'] .nav {
   color: inherit;
 }
 
-/* The little rail on the leading edge — restyled as a glowing brand accent */
+/* the little rail on the leading edge — a glowing lantern in the canopy */
 .nav__link-indicator {
+  inset-inline-start: -11px;
+  top: 50%;
   width: 3px;
-  height: 60%;
-  top: 20%;
-  inset-inline-start: -14px;
+  height: 17px;
+  transform: translateY(-50%);
   border-radius: 999px;
-  background: linear-gradient(180deg, var(--hg-clay-bright), var(--hg-clay));
-  box-shadow: 0 0 12px 0 rgba(63, 192, 171, 0.65);
-  transition: height 0.25s cubic-bezier(0.22, 1, 0.36, 1), top 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  background: linear-gradient(180deg, #9febdd, #17a795);
+  box-shadow:
+    0 0 12px rgba(99, 216, 196, 0.75),
+    0 0 26px rgba(23, 167, 149, 0.4);
 }
 
-.nav__link:has(.nav__link-indicator):hover .nav__link-indicator,
-.nav__link--active:hover .nav__link-indicator {
-  height: 76%;
-  top: 12%;
+/* ---- Per-collection icons ------------------------------------------------ */
+
+#nav-global-header {
+  --hg-nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='5.5' width='16' height='13' rx='2.2'/%3E%3Cpath d='M4 9.7h16'/%3E%3C/svg%3E");
 }
 
-html[data-theme='dark'] .nav__link:has(.nav__link-indicator),
-html[data-theme='dark'] .nav__link--active {
-  color: var(--hg-clay-bright);
+#nav-global-footer {
+  --hg-nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='5.5' width='16' height='13' rx='2.2'/%3E%3Cpath d='M4 14.3h16'/%3E%3C/svg%3E");
+}
+
+#nav-users {
+  --hg-nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9.3' cy='8.1' r='3.3'/%3E%3Cpath d='M3.7 19.2c.7-3.2 2.9-4.9 5.6-4.9 1.9 0 3.5.9 4.6 2.5'/%3E%3Cpath d='M15.2 5.2a3.3 3.3 0 010 5.8'/%3E%3Cpath d='M17.6 14.9c1.4.8 2.3 2.2 2.7 4.1'/%3E%3C/svg%3E");
+}
+
+#nav-redirects {
+  --hg-nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5.5 17.5c6.5 0 5-9.5 11.5-9.5'/%3E%3Cpath d='M14.3 5.2L17 8l-2.7 2.8'/%3E%3Ccircle cx='5.5' cy='17.5' r='1.5' fill='%23000' stroke='none'/%3E%3C/svg%3E");
+}
+
+#nav-media {
+  --hg-nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='5.5' width='16' height='13' rx='2.2'/%3E%3Ccircle cx='8.7' cy='9.9' r='1.3'/%3E%3Cpath d='M5.2 16.3l3.9-4.5 2.9 3.3 2.5-2.8 4.4 4'/%3E%3C/svg%3E");
+}
+
+#nav-categories {
+  --hg-nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 4.5h5.9l9.1 9.1-5.9 5.9-9.1-9.1z'/%3E%3Ccircle cx='8.7' cy='8.7' r='1.05' fill='%23000' stroke='none'/%3E%3C/svg%3E");
+}
+
+#nav-posts {
+  --hg-nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 19.5l.9-3.7L16.6 4.6a2 2 0 012.8 2.8L8.2 18.6z'/%3E%3Cpath d='M14.6 6.6l2.8 2.8'/%3E%3C/svg%3E");
+}
+
+#nav-pages {
+  --hg-nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13.5 3.5H7A1.5 1.5 0 005.5 5v14A1.5 1.5 0 007 20.5h10a1.5 1.5 0 001.5-1.5V8.5z'/%3E%3Cpath d='M13.5 3.5v5h5'/%3E%3Cpath d='M9 13h6M9 16.5h6'/%3E%3C/svg%3E");
+}
+
+#nav-testimonials {
+  --hg-nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4l2.35 4.9 5.4.7-4 3.8 1 5.4-4.75-2.6L7.25 18.8l1-5.4-4-3.8 5.4-.7z'/%3E%3C/svg%3E");
+}
+
+#nav-destinations {
+  --hg-nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20.5s-6.3-5.1-6.3-9.7a6.3 6.3 0 1112.6 0c0 4.6-6.3 9.7-6.3 9.7z'/%3E%3Ccircle cx='12' cy='10.8' r='2.2'/%3E%3C/svg%3E");
+}
+
+#nav-trips {
+  --hg-nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 19l6.1-8.9 3.7 5.4 2.3-3.3 4.9 6.8z'/%3E%3Ccircle cx='17.4' cy='6.9' r='2'/%3E%3C/svg%3E");
+}
+
+#nav-inquiries {
+  --hg-nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 13.2L6.4 6a1.5 1.5 0 011.4-1h8.4a1.5 1.5 0 011.4 1L20 13.2v4.8a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 18z'/%3E%3Cpath d='M4 13.2h4.4l1.2 2.2h4.8l1.2-2.2H20'/%3E%3C/svg%3E");
+}
+
+/* ---- Session controls (log out / settings) ------------------------------- */
+
+.nav__controls {
+  width: 100%;
+  gap: 8px;
+  /* `auto` (Payload's default) keeps the session area pinned to the bottom;
+     the visual breathing room comes from padding-top instead. */
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid rgba(159, 235, 221, 0.09);
+}
+
+.nav__controls > :first-child {
+  margin-top: 0;
+}
+
+.nav__controls a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(159, 235, 221, 0.1);
+  border-radius: 10px;
+  color: var(--hg-nav-sage);
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 500;
+  background-color: rgba(159, 235, 221, 0.04);
+  transition:
+    color 0.18s ease,
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav__controls a svg {
+  flex: none;
+  opacity: 0.8;
+}
+
+/* the logout link is icon-only in the DOM — give it its label back */
+.nav__log-out::after {
+  content: 'Log out';
+}
+
+.nav__controls a:hover {
+  color: var(--hg-nav-ink-strong);
+  background-color: var(--hg-nav-glass-strong);
+  border-color: rgba(159, 235, 221, 0.22);
+  box-shadow: inset 0 1px 0 rgba(216, 247, 240, 0.06);
+  transform: translateY(-1px);
+}
+
+.nav__controls a:hover svg {
+  opacity: 1;
+}
+
+/* ---- Mobile drawer: roomier touch targets -------------------------------- */
+
+@media (max-width: 768px) {
+  .nav__link {
+    height: 42px;
+    padding: 0 14px;
+    border-radius: 12px;
+    font-size: 15px;
+  }
+
+  .nav__link::before {
+    width: 19px;
+    height: 19px;
+  }
+
+  .nav__link-indicator {
+    height: 22px;
+    inset-inline-start: -13px;
+  }
+
+  .nav__controls a {
+    height: 42px;
+    padding: 0 14px;
+    border-radius: 12px;
+    font-size: 14px;
+  }
+
+  .nav-group__label {
+    font-size: 11px;
+  }
+}
+
+/* ---- Entrance choreography -----------------------------------------------
+   When the nav swings open (first paint or after expanding), the groups
+   rise into place, staggered — quick enough to feel eager, not sluggish. */
+
+.nav--nav-open .nav-group,
+.nav--nav-open .nav__controls {
+  animation: hg-nav-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.nav--nav-open .nav__wrap > :nth-child(1) { animation-delay: 0.03s; }
+.nav--nav-open .nav__wrap > :nth-child(2) { animation-delay: 0.08s; }
+.nav--nav-open .nav__wrap > :nth-child(3) { animation-delay: 0.13s; }
+.nav--nav-open .nav__wrap > :nth-child(4) { animation-delay: 0.18s; }
+.nav--nav-open .nav__wrap > :nth-child(5) { animation-delay: 0.23s; }
+.nav--nav-open .nav__wrap > :nth-child(6) { animation-delay: 0.28s; }
+.nav--nav-open .nav__wrap > :nth-child(n + 7) { animation-delay: 0.33s; }
+
+@keyframes hg-nav-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Subtle living glow on the active lantern — slow, barely there */
+.nav__link:has(.nav__link-indicator) .nav__link-indicator {
+  animation: hg-lantern 3.2s ease-in-out 1.2s infinite;
+}
+
+@keyframes hg-lantern {
+  0%,
+  100% {
+    box-shadow:
+      0 0 12px rgba(99, 216, 196, 0.75),
+      0 0 26px rgba(23, 167, 149, 0.4);
+  }
+  50% {
+    box-shadow:
+      0 0 16px rgba(99, 216, 196, 0.95),
+      0 0 34px rgba(23, 167, 149, 0.55);
+  }
 }
 
 /* ---- App header ---------------------------------------------------------- */
@@ -726,6 +1201,16 @@ html[data-theme='dark'] {
   .btn--style-primary,
   .btn--style-secondary,
   .nav__link,
+  .nav__link::before,
+  .nav-group,
+  .nav-group__toggle,
+  .nav-group__label,
+  .nav-group__label::after,
+  .nav-group__indicator,
+  .nav__controls,
+  .nav__controls a,
+  .nav__mobile-close,
+  .hamburger,
   .card,
   .table tbody tr,
   .popup,
@@ -737,6 +1222,12 @@ html[data-theme='dark'] {
 
   .btn--style-primary:hover {
     transform: none;
+  }
+
+  .nav--nav-open .nav-group,
+  .nav--nav-open .nav__controls,
+  .nav__link:has(.nav__link-indicator) .nav__link-indicator {
+    animation: none !important;
   }
 
   .login::before,
