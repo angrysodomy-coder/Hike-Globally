@@ -116,6 +116,7 @@ export default buildConfig({
       enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
       collections: { media: true },
       token: process.env.BLOB_READ_WRITE_TOKEN || '',
+      clientUploads: true,
     }),
     redirectsPlugin({
       collections: ['pages', 'posts', 'trips'],
