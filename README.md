@@ -71,22 +71,57 @@ to `src/data/content.js` if the CMS is empty or the database is unreachable.
 
 ```bash
 npm install
+```
+
+**Create `.env.local` before starting anything.** It is git-ignored, so a fresh
+clone has none — and without `POSTGRES_URL` node-postgres silently falls back to
+its default `localhost:5432`, where nothing listens. Every CMS request then fails,
+and signing in at `/admin` dies with the opaque *"An unknown error has occurred."*
+(the real error — `connect ECONNREFUSED 127.0.0.1:5432` — is only visible in the
+`npm run dev` terminal).
+
+```bash
+cp .env.example .env.local   # the copied values already point at the dev database
+```
+
+While you are there, set a real `PAYLOAD_SECRET` (`openssl rand -hex 32`) and
+note the `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` values — those become your
+first `/admin` login. Then start the database and the app:
+
+```bash
 npm run db:dev     # terminal 1 — local Postgres (binaries come from npm, nothing to install)
 npm run dev        # terminal 2 — http://localhost:3000
 ```
 
-`.env.local` is already pointed at the dev database. Seed it once:
+Seed it once:
 
 ```bash
-npm run seed           # 3 destinations + 3 trips (images from public/seed/)
+npm run seed           # first admin user + 3 destinations + 3 trips (images from public/seed/)
 npm run seed:content   # categories, 2 posts, home + about pages, testimonials, globals
 ```
 
-Then sign in at `http://localhost:3000/admin` with the credentials in `.env.local`
-(`SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD`).
+Then sign in at `http://localhost:3000/admin` with the `SEED_ADMIN_*` credentials
+from your `.env.local`.
 
 Any Postgres works — `npm run db:dev` is a convenience for sandboxes with no system
 Postgres. Point `POSTGRES_URL` at Neon/Vercel Postgres and nothing else changes.
+
+#### "An unknown error has occurred." when logging in to `/admin`
+
+That message is the admin panel's generic wrapper around **any HTTP 500 from the
+login endpoint** — it never names the real cause. Check the terminal running
+`npm run dev`; the actual error is always printed there:
+
+| Dev-server log shows | Meaning | Fix |
+| --- | --- | --- |
+| `connect ECONNREFUSED 127.0.0.1:5432` | No `POSTGRES_URL` was found, so node-postgres fell back to its default port where nothing listens — i.e. `.env.local` is missing | `cp .env.example .env.local`, then **restart** `npm run dev` (env files are only read at startup) |
+| `connect ECONNREFUSED 127.0.0.1:5433` | `.env.local` points at the dev database, but the database is not running | Start `npm run db:dev` in its own terminal (it stays in the foreground) |
+| `relation "users" does not exist` | Database reachable, but its schema was never created (typical for a production DB that never ran migrations) | In dev the schema auto-syncs when Payload first initializes; in production run `npx payload migrate` (or deploy with `npm run build:prod`) |
+
+If login instead answers **401 "The email or password provided is incorrect."**,
+Payload and the database are both fine — there is just no matching user yet, so
+run `npm run seed` to create the first admin from `SEED_ADMIN_EMAIL` /
+`SEED_ADMIN_PASSWORD`.
 
 ### Payload commands
 
@@ -110,7 +145,7 @@ deploying:
 | Variable | Required | Notes |
 | --- | --- | --- |
 | `PAYLOAD_SECRET` | Yes | Any long random string, e.g. `openssl rand -hex 32`. Build fails immediately with "missing secret key" if unset. |
-| `POSTGRES_URL` | Yes | A real, reachable Postgres connection string (Neon, Vercel Postgres, etc.) — `?sslmode=require` for managed providers. The placeholder in `.env.example` will not work. |
+| `POSTGRES_URL` | Yes | A real, reachable Postgres connection string (Neon, Vercel Postgres, etc.) — `?sslmode=require` for managed providers. Not the local `npm run db:dev` URL that `.env.example` defaults to. |
 | `NEXT_PUBLIC_SERVER_URL` | Yes | The deployed URL with no trailing slash, e.g. `https://your-site.vercel.app`. Must be the origin you actually open `/admin` on — see below. |
 | `PAYLOAD_CSRF_ORIGINS` | Only for extra domains | Comma-separated extra origins allowed to make authenticated admin requests (`www.` alias, staging/custom domain, tunnel, cloud dev sandbox). Vercel's production/preview/branch URLs are trusted automatically. |
 | `BLOB_READ_WRITE_TOKEN` | Only if using the Blob storage plugin | From the Vercel Blob store. |
