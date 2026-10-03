@@ -13,7 +13,7 @@ import VoicesSection from '../components/destinations/VoicesSection'
 import FaqSection from '../components/destinations/FaqSection'
 import DestinationsCta from '../components/destinations/DestinationsCta'
 
-export default function DestinationsPage({ onBook, cmsDestinations }) {
+export default function DestinationsPage({ onBook }) {
   const [selected, setSelected] = useState(null)
 
   usePageMeta({
