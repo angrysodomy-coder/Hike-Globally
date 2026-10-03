@@ -34,7 +34,14 @@ export const Posts: CollectionConfig = {
       maxLength: 300,
       admin: { description: 'Shown on listing cards and used as meta-description fallback.' },
     },
-    { name: 'content', type: 'richText', required: true },
+    {
+      name: 'content',
+      type: 'richText',
+      required: true,
+      admin: {
+        description: 'Build the story with headings, links, quotes, lists, images and editorial formatting. Type “/” for blocks, or choose a style from the toolbar.',
+      },
+    },
     {
       name: 'categories',
       type: 'relationship',

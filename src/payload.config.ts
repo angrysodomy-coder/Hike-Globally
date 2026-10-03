@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url'
 import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { FixedToolbarFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
@@ -71,7 +71,14 @@ export default buildConfig({
       },
     },
   },
-  editor: lexicalEditor(),
+  // A persistent, WordPress-style authoring bar for every long-form field.
+  // Payload's recommended feature set already includes headings, bold/italic/
+  // underline/strike, links, quotes, lists, alignment, uploads and dividers;
+  // the fixed toolbar makes those tools visible and discoverable at all times
+  // while the inline toolbar remains available on text selection.
+  editor: lexicalEditor({
+    features: ({ defaultFeatures }) => [...defaultFeatures, FixedToolbarFeature()],
+  }),
   collections: [
     Users,
     Media,
