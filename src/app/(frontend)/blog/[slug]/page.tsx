@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { draftMode } from 'next/headers'
 import React from 'react'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { getPayloadClient, getPostBySlug } from '@/lib/queries'
@@ -7,7 +6,6 @@ import { redirectOrNotFound } from '@/lib/redirects'
 import { generatePostMeta } from '@/lib/generateMeta'
 import { postJsonLd } from '@/lib/structuredData'
 import { formatDate } from '@/lib/formatters'
-import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { PayloadImage } from '@/components/PayloadImage'
 import { TripCard } from '@/components/trips/TripCard'
 import BlogArticleRoute from '@/views/routes/BlogArticleRoute'
@@ -63,7 +61,6 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
    `src/data/content.js` until an editor re-publishes them in the CMS. */
 export default async function PostPage({ params }: Args) {
   const { slug } = await params
-  const { isEnabled: draft } = await draftMode()
   const post = await getPostBySlug(slug)
 
   if (!post) {
@@ -80,7 +77,6 @@ export default async function PostPage({ params }: Args) {
 
   return (
     <article className="cms-surface" id="main-content">
-      {draft && <LivePreviewListener />}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(postJsonLd(post)) }}

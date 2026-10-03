@@ -101,7 +101,9 @@ function DestinationCard({ item, index }) {
   )
 }
 
-export default function DestinationsSection() {
+export default function DestinationsSection({ cmsDestinations }) {
+  const items = destinations
+
   return (
     <section id="destinations" className="destinations-section section-pad" aria-labelledby="destinations-title">
       <div className="shell">
@@ -116,7 +118,7 @@ export default function DestinationsSection() {
         </div>
 
         <div className="destination-grid">
-          {destinations.map((item, index) => (
+          {items.map((item, index) => (
             <DestinationCard key={item.id} item={item} index={index} />
           ))}
         </div>

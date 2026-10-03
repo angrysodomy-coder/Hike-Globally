@@ -70,9 +70,9 @@ function NotFound() {
   )
 }
 
-export default function TripDetailPage({ slug, onBook }) {
-  const trip = getTripBySlug(slug)
-  const content = useMemo(() => getTripPageContent(slug), [slug])
+export default function TripDetailPage({ slug, onBook, cmsTrip }) {
+  const content = useMemo(() => getTripPageContent(slug, cmsTrip), [slug, cmsTrip])
+  const trip = content?.trip || getTripBySlug(slug)
 
   const nextDeparture = useMemo(() => {
     if (!trip) return null

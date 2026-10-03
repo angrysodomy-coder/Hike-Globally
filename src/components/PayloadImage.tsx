@@ -24,9 +24,9 @@ export const PayloadImage: React.FC<Props> = ({
   if (!media || typeof media !== 'object' || !media.url) return null
 
   const rendition = media.sizes?.[sizeName]
-  const src = rendition?.url ?? media.url
-  const width = rendition?.width ?? media.width ?? 1200
-  const height = rendition?.height ?? media.height ?? 800
+  const src = rendition?.url || media.url
+  const width = rendition?.width || media.width || 1200
+  const height = rendition?.height || media.height || 800
 
   if (fill) {
     return (

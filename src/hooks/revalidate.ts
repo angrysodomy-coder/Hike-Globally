@@ -12,6 +12,22 @@ type RevalidateArgs = {
   tag: string
 }
 
+function safeRevalidatePath(path: string) {
+  try {
+    revalidatePath(path)
+  } catch {
+    // Ignore when called outside of Next.js request context (e.g. CLI scripts)
+  }
+}
+
+function safeRevalidateTag(tag: string) {
+  try {
+    revalidateTag(tag)
+  } catch {
+    // Ignore when called outside of Next.js request context (e.g. CLI scripts)
+  }
+}
+
 /** Root-level page with slug 'home' is served at '/', not '/home'. */
 const docPath = (pathPrefix: string, slug: unknown): string =>
   pathPrefix === '' && slug === 'home' ? '/' : `${pathPrefix}/${slug}`
@@ -28,17 +44,17 @@ export const buildRevalidateHook =
     if (doc._status === 'published') {
       const path = docPath(pathPrefix, doc.slug)
       payload.logger.info(`Revalidating ${path}`)
-      revalidatePath(path)
-      revalidateTag(tag)
-      revalidateTag('sitemap')
+      safeRevalidatePath(path)
+      safeRevalidateTag(tag)
+      safeRevalidateTag('sitemap')
     }
 
     // Unpublished, or slug changed → purge the old path too
     if (previousDoc?._status === 'published') {
       if (doc._status !== 'published' || previousDoc.slug !== doc.slug) {
-        revalidatePath(docPath(pathPrefix, previousDoc.slug))
-        revalidateTag(tag)
-        revalidateTag('sitemap')
+        safeRevalidatePath(docPath(pathPrefix, previousDoc.slug))
+        safeRevalidateTag(tag)
+        safeRevalidateTag('sitemap')
       }
     }
     return doc
@@ -48,9 +64,9 @@ export const buildRevalidateDeleteHook =
   ({ pathPrefix, tag }: RevalidateArgs): CollectionAfterDeleteHook =>
   ({ doc, req: { context } }) => {
     if (context.disableRevalidate) return doc
-    revalidatePath(docPath(pathPrefix, doc?.slug))
-    revalidateTag(tag)
-    revalidateTag('sitemap')
+    safeRevalidatePath(docPath(pathPrefix, doc?.slug))
+    safeRevalidateTag(tag)
+    safeRevalidateTag('sitemap')
     return doc
   }
 
@@ -59,7 +75,7 @@ export const revalidateGlobal =
   (tag: string): GlobalAfterChangeHook =>
   ({ doc, req: { context } }) => {
     if (context.disableRevalidate) return doc
-    revalidateTag(tag)
+    safeRevalidateTag(tag)
     return doc
   }
 
@@ -73,11 +89,11 @@ export const buildRevalidateSimpleHook =
     if (context.disableRevalidate) return doc
     const path = `${pathPrefix}/${doc.slug}`
     payload.logger.info(`Revalidating ${path}`)
-    revalidatePath(path)
+    safeRevalidatePath(path)
     if (previousDoc?.slug && previousDoc.slug !== doc.slug) {
-      revalidatePath(`${pathPrefix}/${previousDoc.slug}`)
+      safeRevalidatePath(`${pathPrefix}/${previousDoc.slug}`)
     }
-    revalidateTag(tag)
-    revalidateTag('sitemap')
+    safeRevalidateTag(tag)
+    safeRevalidateTag('sitemap')
     return doc
   }

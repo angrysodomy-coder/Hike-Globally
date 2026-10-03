@@ -50,3 +50,36 @@ export const textToLexical = (text: string): RichTextData => ({
       })),
   },
 })
+
+/**
+ * Extract paragraph strings from a Lexical richText node.
+ */
+export const lexicalToParagraphs = (data: unknown): string[] => {
+  if (!data) return []
+  if (typeof data === 'string') return data.split('\n\n').filter((p) => p.trim().length > 0)
+  if (typeof data === 'object' && data !== null && 'root' in data) {
+    const root = (data as { root?: { children?: Array<{ children?: Array<{ text?: string }> }> } }).root
+    if (Array.isArray(root?.children)) {
+      const paragraphs: string[] = []
+      for (const node of root.children) {
+        if (Array.isArray(node?.children)) {
+          const text = node.children
+            .map((c) => c?.text || '')
+            .join('')
+            .trim()
+          if (text) paragraphs.push(text)
+        }
+      }
+      if (paragraphs.length > 0) return paragraphs
+    }
+  }
+  return []
+}
+
+/**
+ * Convert Lexical data to a single plain text string.
+ */
+export const lexicalToPlainText = (data: unknown): string => {
+  return lexicalToParagraphs(data).join('\n\n')
+}
+

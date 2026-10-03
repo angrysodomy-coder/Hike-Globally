@@ -1,16 +1,38 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight, ArrowUpRight, Mountain } from 'lucide-react'
 import { treks } from '../data/content'
 import { trekPath } from '../data/tripDetails'
 import { Link } from '../lib/router'
 import Reveal from './Reveal'
 
-export default function TreksSection({ onBook }) {
+export default function TreksSection({ onBook, cmsTrips }) {
   const railRef = useRef(null)
   const frameRef = useRef(null)
   const dragRef = useRef({ active: false, captured: false, pointerId: null, startX: 0, startScroll: 0, distance: 0 })
   const [active, setActive] = useState(0)
   const [dragging, setDragging] = useState(false)
+
+  const items = useMemo(() => {
+    if (!cmsTrips || cmsTrips.length === 0) return treks
+    const mapped = cmsTrips.map((t, idx) => ({
+      id: t.slug || String(t.id),
+      slug: t.slug,
+      number: `0${idx + 1}`,
+      title: t.title,
+      region: (typeof t.destination === 'object' && t.destination?.region) || 'Nepal',
+      duration: `${t.durationDays} days`,
+      difficulty: t.difficulty ? t.difficulty.charAt(0).toUpperCase() + t.difficulty.slice(1) : 'Moderate',
+      elevation: t.maxAltitude ? `${t.maxAltitude.toLocaleString()} m` : '5,000 m',
+      price: t.basePrice || 1000,
+      image: (typeof t.heroImage === 'object' && t.heroImage?.url) ? t.heroImage.url : '/images/trek-everest.webp',
+      alt: (typeof t.heroImage === 'object' && t.heroImage?.alt) ? t.heroImage.alt : t.title,
+      imagePosition: 'center 35%',
+      description: t.summary || '',
+    }))
+    const existingSlugs = new Set(mapped.map((m) => m.slug))
+    const remainder = treks.filter((tr) => !existingSlugs.has(trekPath(tr).replace('/trips/', '')))
+    return [...mapped, ...remainder]
+  }, [cmsTrips])
 
   const updateActive = () => {
     frameRef.current = null
@@ -37,7 +59,7 @@ export default function TreksSection({ onBook }) {
   const move = (direction) => {
     const rail = railRef.current
     if (!rail) return
-    const next = Math.max(0, Math.min(treks.length - 1, active + direction))
+    const next = Math.max(0, Math.min(items.length - 1, active + direction))
     rail.querySelectorAll('.trek-story')[next]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
     setActive(next)
   }
@@ -125,9 +147,9 @@ export default function TreksSection({ onBook }) {
         <Reveal className="treks-section__aside" delay={100}>
           <p>Five iconic routes. Each one shaped by altitude, culture and the quiet thrill of taking the long way.</p>
           <div className="trek-controls">
-            <span aria-live="polite"><strong>0{active + 1}</strong> / 0{treks.length}</span>
+            <span aria-live="polite"><strong>0{active + 1}</strong> / 0{items.length}</span>
             <button type="button" onClick={() => move(-1)} disabled={active === 0} aria-label="Previous trek"><ArrowLeft size={19} /></button>
-            <button type="button" onClick={() => move(1)} disabled={active === treks.length - 1} aria-label="Next trek"><ArrowRight size={19} /></button>
+            <button type="button" onClick={() => move(1)} disabled={active === items.length - 1} aria-label="Next trek"><ArrowRight size={19} /></button>
           </div>
         </Reveal>
       </div>
@@ -147,7 +169,7 @@ export default function TreksSection({ onBook }) {
         tabIndex="0"
       >
         <div className="trek-rail__spacer" aria-hidden="true" />
-        {treks.map((trek, index) => (
+        {items.map((trek, index) => (
           <article className={`trek-story ${active === index ? 'is-active' : ''}`} key={trek.id}>
             <img
               src={trek.image}
@@ -184,7 +206,7 @@ export default function TreksSection({ onBook }) {
       </div>
 
       <div className="trek-progress shell" aria-hidden="true">
-        <span><i style={{ transform: `scaleX(${(active + 1) / treks.length})` }} /></span>
+        <span><i style={{ transform: `scaleX(${(active + 1) / items.length})` }} /></span>
         <p>Drag or use arrows to explore</p>
       </div>
     </section>

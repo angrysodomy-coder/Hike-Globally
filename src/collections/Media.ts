@@ -11,6 +11,7 @@ export const Media: CollectionConfig = {
     delete: authenticated,
   },
   upload: {
+    staticDir: 'media',
     mimeTypes: ['image/*', 'application/pdf'],
     // Editors mark the subject (a summit, a face) so crops keep it in frame.
     focalPoint: true,

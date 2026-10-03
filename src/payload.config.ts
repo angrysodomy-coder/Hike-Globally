@@ -21,8 +21,6 @@ import { Inquiries } from '@/collections/Inquiries'
 import { Header } from '@/globals/Header'
 import { Footer } from '@/globals/Footer'
 import { migrations } from '@/migrations/index'
-import { generatePreviewPath } from '@/lib/generatePreviewPath'
-import { getServerURL, getTrustedOrigins } from '@/lib/serverURL'
 import { revalidateRedirects, revalidateRedirectsDelete } from '@/hooks/revalidateRedirects'
 import { explainRejectedOrigin } from '@/hooks/explainRejectedOrigin'
 
@@ -30,14 +28,9 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
-  serverURL: getServerURL(),
-  // Origins allowed to send the auth cookie. Payload auto-adds `serverURL` to
-  // this list; when the browser's real origin is missing from it the cookie is
-  // dropped, every admin write runs anonymously and Publish/Save fails with
-  // "You are not allowed to perform this action." Keep both lists in sync and
-  // extend them with PAYLOAD_CSRF_ORIGINS — see src/lib/serverURL.ts.
-  csrf: getTrustedOrigins(),
-  cors: getTrustedOrigins(),
+  serverURL: process.env.NEXT_PUBLIC_SERVER_URL || '',
+  csrf: [],
+  cors: '*',
   secret: process.env.PAYLOAD_SECRET || 'build-fallback-secret-for-static-prerender',
   admin: {
     user: Users.slug,
@@ -71,19 +64,6 @@ export default buildConfig({
         title: 'Hike Globally CMS',
         description: 'Content management for Hike Globally — premium Himalayan journeys.',
       },
-    },
-    livePreview: {
-      url: ({ data, collectionConfig }) =>
-        generatePreviewPath({
-          slug: typeof data?.slug === 'string' ? data.slug : '',
-          collection: (collectionConfig?.slug ?? 'pages') as 'pages' | 'posts' | 'trips',
-        }),
-      collections: ['pages', 'posts', 'trips'],
-      breakpoints: [
-        { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
-        { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
-        { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
-      ],
     },
   },
   editor: lexicalEditor(),

@@ -12,7 +12,7 @@ import VoicesSection from '../components/destinations/VoicesSection'
 import TripFaq from '../components/trips/TripFaq'
 import TripsCta from '../components/trips/TripsCta'
 
-export default function TripsPage({ onBook }) {
+export default function TripsPage({ onBook, cmsTrips }) {
   usePageMeta({
     title: 'Trips — Hike Globally',
     description:
@@ -26,7 +26,7 @@ export default function TripsPage({ onBook }) {
         <TripsHero onBook={onBook} />
         <TripsMarquee />
         <SignatureJourney onBook={onBook} />
-        <TripCollection onBook={onBook} />
+        <TripCollection onBook={onBook} cmsTrips={cmsTrips} />
         <TripStats />
         <SeasonMatrix />
         <InclusionsSection onBook={onBook} />

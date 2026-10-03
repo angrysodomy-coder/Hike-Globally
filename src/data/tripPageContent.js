@@ -1,4 +1,5 @@
 import { getTripBySlug } from './tripDetails'
+import { lexicalToParagraphs, lexicalToPlainText } from '../lib/lexical'
 
 /* ------------------------------------------------------------------
    Content model for the single trip page (`/trips/<slug>`).
@@ -482,7 +483,127 @@ const overrides = {
 
 /* ---------- Public API ---------- */
 
-export function getTripPageContent(slug) {
+function cmsTripToPageContent(cmsTrip) {
+  const dest = typeof cmsTrip.destination === 'object' ? cmsTrip.destination : null
+  const region = dest?.region || dest?.title || 'Nepal'
+  const duration = `${cmsTrip.durationDays} days`
+  const elevation = cmsTrip.maxAltitude ? `${cmsTrip.maxAltitude.toLocaleString()} m` : '5,000 m'
+  const difficulty = cmsTrip.difficulty
+    ? cmsTrip.difficulty.charAt(0).toUpperCase() + cmsTrip.difficulty.slice(1)
+    : 'Moderate'
+  const heroUrl =
+    typeof cmsTrip.heroImage === 'object' && cmsTrip.heroImage?.url
+      ? cmsTrip.heroImage.url
+      : '/images/trip-everest.webp'
+  const heroAlt =
+    typeof cmsTrip.heroImage === 'object' && cmsTrip.heroImage?.alt
+      ? cmsTrip.heroImage.alt
+      : cmsTrip.title
+
+  const tripObj = {
+    id: cmsTrip.slug || String(cmsTrip.id),
+    slug: cmsTrip.slug,
+    title: cmsTrip.title,
+    location: `${region} · Nepal`,
+    destination: region,
+    duration,
+    durationDays: cmsTrip.durationDays || 10,
+    difficulty,
+    type: 'Lodge-to-lodge trek',
+    price: cmsTrip.basePrice || 1000,
+    seasons: ['Spring', 'Autumn'],
+    prime: 'Autumn',
+    departures: cmsTrip.departures?.length
+      ? `${cmsTrip.departures.length} dates · Oct – May`
+      : 'Mar · Apr · Oct · Nov',
+    elevation,
+    highlight: cmsTrip.highlights?.[0]?.text || cmsTrip.summary || '',
+    availability: cmsTrip.departures?.length
+      ? `${cmsTrip.departures.filter((d) => d.status !== 'soldOut').length} departures open`
+      : 'Guaranteed departures',
+    description: cmsTrip.summary || '',
+    image: heroUrl,
+    alt: heroAlt,
+    imagePosition: 'center 35%',
+  }
+
+  let stages = []
+  if (Array.isArray(cmsTrip.itinerary) && cmsTrip.itinerary.length > 0) {
+    stages = cmsTrip.itinerary.map((day, i) => {
+      const dayNum = `Day ${String(i + 1).padStart(2, '0')}`
+      const altStr = day.altitude ? `${day.altitude.toLocaleString()} m` : '2,600 m'
+      const durStr = day.walkingHours || '5–6 hours walking'
+      const accStr = day.accommodation || 'Family-run mountain lodge'
+      const mealStr =
+        day.meals && day.meals.length > 0
+          ? day.meals.map((m) => m.charAt(0).toUpperCase() + m.slice(1)).join(', ')
+          : 'Breakfast, lunch, dinner'
+      const descParagraphs = lexicalToParagraphs(day.description)
+      return {
+        day: dayNum,
+        title: day.title,
+        altitude: altStr,
+        trekDuration: durStr,
+        accommodation: accStr,
+        meals: mealStr,
+        body: descParagraphs.length > 0 ? descParagraphs : [day.title],
+      }
+    })
+  }
+
+  const base = buildDefault(tripObj)
+  const highlights = cmsTrip.highlights?.map((h) => h.text) || base.highlights
+  const overview = lexicalToParagraphs(cmsTrip.description)
+  const includes = cmsTrip.inclusions?.map((i) => i.text) || baseIncludes
+  const excludes = cmsTrip.exclusions?.map((e) => e.text) || baseExcludes
+  const faqs =
+    cmsTrip.faqs?.map((f) => ({
+      q: f.question,
+      a: lexicalToPlainText(f.answer) || f.question,
+    })) || baseFaqs
+
+  const finalStages = stages.length > 0 ? stages : base.stages
+
+  const itinerary = finalStages.map((stage, index) => ({
+    ...stage,
+    id: `${tripObj.slug}-day-${index}`,
+    images: galleryFor(index, `${tripObj.title}, ${stage.title}`),
+  }))
+
+  const outline = itinerary.map((stage) => ({
+    id: stage.id,
+    day: stage.day,
+    title: stage.title,
+    altitude: stage.altitude,
+    trekDuration: stage.trekDuration,
+  }))
+
+  return {
+    trip: tripObj,
+    excerpt: cmsTrip.summary || base.excerpt,
+    author: tripAuthors.pemba,
+    published: 'March 2026',
+    updated: 'Season 2026',
+    readingTime: `${Math.max(4, Math.ceil((cmsTrip.durationDays || 10) * 0.6))} min read`,
+    highlights,
+    overview: overview.length > 0 ? overview : base.overview,
+    stages: finalStages,
+    itinerary,
+    outline,
+    includes,
+    excludes,
+    essentialInfo: base.essentialInfo,
+    map: base.map,
+    packing: base.packing,
+    faqs,
+  }
+}
+
+export function getTripPageContent(slug, cmsTrip = null) {
+  if (cmsTrip) {
+    return cmsTripToPageContent(cmsTrip)
+  }
+
   const trip = getTripBySlug(slug)
   if (!trip) return null
 
