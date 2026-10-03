@@ -101,7 +101,7 @@ function DestinationCard({ item, index }) {
   )
 }
 
-export default function DestinationsSection({ cmsDestinations }) {
+export default function DestinationsSection() {
   const items = destinations
 
   return (
