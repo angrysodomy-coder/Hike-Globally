@@ -133,11 +133,15 @@ that origin is not on the allowlist Payload discards the `payload-token` cookie
 every `authenticated` access rule returns `false`. Page navigations are plain
 `GET`s with no `Origin` header, which is why the panel still looks logged in.
 
-Fix it by making the allowlist match reality — set `NEXT_PUBLIC_SERVER_URL` to
-the exact origin you browse (protocol, host **and** port, no trailing slash),
-and add any other origin to `PAYLOAD_CSRF_ORIGINS`. The resolution logic lives
-in `src/lib/serverURL.ts`; a rejected origin is logged with the full allowlist
-by `src/hooks/explainRejectedOrigin.ts`.
+The API adapter now recognizes requests that are demonstrably same-origin from
+the reverse-proxy headers and lets Payload authenticate them via its built-in
+`Sec-Fetch-Site` check. This means a custom-domain or deployment alias no longer
+silently loses its login cookie. Cross-origin requests remain subject to the
+strict allowlist. Keep `NEXT_PUBLIC_SERVER_URL` set to the canonical public URL
+(for generated links), and list genuinely cross-origin admin clients in
+`PAYLOAD_CSRF_ORIGINS`. The adapter is in
+`src/lib/allowSameOriginPayloadRequest.ts`; unexpected rejected origins are
+logged with the full allowlist by `src/hooks/explainRejectedOrigin.ts`.
 
 Build-time data fetches for `generateStaticParams()` and `sitemap.ts` are
 wrapped so a transient database hiccup degrades to on-demand rendering
