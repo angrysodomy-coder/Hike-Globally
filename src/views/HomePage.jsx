@@ -5,7 +5,7 @@ import JournalSection from '../components/JournalSection'
 import ReviewsSection from '../components/ReviewsSection'
 import { usePageMeta } from '../lib/router'
 
-export default function HomePage({ onFind, onBook }) {
+export default function HomePage({ onFind, onBook, cmsTrips, cmsPosts, cmsDestinations }) {
   usePageMeta({
     title: 'Hike Globally — Premium Himalayan Journeys',
     description: 'Small-group Himalayan journeys, crafted by local experts. Explore premium treks through Everest, Annapurna, Manaslu, Langtang and Upper Mustang.',
@@ -14,9 +14,9 @@ export default function HomePage({ onFind, onBook }) {
   return (
     <main id="main-content">
       <Hero onFind={onFind} />
-      <DestinationsSection />
-      <TreksSection onBook={onBook} />
-      <JournalSection />
+      <DestinationsSection cmsDestinations={cmsDestinations} />
+      <TreksSection onBook={onBook} cmsTrips={cmsTrips} />
+      <JournalSection cmsPosts={cmsPosts} />
       <ReviewsSection />
     </main>
   )

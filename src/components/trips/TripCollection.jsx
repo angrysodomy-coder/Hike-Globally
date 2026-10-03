@@ -78,26 +78,85 @@ function TripCard({ trip, index }) {
   )
 }
 
-export default function TripCollection({ onBook }) {
+export default function TripCollection({ onBook, cmsTrips }) {
   const [query, setQuery] = useState('')
   const [region, setRegion] = useState('All')
   const [difficulty, setDifficulty] = useState('All')
   const [season, setSeason] = useState('All')
   const [sort, setSort] = useState('featured')
 
+  const allJourneys = useMemo(() => {
+    if (!cmsTrips || cmsTrips.length === 0) return trips
+    const mapped = cmsTrips.map((t) => ({
+      id: t.slug || String(t.id),
+      slug: t.slug,
+      title: t.title,
+      destination:
+        (typeof t.destination === 'object' &&
+          (t.destination?.region || t.destination?.title)) ||
+        'Nepal',
+      location:
+        typeof t.destination === 'object' && t.destination?.region
+          ? `${t.destination.region} · Nepal`
+          : 'Nepal',
+      type: 'Lodge-to-lodge trek',
+      price: t.basePrice || 1000,
+      duration: `${t.durationDays} days`,
+      durationDays: t.durationDays || 10,
+      difficulty: t.difficulty
+        ? t.difficulty.charAt(0).toUpperCase() + t.difficulty.slice(1)
+        : 'Moderate',
+      elevation: t.maxAltitude ? `${t.maxAltitude.toLocaleString()} m` : '5,000 m',
+      highlight: t.highlights?.[0]?.text || t.summary || '',
+      availability: t.departures?.length
+        ? `${t.departures.filter((d) => d.status !== 'soldOut').length} departures open`
+        : 'Guaranteed departures',
+      departures: t.departures?.length
+        ? `${t.departures.length} dates · All year`
+        : 'Mar · Apr · Oct · Nov',
+      seasons: ['Spring', 'Summer', 'Autumn', 'Winter'],
+      featured: t.featured ?? false,
+      image:
+        typeof t.heroImage === 'object' && t.heroImage?.url
+          ? t.heroImage.url
+          : '/images/trip-everest.webp',
+      alt:
+        typeof t.heroImage === 'object' && t.heroImage?.alt
+          ? t.heroImage.alt
+          : t.title,
+      imagePosition: 'center 35%',
+      description: t.summary || '',
+    }))
+    const existingSlugs = new Set(mapped.map((m) => m.slug))
+    const remainder = trips.filter((tr) => !existingSlugs.has(tr.id))
+    return [...mapped, ...remainder]
+  }, [cmsTrips])
+
+  const regions = useMemo(
+    () => ['All', ...new Set(allJourneys.map((t) => t.destination))],
+    [allJourneys],
+  )
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    const list = trips.filter((t) => {
+    const list = allJourneys.filter((t) => {
       if (region !== 'All' && t.destination !== region) return false
       if (difficulty !== 'All' && t.difficulty !== difficulty) return false
-      if (season !== 'All' && !t.seasons.includes(season)) return false
-      if (q && !`${t.title} ${t.location} ${t.destination} ${t.description} ${t.highlight}`.toLowerCase().includes(q)) return false
+      if (season !== 'All' && Array.isArray(t.seasons) && !t.seasons.includes(season)) return false
+      if (
+        q &&
+        !`${t.title} ${t.location} ${t.destination} ${t.description} ${t.highlight}`
+          .toLowerCase()
+          .includes(q)
+      )
+        return false
       return true
     })
     return [...list].sort(SORTERS[sort] || SORTERS.featured)
-  }, [query, region, difficulty, season, sort])
+  }, [allJourneys, query, region, difficulty, season, sort])
 
-  const filtersActive = query.trim() !== '' || region !== 'All' || difficulty !== 'All' || season !== 'All'
+  const filtersActive =
+    query.trim() !== '' || region !== 'All' || difficulty !== 'All' || season !== 'All'
 
   const clearAll = () => {
     setQuery('')
@@ -147,7 +206,7 @@ export default function TripCollection({ onBook }) {
 
           <div className="tp-chips" role="group" aria-label="Filter by region">
             <span className="tp-chips__label">Region</span>
-            {REGIONS.map((r) => (
+            {regions.map((r) => (
               <button
                 key={r}
                 type="button"
@@ -189,7 +248,7 @@ export default function TripCollection({ onBook }) {
 
           <p className="tp-count" aria-live="polite">
             <span>
-              Showing <strong>{filtered.length}</strong> of <strong>{trips.length}</strong> journeys
+              Showing <strong>{filtered.length}</strong> of <strong>{allJourneys.length}</strong> journeys
               {filtersActive ? ', filtered' : ''}
             </span>
             {filtersActive && (

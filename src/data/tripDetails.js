@@ -51,16 +51,17 @@ export function getTripBySlug(slug) {
 }
 
 export function tripPath(trip) {
-  return `/trips/${trip.id}`
+  return `/trips/${trip?.slug || trip?.id || ''}`
 }
 
 export function trekPath(trek) {
+  if (trek.slug) return `/trips/${trek.slug}`
   const slug = trekSlugById[trek.id]
-  return slug ? `/trips/${slug}` : '/trips'
+  return slug ? `/trips/${slug}` : `/trips/${trek.id || ''}`
 }
 
 export function articlePath(article) {
-  return `/blog/${article.id}`
+  return `/blog/${article?.slug || article?.id || ''}`
 }
 
 export function getArticleSlug(path) {

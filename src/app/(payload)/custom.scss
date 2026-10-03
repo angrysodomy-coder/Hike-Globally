@@ -1241,6 +1241,52 @@ html[data-theme='dark'] {
    9 · MOTION SAFETY
    ======================================================================== */
 
+/* ---- Document edit view: stretch content fields to full width ------------ */
+
+.collection-edit,
+.collection-edit__main,
+.document-fields,
+.document-fields__main,
+.render-fields,
+.form-submit,
+.doc-header,
+.doc-controls {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.collection-edit__main {
+  flex: 1 1 100% !important;
+}
+
+.collection-edit__form {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.document-fields {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+}
+
+.document-fields__main {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.document-fields__sidebar-wrap {
+  width: 100% !important;
+}
+
+@media (min-width: 1024px) {
+  .document-fields--has-sidebar {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 340px !important;
+    gap: 2rem !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .btn--style-primary,
   .btn--style-secondary,

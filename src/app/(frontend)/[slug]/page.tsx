@@ -1,10 +1,8 @@
 import type { Metadata } from 'next'
-import { draftMode } from 'next/headers'
 import React from 'react'
 import { getPayloadClient, getPageBySlug } from '@/lib/queries'
 import { redirectOrNotFound } from '@/lib/redirects'
 import { generatePageMeta } from '@/lib/generateMeta'
-import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { RenderBlocks } from '@/components/RenderBlocks'
 import { safeStaticParams } from '@/lib/safeStaticParams'
 
@@ -37,14 +35,12 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
 
 export default async function CmsPage({ params }: Args) {
   const { slug } = await params
-  const { isEnabled: draft } = await draftMode()
   const page = await getPageBySlug(slug)
 
   if (!page) return redirectOrNotFound(`/${slug}`)
 
   return (
     <main id="main-content" className="cms-surface cms-page">
-      {draft && <LivePreviewListener />}
       <RenderBlocks blocks={page.layout} />
     </main>
   )

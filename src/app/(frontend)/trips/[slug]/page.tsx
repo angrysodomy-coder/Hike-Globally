@@ -50,28 +50,27 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   }
 }
 
-/* Payload wins: as soon as a trip is published in the CMS it takes over its
-   slug and is rendered by the branded <TripDetail />. Journeys that have not
+/* Payload first; as soon as a trip is published in the CMS it takes over its
+   slug and is rendered by the branded <TripDetailRoute />. Journeys that have not
    been migrated yet keep their original hand-built page, so nothing breaks
    mid-migration. */
 export default async function TripPage({ params }: Args) {
   const { slug } = await params
-  const { isEnabled: draft } = await draftMode()
   const trip = await getTripBySlug(slug)
 
-  if (!trip) {
-    if (getLegacyTrip(slug)) return <TripDetailRoute slug={slug} />
+  if (!trip && !getLegacyTrip(slug)) {
     return redirectOrNotFound(`/trips/${slug}`)
   }
 
   return (
     <>
-      {draft && <LivePreviewListener />}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(tripJsonLd(trip)) }}
-      />
-      <TripDetail trip={trip} />
+      {trip && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(tripJsonLd(trip)) }}
+        />
+      )}
+      <TripDetailRoute slug={slug} cmsTrip={trip} />
     </>
   )
 }

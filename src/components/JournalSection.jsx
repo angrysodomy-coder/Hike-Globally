@@ -1,11 +1,32 @@
+import { useMemo } from 'react'
 import { ArrowRight, ArrowUpRight, Star, Clock } from 'lucide-react'
 import { articles } from '../data/content'
 import { articlePath } from '../data/tripDetails'
 import { Link } from '../lib/router'
 import Reveal from './Reveal'
 
-export default function JournalSection() {
-  const [featured, ...secondary] = articles
+export default function JournalSection({ cmsPosts }) {
+  const items = useMemo(() => {
+    if (!cmsPosts || cmsPosts.length === 0) return articles
+    const mapped = cmsPosts.map((p) => ({
+      id: p.slug,
+      slug: p.slug,
+      title: p.title,
+      excerpt: p.excerpt || '',
+      category: (typeof p.categories?.[0] === 'object' && p.categories?.[0]?.title) || 'Field Notes',
+      date: p.publishedAt
+        ? new Date(p.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        : 'Recent',
+      readTime: '6 min read',
+      image: (typeof p.heroImage === 'object' && p.heroImage?.url) ? p.heroImage.url : '/images/journal-annapurna.webp',
+      alt: (typeof p.heroImage === 'object' && p.heroImage?.alt) ? p.heroImage.alt : p.title,
+    }))
+    const existingSlugs = new Set(mapped.map((m) => m.id))
+    const remainder = articles.filter((a) => !existingSlugs.has(a.id))
+    return [...mapped, ...remainder]
+  }, [cmsPosts])
+
+  const [featured, ...secondary] = items
 
   return (
     <section id="journal" className="journal-section section-pad" aria-labelledby="journal-title">
