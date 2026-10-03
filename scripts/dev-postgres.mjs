@@ -54,7 +54,8 @@ try {
 
 const url = `postgres://${user}:${password}@127.0.0.1:${port}/${database}`
 console.log(`[db] ready → ${url}`)
-console.log('[db] POSTGRES_URL for .env.local is already set to this value.')
+console.log('[db] .env.example defaults to this URL — if you have not yet, run:')
+console.log('[db]   cp .env.example .env.local')
 
 const shutdown = async (signal) => {
   console.log(`\n[db] ${signal} — stopping Postgres …`)
