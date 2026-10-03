@@ -23,18 +23,13 @@ import { Footer } from '@/globals/Footer'
 import { migrations } from '@/migrations/index'
 import { revalidateRedirects, revalidateRedirectsDelete } from '@/hooks/revalidateRedirects'
 import { explainRejectedOrigin } from '@/hooks/explainRejectedOrigin'
-import { getPayloadServerURL, getTrustedOrigins } from '@/lib/serverURL'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
-  // Keep Payload URLs relative in local/Arena preview development so the admin
-  // does not try to navigate/fetch/upload against the container's localhost.
-  // In production this resolves to the configured/Vercel public origin and is
-  // mirrored into the exact CSRF allowlist below.
-  serverURL: getPayloadServerURL(),
-  csrf: getTrustedOrigins(),
+  serverURL: process.env.NEXT_PUBLIC_SERVER_URL || '',
+  csrf: [],
   cors: '*',
   secret: process.env.PAYLOAD_SECRET || 'build-fallback-secret-for-static-prerender',
   admin: {
